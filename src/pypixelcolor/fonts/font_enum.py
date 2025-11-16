@@ -38,11 +38,41 @@ FONT_METRICS: dict[Font, dict[int, dict[str, Any]]] = {
             "font_size": 16,
             "offset": (0, -1),
             "is_16bit": False
+        },
+        20: {
+            "font_size": 20,
+            "offset": (0, 0),
+            "is_16bit": True
+        },
+        24: {
+            "font_size": 24,
+            "offset": (0, 0),
+            "is_16bit": True
+        },
+        32: {
+            "font_size": 32,
+            "offset": (0, 0),
+            "is_16bit": True
         }
     },
     Font.VCR_OSD_MONO: {
         16: {
             "font_size": 16,
+            "offset": (0, 0),
+            "is_16bit": True
+        },
+        20: {
+            "font_size": 20,
+            "offset": (0, 0),
+            "is_16bit": True
+        },
+        24: {
+            "font_size": 24,
+            "offset": (0, 0),
+            "is_16bit": True
+        },
+        32: {
+            "font_size": 32,
             "offset": (0, 0),
             "is_16bit": True
         }
@@ -52,6 +82,21 @@ FONT_METRICS: dict[Font, dict[int, dict[str, Any]]] = {
             "font_size": 16,
             "offset": (0, 0),
             "is_16bit": False
+        },
+        20: {
+            "font_size": 20,
+            "offset": (0, 0),
+            "is_16bit": True
+        },
+        24: {
+            "font_size": 24,
+            "offset": (0, 0),
+            "is_16bit": True
+        },
+        32: {
+            "font_size": 32,
+            "offset": (0, 0),
+            "is_16bit": True
         }
     }
 }
