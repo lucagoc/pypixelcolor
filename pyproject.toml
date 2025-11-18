@@ -34,7 +34,16 @@ dev = [
   "pytest-cov>=4.0.0",
 ]
 
+[project.scripts]
+pypixelcolor = "pypixelcolor.cli:main"
+
 [tool.hatch.build]
 include = [
-  "pypixelcolor/fonts/*.ttf",
+  "src/pypixelcolor/**",
+  "src/pypixelcolor/*",
 ]
+
+packages = [
+  "src/pypixelcolor",
+]
+sources = ["src"]
