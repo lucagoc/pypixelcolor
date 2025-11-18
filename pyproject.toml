@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pypixelcolor"
+version = "0.2.1"
+authors = [
+  { name="Lucas Balmès", email="lucagoc@pm.me" },
+]
+description = "A Python library to control iPixel Color devices."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "websockets",
+  "bleak",
+  "Pillow",
+  "crccheck",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/lucagoc/pypixelcolor"
+Issues = "https://github.com/lucagoc/pypixelcolor/issues"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0.0",
+  "pytest-cov>=4.0.0",
+]
+
+[project.scripts]
+pypixelcolor = "pypixelcolor.cli:main"
+
+[tool.hatch.build]
+include = [
+  "src/pypixelcolor/**",
+  "src/pypixelcolor/*",
+]
+
+packages = [
+  "src/pypixelcolor",
+]
+sources = ["src"]

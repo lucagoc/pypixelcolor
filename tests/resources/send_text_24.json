@@ -1,0 +1,15 @@
+{
+    "tests": [
+        {
+            "name": "a 48x24",
+            "device_type": 137,
+            "commande": "send_text",
+            "args": {
+                "text": "a",
+                "save_slot": 8,
+                "font": "CUSONG"
+            },
+            "expected_data": "5300000100440000002f16f413000801000101005000ffffff0000000080ffffff0e18000000000000000000000000000000000000fe03fe07000e000efc0ffe0f070e030e030e030e030e070ffe1dfc180000"
+        }
+    ]
+}

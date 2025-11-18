@@ -1,5 +1,20 @@
+# General
 archive
-__pycache__/
-animations/output_animation.gif
 *.bak
+
+# Cache
+__pycache__/
 font/cache
+
+# Virtual environments
+.venv/
+
+# Python build artifacts
+dist/
+build/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Personal test files
+tmp/

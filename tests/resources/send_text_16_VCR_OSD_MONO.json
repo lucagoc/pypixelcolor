@@ -1,0 +1,25 @@
+{
+    "tests": [
+        {
+            "name": "\"A\", 16px height, VCR_OSD_MONO",
+            "device_type": 130,
+            "commande": "send_text",
+            "args": {
+                "text": "A",
+                "font": "VCR_OSD_MONO"
+            },
+            "expected_data": "4300000100340000009ef296f0000001000101005000ffffff0000000080ffffff09100000000030007800fc00cc00ce0186018601fe01fe0186018601860100000000"
+        },
+        {
+            "name": "\"AB\", 16px height, VCR_OSD_MONO",
+            "device_type": 130,
+            "commande": "send_text",
+            "args": {
+                "text": "AB",
+                "font": "VCR_OSD_MONO",
+                "animation": 1
+            },
+            "expected_data": "69000001005a000000130509a9000002000101015000ffffff0000000080ffffff09100000000030007800fc00cc00ce0186018601fe01fe018601860186010000000080ffffff091000000000fe00fe00860186018601fe00fe00c60186018601fe00fe0000000000"
+        }
+    ]
+}

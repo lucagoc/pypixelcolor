@@ -1,0 +1,26 @@
+{
+    "tests": [
+        {
+            "name": "letter a, 16px height, cusong",
+            "device_type": 130,
+            "commande": "send_text",
+            "args": {
+                "text": "a",
+                "save_slot": 8,
+                "font": "CUSONG"
+            },
+            "expected_data": "31000001002200000042b7053f000801000101005000ffffff0000000000ffffff0000000000001e303e33333b6e000000"
+        },
+        {
+            "name": "\"this is a test\", 16px height, CUSONG",
+            "device_type": 130,
+            "commande": "send_text",
+            "args": {
+                "text": "this is a test",
+                "save_slot": 9,
+                "font": "CUSONG"
+            },
+            "expected_data": "3501000100260100007504f76b00090e000101005000ffffff0000000000ffffff0000000c0c0c3f0c0c0c0c6c3800000000ffffff0000000706063e66666666666700000000ffffff0000001818001c18181818183c00000000ffffff0000000000003e63033e60633e00000000ffffff0000000000000000000000000000000000ffffff0000001818001c18181818183c00000000ffffff0000000000003e63033e60633e00000000ffffff0000000000000000000000000000000000ffffff0000000000001e303e33333b6e00000000ffffff0000000000000000000000000000000000ffffff0000000c0c0c3f0c0c0c0c6c3800000000ffffff0000000000003e63637f03633e00000000ffffff0000000000003e63033e60633e00000000ffffff0000000c0c0c3f0c0c0c0c6c38000000"
+        }
+    ]
+}
