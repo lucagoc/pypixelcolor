@@ -22,7 +22,7 @@ pip install pypixelcolor
 ### CLI
 
 ```bash
-python -m pypixelcolor --help
+pypixelcolor --help
 ```
 
 ### Python Library
@@ -59,7 +59,6 @@ hatch run -e default pytest
 
 ```bash
 hatch build
-# outputs: dist/*.whl and dist/*.tar.gz
 ```
 
 ## Related projects
