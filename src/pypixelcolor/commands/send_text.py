@@ -44,7 +44,7 @@ def _logic_reverse_bits_order_bytes(data: bytes) -> bytes:
 
 # Helper function to encode text
 
-def get_font_path(font_name: str) -> str:
+def _get_font_path(font_name: str) -> str:
     """Get the path to the font directory or file."""
     # Get the base directory where fonts are stored (pypixelcolor/fonts)
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -72,7 +72,7 @@ def get_font_path(font_name: str) -> str:
     return default_font
 
 
-def charimg_to_hex_string(img: Image.Image) -> tuple[bytes, int]:
+def _charimg_to_hex_string(img: Image.Image) -> tuple[bytes, int]:
     """
     Convert a character image to a bytes representation (one line after another).
 
@@ -128,7 +128,7 @@ def charimg_to_hex_string(img: Image.Image) -> tuple[bytes, int]:
     return bytes(data_bytes), char_width
 
 
-def char_to_hex(character: str, char_size:int, font_offset: tuple[int, int], font: str, font_size: int) -> tuple[Optional[bytes], int]:
+def _char_to_hex(character: str, char_size:int, font_offset: tuple[int, int], font: str, font_size: int) -> tuple[Optional[bytes], int]:
     """
     Convert a character to its hexadecimal representation.
     
@@ -141,7 +141,7 @@ def char_to_hex(character: str, char_size:int, font_offset: tuple[int, int], fon
     Returns:
         tuple: (hex_string, char_width)
     """
-    font_path = get_font_path(font)
+    font_path = _get_font_path(font)
 
     try:
         # Generate image with dynamic width
@@ -184,7 +184,7 @@ def char_to_hex(character: str, char_size:int, font_offset: tuple[int, int], fon
 
         img = img.point(apply_threshold, mode='L')
 
-        return charimg_to_hex_string(img)
+        return _charimg_to_hex_string(img)
     except Exception as e:
         logger.error(f"Error occurred while converting character to hex: {e}")
         return None, 0
@@ -220,7 +220,7 @@ def _encode_text(text: str, text_size: int, color: str, font: str, font_offset: 
 
     # Build each character block
     for char in text:
-        char_bytes, char_width = char_to_hex(char, text_size, font=font, font_offset=font_offset, font_size=font_size)
+        char_bytes, char_width = _char_to_hex(char, text_size, font=font, font_offset=font_offset, font_size=font_size)
         if not char_bytes:
             continue
 

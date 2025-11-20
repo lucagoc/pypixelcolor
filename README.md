@@ -50,12 +50,31 @@ This project uses [Hatch](https://hatch.pypa.io/latest/) for packaging and manag
 
 ### Setup development environment
 
+#### Create and activate the environment
+
 ```bash
 hatch env create
-hatch run -e default pytest
 ```
 
-### Build package
+#### Activate the environment
+
+```bash
+hatch shell
+```
+
+#### Install the package in editable mode
+
+```bash
+hatch run pip install -e '.[dev]'
+```
+
+#### Run tests
+
+```bash
+hatch run pytest
+```
+
+#### Build package
 
 ```bash
 hatch build
