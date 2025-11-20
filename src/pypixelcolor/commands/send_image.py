@@ -8,6 +8,15 @@ from io import BytesIO
 from ..lib.transport.send_plan import SendPlan, Window, single_window_plan
 from ..lib.device_info import DeviceInfo
 
+# Register HEIF/HEIC support if available
+HEIF_AVAILABLE = False
+try:
+    from pillow_heif import register_heif_opener
+    register_heif_opener()
+    HEIF_AVAILABLE = True
+except ImportError:
+    pass
+
 logger = logging.getLogger(__name__)
 
 # Helper functions for byte-level transformations
@@ -48,9 +57,16 @@ def _load_from_file(path: Path) -> tuple[bytes, bool]:
     with open(path, "rb") as f:
         file_bytes = f.read()
     is_gif = path.suffix.lower() == ".gif"
-    
+
     # if webp, raw, jpg, jpeg, bmp, tiff, etc.
-    if path.suffix.lower() in [".webp", ".jpg", ".jpeg", ".bmp", ".tiff"]:
+    if path.suffix.lower() in [".webp", ".jpg", ".jpeg", ".bmp", ".tiff", ".heic", ".heif"]:
+        # Check for HEIC/HEIF without required library
+        if path.suffix.lower() in [".heic", ".heif"] and not HEIF_AVAILABLE:
+            raise RuntimeError(
+                f"HEIC/HEIF support requires 'pillow-heif' library.\n"
+                f"Install with: pip install pillow-heif"
+            )
+
         logger.info(f"Converting image from {path.suffix} to PNG format")
         img = Image.open(path)
         output = BytesIO()
@@ -315,6 +331,7 @@ def send_image(path_or_hex: Union[str, Path], fit_mode: str = 'crop', device_inf
     Send an image or animation.
     Supports:
         - .png, .webp, .jpg, .jpeg, .bmp, .tiff (static)
+        - .heic, .heif (static, requires pillow-heif library)
         - .gif (animated)
         - Raw hexadecimal strings (PNG or GIF) and RGB stream files (needs to be same size as device)
     
