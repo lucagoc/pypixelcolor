@@ -323,7 +323,7 @@ def send_text(text: str,
         (int(animation), 0, 7, "Animation"),
         (int(save_slot), 0, 255, "Save slot"),
         (int(speed), 0, 100, "Speed"),
-        (len(text), 1, 100, "Text length"),
+        (len(text), 1, 180, "Text length"),
         (char_height, 1, 128, "Char height"),
     ]
     for param, min_val, max_val, name in checks:
