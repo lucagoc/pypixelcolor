@@ -3,7 +3,7 @@
 ![pypixelcolor](.github/readme/banner.png)
 
 [![PyPI](https://img.shields.io/pypi/v/pypixelcolor.svg)](https://pypi.org/project/pypixelcolor)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 [![Build Status](https://github.com/lucagoc/pypixelcolor/actions/workflows/python-app.yml/badge.svg)](https://github.com/lucagoc/pypixelcolor/actions)
 [![Publish Status](https://github.com/lucagoc/pypixelcolor/actions/workflows/python-publish.yml/badge.svg)](https://github.com/lucagoc/pypixelcolor/actions)
 
