@@ -28,6 +28,10 @@ class AsyncClient:
         This is a simple getter for the cached data.
         """
         ...
+
+    def version(self) -> str:
+        """Get the client library version."""
+        ...
     
     async def clear(self) -> None:
         """Clears the EEPROM."""
@@ -91,6 +95,10 @@ class Client:
         Device info is automatically retrieved during connect().
         This is a simple getter for the cached data.
         """
+        ...
+    
+    def version(self) -> str:
+        """Get the client library version."""
         ...
     
     def clear(self) -> None:

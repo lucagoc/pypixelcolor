@@ -11,6 +11,7 @@ from typing import Optional
 from .lib.device_session import DeviceSession
 from .lib.device_info import DeviceInfo
 from .commands import COMMANDS
+from .__version__ import VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -76,6 +77,10 @@ class AsyncClient:
         
         await self._session.disconnect()
         self._connected = False
+    
+    def version(self) -> str:
+        """Get the client library version."""
+        return VERSION
     
     def get_device_info(self) -> DeviceInfo:
         """

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pypixelcolor"
-version = "0.2.1"
+version = "0.3.0"
 authors = [
   { name="Lucas Balmès", email="lucagoc@pm.me" },
 ]

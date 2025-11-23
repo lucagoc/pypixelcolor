@@ -242,6 +242,10 @@ class AsyncClient:
         This is a simple getter for the cached data.
         """
         ...
+
+    def version(self) -> str:
+        """Get the client library version."""
+        ...
     
 '''
     
@@ -278,6 +282,10 @@ class AsyncClient:
         Device info is automatically retrieved during connect().
         This is a simple getter for the cached data.
         """
+        ...
+    
+    def version(self) -> str:
+        """Get the client library version."""
         ...
     
 '''

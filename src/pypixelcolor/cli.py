@@ -13,6 +13,7 @@ from .lib.logging import setup_logging
 from .lib.device_session import DeviceSession
 from .websocket import build_command_args
 from .commands import COMMANDS
+from .__version__ import VERSION
 
 logger = logging.getLogger(__name__)
 
@@ -65,8 +66,9 @@ async def scan_devices() -> None:
 
 def main() -> None:
     """Main CLI entry point."""
-    parser = argparse.ArgumentParser(description="pypixelcolor - CLI")
+    parser = argparse.ArgumentParser(description=f"pypixelcolor - CLI v{VERSION}")
     parser.add_argument("--scan", action="store_true", help="Scan for Bluetooth devices")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {VERSION}", help="Show the version and exit")
     parser.add_argument(
         "-c", "--command", action="append", nargs="+", metavar="COMMAND PARAMS",
         help="Execute a specific command with parameters. Can be used multiple times."
