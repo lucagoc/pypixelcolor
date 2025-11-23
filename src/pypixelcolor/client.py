@@ -5,6 +5,7 @@ Provides synchronous and asynchronous clients for controlling LED matrix.
 
 import asyncio
 import logging
+import atexit
 from typing import Optional
 
 from .lib.device_session import DeviceSession
@@ -139,7 +140,20 @@ class Client:
         self._loop = asyncio.new_event_loop()
         self._loop_thread = threading.Thread(target=start_loop, args=(self._loop,), daemon=True)
         self._loop_thread.start()
+        
+        # Register cleanup handler to ensure disconnection on exit
+        atexit.register(self._cleanup_on_exit)
     
+    def _cleanup_on_exit(self):
+        """Cleanup handler for atexit."""
+        try:
+            if self._async_client._connected:
+                self.disconnect()
+        except Exception:
+            pass
+        finally:
+            self._cleanup_loop()
+
     def _run_async(self, coro):
         """Run an async coroutine synchronously using the persistent loop."""
         if self._loop is None:
@@ -175,6 +189,12 @@ class Client:
     
     def __del__(self):
         """Cleanup on deletion."""
+        # Unregister atexit handler if object is deleted manually
+        try:
+            atexit.unregister(self._cleanup_on_exit)
+        except Exception:
+            pass
+            
         try:
             if self._async_client._connected:
                 self.disconnect()
