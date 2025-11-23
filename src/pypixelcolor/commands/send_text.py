@@ -9,7 +9,7 @@ from typing import Optional, Union
 from io import BytesIO
 
 # Locals
-from ..lib.transport.send_plan import single_window_plan
+from ..lib.transport.send_plan import single_window_plan, SendPlan, Window
 from ..lib.device_info import DeviceInfo
 from ..lib.font_config import FontConfig, BUILTIN_FONTS
 from ..lib.emoji_manager import is_emoji, get_emoji_image
@@ -361,7 +361,7 @@ def send_text(text: str,
         (int(animation), 0, 7, "Animation"),
         (int(save_slot), 0, 255, "Save slot"),
         (int(speed), 0, 100, "Speed"),
-        (len(text), 1, 180, "Text length"),
+        (len(text), 1, 500, "Text length"),
         (char_height, 1, 128, "Char height"),
     ]
     for param, min_val, max_val, name in checks:
@@ -415,45 +415,62 @@ def send_text(text: str,
     # number_of_characters: single byte
     data_payload = bytes([len(text)]) + properties + characters_bytes
 
-    ########################
-    #        HEADER        #
-    ########################
-    
-    payload_size = len(data_payload)
-    total_size = payload_size + 15
-    
-    header = bytearray()
-    header += total_size.to_bytes(2, byteorder="little")
-    header += bytes([
-        0x00, # Reserved
-        0x01, # Reserved
-        0x00  # Reserved
-    ])
-    header += payload_size.to_bytes(2, byteorder="little")
-    header += bytes([
-        0x00,   # Reserved
-        0x00    # Reserved
-    ])
-
     #########################
     #        CHECKSUM       #
     #########################
 
     crc = binascii.crc32(data_payload) & 0xFFFFFFFF
+    payload_size = len(data_payload)
 
     #########################
-    #     FINAL PAYLOAD     #
+    #      MULTI-FRAME      #
     #########################
 
-    # Assemble final payload
-    final_payload = bytearray()
-    final_payload += bytes(header)                                  # header
-    final_payload += crc.to_bytes(4, byteorder="little")            # checksum
-    final_payload += bytes([0x00])                                  # Reserved
-    final_payload += bytes([int(save_slot) & 0xFF])                 # save_slot
-    final_payload += data_payload                                   # num_chars + properties + characters
+    windows = []
+    window_size = 12 * 1024
+    pos = 0
+    window_index = 0
+    
+    while pos < payload_size:
+        window_end = min(pos + window_size, payload_size)
+        chunk_payload = data_payload[pos:window_end]
+        
+        # Option: 0x00 for first frame, 0x02 for subsequent frames
+        option = 0x00 if window_index == 0 else 0x02
+        
+        # Construct header for this frame
+        # [00 01 Option] [Payload Size (4)] [CRC (4)] [00 SaveSlot]
+        
+        frame_header = bytearray()
+        frame_header += bytes([
+            0x00,   # Reserved
+            0x01,   # Command
+            option  # Option
+        ])
+        
+        # Payload Size (Total) - 4 bytes little endian
+        frame_header += payload_size.to_bytes(4, byteorder="little")
+        
+        # CRC - 4 bytes little endian
+        frame_header += crc.to_bytes(4, byteorder="little")
+        
+        # Tail - 2 bytes
+        frame_header += bytes([0x00])                                  # Reserved
+        frame_header += bytes([int(save_slot) & 0xFF])                 # save_slot
+        
+        # Combine header and chunk
+        frame_content = frame_header + chunk_payload
+        
+        # Calculate frame length prefix
+        # Total size = len(frame_content) + 2 (for the prefix itself)
+        frame_len = len(frame_content) + 2
+        prefix = frame_len.to_bytes(2, byteorder="little")
+        
+        message = prefix + frame_content
+        windows.append(Window(data=message, requires_ack=True))
+        
+        window_index += 1
+        pos = window_end
 
-    # Debug
-    logger.debug("final_payload (hex): %s", bytes(final_payload).hex())
-
-    return single_window_plan("send_text", bytes(final_payload))
+    logger.info(f"Split text into {len(windows)} frames")
+    return SendPlan("send_text", windows)
