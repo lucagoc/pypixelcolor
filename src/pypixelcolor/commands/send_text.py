@@ -12,8 +12,7 @@ from io import BytesIO
 from ..lib.transport.send_plan import single_window_plan
 from ..lib.device_info import DeviceInfo
 from ..lib.font_config import FontConfig, BUILTIN_FONTS
-
-EMOJI_FONT_PATH = "/usr/share/fonts/noto/NotoColorEmoji.ttf"
+from ..lib.emoji_manager import is_emoji, get_emoji_image
 
 logger = getLogger(__name__)
 
@@ -76,16 +75,6 @@ def _resolve_font_config(font: Union[str, FontConfig]) -> FontConfig:
     # Fallback to default font
     logger.warning(f"Font '{font}' not found. Using default font CUSONG.")
     return BUILTIN_FONTS["CUSONG"]
-
-
-def is_emoji(char: str) -> bool:
-    code = ord(char)
-    return (0x1F600 <= code <= 0x1F64F or  # Emoticons
-            0x1F300 <= code <= 0x1F5FF or  # Misc Symbols and Pictographs
-            0x1F680 <= code <= 0x1F6FF or  # Transport and Map
-            0x1F1E6 <= code <= 0x1F1FF or  # Regional indicator symbols
-            0x2600 <= code <= 0x26FF or    # Misc symbols
-            0x2700 <= code <= 0x27BF)      # Dingbats
 
 
 def _charimg_to_hex_string(img: Image.Image) -> tuple[bytes, int]:
@@ -161,42 +150,14 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
 
     if is_emoji(character):
         try:
-            # Use Pillow's embedded emoji renderer (CBDT/COLR tables)
-            # NotoColorEmoji uses CBDT format which requires special handling
-            font_obj = ImageFont.truetype(EMOJI_FONT_PATH, 109)
+            # Download and load emoji image from Twemoji
+            img = get_emoji_image(character, size=16)
             
-            # Create larger RGBA image with plenty of space to avoid clipping
-            canvas_size = 150
-            img = Image.new('RGBA', (canvas_size, canvas_size), (0, 0, 0, 0))
-            d = ImageDraw.Draw(img)
+            if img is None:
+                logger.error(f"Failed to get emoji image for {character}")
+                return None, 0, False
             
-            # Calculate center position for the emoji
-            offset_x = (canvas_size - 109) // 2
-            offset_y = (canvas_size - 109) // 2
-            
-            # Try to render with embedded color (requires pillow-heif or recent Pillow)
-            try:
-                d.text((offset_x, offset_y), character, font=font_obj, embedded_color=True)
-            except:
-                # Fallback: render without color
-                logger.warning("Could not render emoji with embedded color, using monochrome")
-                d.text((offset_x, offset_y), character, fill=(255, 255, 255, 255), font=font_obj)
-            
-            # Crop to actual content
-            bbox = img.getbbox()
-            if bbox:
-                img = img.crop(bbox)
-            
-            # Resize to 16x16 with high quality
-            img = img.resize((16, 16), Image.Resampling.LANCZOS)
-            
-            # Convert RGBA to RGB with black background
-            background = Image.new('RGB', (16, 16), (0, 0, 0))
-            background.paste(img, mask=img.split()[3])  # Use alpha channel as mask
-            img = background
-            
-            # Debug: save the image
-            img.save('/tmp/debug_emoji.png')
+            # Convert to JPEG format
             buffer = BytesIO()
             # Save JPEG with Adobe format (used by official app)
             # subsampling=0 means 4:4:4 (best quality, preserves colors)
