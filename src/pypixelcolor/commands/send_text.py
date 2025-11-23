@@ -257,27 +257,33 @@ def _encode_text(text: str, text_size: int, color: str, font_path: str, font_off
 
         # Build bytes for this character
         if text_size == 32:
-            if char_width <= 16:
-                result += bytes([0x02]) # Char 32x16
+            if is_emoji_flag:
+                jpeg_size = len(char_bytes)
+                result += bytes([0x90])  # Char 32x32, used for emoji
+                result += jpeg_size.to_bytes(2, byteorder='little')  # Payload size
+                result += bytes([0x00])  # Reserved
+            elif char_width <= 16:
+                result += bytes([0x02])  # Char 32x16
                 result += color_bytes
             elif char_width <= 32:
-                result += bytes([0x90]) # Char 32x32, used for emoji
+                result += bytes([0x90])  # Char 32x32
                 result += color_bytes
                 result += bytes([char_width & 0xFF])
                 result += bytes([text_size & 0xFF])
             else:
                 raise ValueError(f"Character width {char_width} exceeds maximum for 32px height.")
-        else: #  text_size == 16
+        else:  # text_size == 16
             if is_emoji_flag:
-                result += bytes([0x08]) # Special type for emoji
-                result += bytes([0xc1]) # Unknown
-                result += bytes([0x02]) # Unknown
-                result += bytes([0x00]) # Unknown
+                # Emoji JPEG format: 0x08 + payload_size(2 bytes LE) + 0x00
+                jpeg_size = len(char_bytes)
+                result += bytes([0x08])  # Special type for emoji
+                result += jpeg_size.to_bytes(2, byteorder='little')  # Payload size
+                result += bytes([0x00])  # Reserved
             elif char_width <= 8:
-                result += bytes([0x00]) # Char 16x8
+                result += bytes([0x00])  # Char 16x8
                 result += color_bytes
             elif char_width <= 16:
-                result += bytes([0x80]) # Char 16x16, used for emoji
+                result += bytes([0x80])  # Char 16x16
                 result += color_bytes
                 result += bytes([char_width & 0xFF])
                 result += bytes([text_size & 0xFF])
