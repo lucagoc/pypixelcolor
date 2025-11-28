@@ -308,6 +308,7 @@ def send_text(text: str,
               ):
     """
     Send a text to the device with configurable parameters.
+    If emojis are included in the text, they will be rendered using Twemoji.
 
     Args:
         text (str): The text to send.
