@@ -302,6 +302,7 @@ def send_text(text: str,
               save_slot: int = 0,
               speed: int = 80,
               color: str = "ffffff",
+              bg_color: Optional[str] = None,
               font: Union[str, FontConfig] = "CUSONG",
               char_height: Optional[int] = None,
               device_info: Optional[DeviceInfo] = None
@@ -317,6 +318,7 @@ def send_text(text: str,
         save_slot (int, optional): Save slot (1-10). Defaults to 1.
         speed (int, optional): Animation speed (0-100). Defaults to 80.
         color (str, optional): Text color in hex. Defaults to "ffffff".
+        bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).
         font (str | FontConfig, optional): Built-in font name, file path, or FontConfig object. Defaults to "CUSONG". Built-in fonts are "CUSONG", "SIMSUN", "VCR_OSD_MONO".
         char_height (int, optional): Character height. Auto-detected from device_info if not specified.
         device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).
@@ -348,7 +350,7 @@ def send_text(text: str,
     font_offset = metrics["offset"]
     pixel_threshold = metrics["pixel_threshold"]
     
-    # properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 4 zero bytes
+    # properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 1 byte bg flag + 3 bytes bg color
     try:
         color_bytes = bytes.fromhex(color)
     except Exception:
@@ -392,12 +394,25 @@ def send_text(text: str,
         int(rainbow_mode) & 0xFF    # Rainbow mode
     ])
     properties += color_bytes
-    properties += bytes([
-        0x00,   # Reserved
-        0x00,   # Reserved
-        0x00,   # Reserved
-        0x00    # Reserved
-    ])
+
+    # Trailing 4 bytes - Background color: [enable_flag, R, G, B]
+    if bg_color is not None:
+        try:
+            bg_color_bytes = bytes.fromhex(bg_color)
+        except Exception:
+            raise ValueError(f"Invalid background color hex: {bg_color}")
+        if len(bg_color_bytes) != 3:
+            raise ValueError("Background color must be 3 bytes (6 hex chars), e.g. 'ff0000'")
+        properties += bytes([0x01])  # Enable background
+        properties += bg_color_bytes
+        logger.info(f"Background color enabled: #{bg_color}")
+    else:
+        properties += bytes([
+            0x00,   # Background disabled
+            0x00,   # R (unused)
+            0x00,   # G (unused)
+            0x00    # B (unused)
+        ])
 
     #########################
     #       CHARACTERS      #
