@@ -219,6 +219,148 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
             return None, 0, False
 
 
+def _render_text_as_image(text: str, text_size: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> Image.Image:
+    """Render the entire text string as a single PIL image.
+
+    Args:
+        text (str): The text to render.
+        text_size (int): The height of the text.
+        font_path (str): Path to the font file.
+        font_offset (tuple[int, int]): Font offset (x, y).
+        font_size (int): Font size for rendering.
+        pixel_threshold (int): Threshold for converting grayscale to binary.
+
+    Returns:
+        Image.Image: Rendered text as a binary (black/white) image.
+    """
+    # Create a temporary large image to measure text
+    temp_img = Image.new('L', (1000, text_size), 0)
+    temp_draw = ImageDraw.Draw(temp_img)
+    font_obj = ImageFont.truetype(font_path, font_size)
+
+    # Get text bounding box to determine actual width needed
+    bbox = temp_draw.textbbox((0, 0), text, font=font_obj)
+    text_width = bbox[2] - bbox[0]
+
+    # Add some padding to ensure we capture all pixels
+    text_width = int(text_width) + 4
+
+    # Create final image with exact dimensions needed
+    img = Image.new('L', (text_width, text_size), 0)
+    draw = ImageDraw.Draw(img)
+
+    # Draw text in white (255)
+    draw.text(font_offset, text, fill=255, font=font_obj)
+
+    # Apply threshold to convert to binary
+    def apply_threshold(pixel):
+        return 255 if pixel > pixel_threshold else 0
+
+    img = img.point(apply_threshold, mode='L')
+
+    logger.debug(f"Rendered text to image: {img.size[0]}x{img.size[1]} pixels")
+
+    return img
+
+
+def _split_image_into_chunks(img: Image.Image, chunk_width: int) -> list[Image.Image]:
+    """Split a PIL image into fixed-width vertical chunks.
+
+    Args:
+        img (Image.Image): The image to split.
+        chunk_width (int): Width of each chunk in pixels.
+
+    Returns:
+        list[Image.Image]: List of image chunks, all with width=chunk_width (padded with black if needed).
+    """
+    width, height = img.size
+    chunks = []
+
+    for x in range(0, width, chunk_width):
+        # Calculate the actual width of this chunk (last chunk might be narrower)
+        actual_width = min(chunk_width, width - x)
+
+        # Crop the chunk from the image
+        chunk = img.crop((x, 0, x + actual_width, height))
+
+        # If this chunk is narrower than chunk_width, pad it with black pixels
+        if actual_width < chunk_width:
+            # Create a new image with the full chunk_width, filled with black (0)
+            padded_chunk = Image.new('L', (chunk_width, height), 0)
+            # Paste the actual chunk on the left side
+            padded_chunk.paste(chunk, (0, 0))
+            chunk = padded_chunk
+            logger.debug(f"Created chunk {len(chunks)}: {actual_width}x{height} pixels (padded to {chunk_width}x{height}) at x={x}")
+        else:
+            logger.debug(f"Created chunk {len(chunks)}: {actual_width}x{height} pixels at x={x}")
+
+        chunks.append(chunk)
+
+    return chunks
+
+
+def _encode_text_chunked(chunks: list[Image.Image], text_size: int, color: str) -> bytes:
+    """Encode image chunks to be displayed on the device.
+
+    Each chunk is treated as a "character" and encoded with the appropriate headers.
+
+    Args:
+        chunks (list[Image.Image]): List of image chunks to encode.
+        text_size (int): The height of the chunks (matrix height).
+        color (str): The color in hex format (e.g., 'ffffff').
+
+    Returns:
+        bytes: The encoded chunks as raw bytes ready to be appended to a payload.
+    """
+    result = bytearray()
+
+    # Convert color to bytes
+    try:
+        color_bytes = bytes.fromhex(color)
+    except Exception:
+        raise ValueError(f"Invalid color hex: {color}")
+
+    # Validate color length
+    if len(color_bytes) != 3:
+        raise ValueError("Color must be 3 bytes (6 hex chars), e.g. 'ffffff'")
+
+    # Encode each chunk
+    for chunk in chunks:
+        # Convert chunk to bitmap bytes
+        chunk_bytes, chunk_width = _charimg_to_hex_string(chunk)
+
+        # Apply byte-level transformations (same as for regular characters)
+        chunk_bytes = _logic_reverse_bits_order_bytes(chunk_bytes)
+
+        # Build bytes for this chunk (treating it like a character)
+        if text_size == 32:
+            if chunk_width <= 16:
+                result += bytes([0x02])  # Char 32x16
+                result += color_bytes
+            elif chunk_width <= 32:
+                result += bytes([0x90])  # Char 32x32
+                result += color_bytes
+                result += bytes([chunk_width & 0xFF])
+                result += bytes([text_size & 0xFF])
+            else:
+                raise ValueError(f"Chunk width {chunk_width} exceeds maximum for 32px height.")
+        else:  # text_size == 16
+            if chunk_width <= 8:
+                result += bytes([0x00])  # Char 16x8
+                result += color_bytes
+            elif chunk_width <= 16:
+                result += bytes([0x80])  # Char 16x16
+                result += color_bytes
+                result += bytes([chunk_width & 0xFF])
+                result += bytes([text_size & 0xFF])
+            else:
+                raise ValueError(f"Chunk width {chunk_width} exceeds maximum for 16px height.")
+
+        result += chunk_bytes
+
+    return bytes(result)
+
+
 def _encode_text(text: str, text_size: int, color: str, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> bytes:
     """Encode text to be displayed on the device.
 
@@ -305,6 +447,9 @@ def send_text(text: str,
               bg_color: Optional[str] = None,
               font: Union[str, FontConfig] = "CUSONG",
               char_height: Optional[int] = None,
+              var_width: bool = False,
+              chunk_width: int = 16,
+              rtl: bool = False,
               device_info: Optional[DeviceInfo] = None
               ):
     """
@@ -321,6 +466,9 @@ def send_text(text: str,
         bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).
         font (str | FontConfig, optional): Built-in font name, file path, or FontConfig object. Defaults to "CUSONG". Built-in fonts are "CUSONG", "SIMSUN", "VCR_OSD_MONO".
         char_height (int, optional): Character height. Auto-detected from device_info if not specified.
+        var_width (bool, optional): If True, renders the entire string as an image and splits it into chunks for variable character width. Defaults to False.
+        chunk_width (int, optional): Width of each chunk in pixels when var_width is True. Defaults to 16.
+        rtl (bool, optional): If True, reverses the order of chunks for right-to-left text display. Only applies when var_width is True. Defaults to False.
         device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).
 
     Returns:
@@ -332,7 +480,14 @@ def send_text(text: str,
     
     # Resolve font configuration
     font_config = _resolve_font_config(font)
-    
+
+    # Convert parameters that may come as strings from CLI
+    if isinstance(var_width, str):
+        var_width = var_width.lower() in ('true', '1', 'yes')
+    if isinstance(rtl, str):
+        rtl = rtl.lower() in ('true', '1', 'yes')
+    chunk_width = int(chunk_width)
+
     # Auto-detect char_height from device_info if available
     if char_height is None:
         if device_info is not None:
@@ -418,18 +573,51 @@ def send_text(text: str,
     #       CHARACTERS      #
     #########################
 
-    characters_bytes = _encode_text(
-        text, 
-        char_height, 
-        color, 
-        font_config.path,
-        font_offset,
-        font_size,
-        pixel_threshold
-    )
-    
-    # number_of_characters: single byte
-    data_payload = bytes([len(text)]) + properties + characters_bytes
+    if var_width:
+        # Render entire string as image and split into chunks
+        logger.info(f"Rendering text as image with chunk width: {chunk_width}px")
+
+        # Render full string to image
+        text_image = _render_text_as_image(
+            text,
+            char_height,
+            font_config.path,
+            font_offset,
+            font_size,
+            pixel_threshold
+        )
+
+        # Split image into fixed-width chunks
+        chunks = _split_image_into_chunks(text_image, chunk_width)
+        logger.info(f"Split rendered text into {len(chunks)} chunks")
+
+        # Reverse chunks for RTL display if requested
+        if rtl:
+            chunks = list(reversed(chunks))
+            logger.info("Reversed chunk order for RTL display")
+
+        # Encode chunks as if they were characters
+        characters_bytes = _encode_text_chunked(chunks, char_height, color)
+
+        # Number of "characters" is the number of chunks
+        num_chars = len(chunks)
+    else:
+        # Original character-by-character encoding
+        characters_bytes = _encode_text(
+            text,
+            char_height,
+            color,
+            font_config.path,
+            font_offset,
+            font_size,
+            pixel_threshold
+        )
+
+        # Number of characters is the length of the text
+        num_chars = len(text)
+
+    # Build data payload with character count
+    data_payload = bytes([num_chars]) + properties + characters_bytes
 
     #########################
     #        CHECKSUM       #
