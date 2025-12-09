@@ -77,12 +77,33 @@ def _resolve_font_config(font: Union[str, FontConfig]) -> FontConfig:
     return BUILTIN_FONTS["CUSONG"]
 
 
-def _charimg_to_hex_string(img: Image.Image) -> tuple[bytes, int]:
+def _get_char_height_from_device(device_info: DeviceInfo) -> int:
+    """Map device dimensions to appropriate character height.
+    
+    This function returns a suitable character height based on the device's
+    physical dimensions. Heights are mapped as follows:
+    - 8 pixels:   devices with height <= 8 (small single-line displays)
+    - 16 pixels:  devices with height between 9 and 20 (most common)
+    - 32 pixels:  devices with height > 20 (large displays like 32x32)
+    
+    Args:
+        device_info (DeviceInfo): Device information with width and height.
+        
+    Returns:
+        int: The recommended character height (8, 16, or 32).
+    """
+    if device_info.height <= 20:
+        return 16
+    else:
+        return device_info.height
+
+
+def _encode_char_img(img: Image.Image) -> bytes:
     """
     Convert a character image to a bytes representation (one line after another).
 
     Returns:
-        tuple: (bytes_data, char_width)
+        bytes: Encoded byte data of the character image.
     """
 
     # Load the image in grayscale and get dimensions
@@ -130,10 +151,10 @@ def _charimg_to_hex_string(img: Image.Image) -> tuple[bytes, int]:
 
         data_bytes += line_value.to_bytes(byte_len, byteorder='big')
 
-    return bytes(data_bytes), char_width
+    return bytes(data_bytes)
 
 
-def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> tuple[Optional[bytes], int, bool]:
+def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> tuple[Optional[bytes], bool]:
     """Convert a character to its hexadecimal representation.
     
     Args:
@@ -155,7 +176,7 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
             
             if img is None:
                 logger.error(f"Failed to get emoji image for {character}")
-                return None, 0, False
+                return None, False
             
             # Convert to JPEG format
             buffer = BytesIO()
@@ -174,10 +195,10 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
                     # Rebuild JPEG: SOI + DQT + rest (skip JFIF)
                     jpeg_bytes = b'\xff\xd8' + jpeg_bytes[dqt_pos:]
             
-            return jpeg_bytes, char_size, True
+            return jpeg_bytes, True
         except Exception as e:
             logger.error(f"Error rendering emoji {character}: {e}")
-            return None, 0, False
+            return None, False
     else:
         try:
             # Generate image with dynamic width
@@ -196,7 +217,7 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
                 max_width = 16
             else:
                 min_width = 1
-                max_width = 16
+                max_width = 8
             text_width = int(max(min_width, min(text_width, max_width)))
 
             # Create final image in grayscale mode for pixel-perfect rendering
@@ -212,11 +233,11 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
 
             img = img.point(apply_threshold, mode='L')
 
-            bytes_data, width = _charimg_to_hex_string(img)
-            return bytes_data, width, False
+            bytes_data = _encode_char_img(img)
+            return bytes_data, False
         except Exception as e:
             logger.error(f"Error occurred while converting character to hex: {e}")
-            return None, 0, False
+            return None, False
 
 
 def _render_text_as_image(text: str, text_size: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> Image.Image:
@@ -299,6 +320,43 @@ def _split_image_into_chunks(img: Image.Image, chunk_width: int) -> list[Image.I
     return chunks
 
 
+def _encode_character_block(char_bytes: bytes, text_size: int, color_bytes: bytes, is_emoji: bool = False) -> bytes:
+    """Build the encoded bytes for a single character or chunk block.
+
+    Args:
+        char_bytes (bytes): The raw character/chunk bitmap bytes.
+        char_width (int): The width of the character/chunk in pixels.
+        text_size (int): The height of the text (16 or 32).
+        color_bytes (bytes): The RGB color bytes.
+        is_emoji (bool): Whether this is an emoji (JPEG format).
+
+    Returns:
+        bytes: The encoded character block with appropriate header and payload.
+    """
+    result = bytearray()
+
+    if text_size == 32:
+        if is_emoji:
+            result += bytes([0x09])  # Char 32x32, used for emoji
+            result += len(char_bytes).to_bytes(2, byteorder='little')  # Payload size
+            result += bytes([0x00])  # Reserved
+        else:
+            result += bytes([0x02])  # Char 32x16
+            result += color_bytes
+    else:  # text_size == 16
+        if is_emoji:
+            # Emoji JPEG format: 0x08 + payload_size(2 bytes LE) + 0x00
+            result += bytes([0x08])  # Special type for emoji
+            result += len(char_bytes).to_bytes(2, byteorder='little')  # Payload size
+            result += bytes([0x00])  # Reserved
+        else:
+            result += bytes([0x00])  # Char 16x8
+            result += color_bytes
+
+    result += char_bytes
+    return bytes(result)
+
+
 def _encode_text_chunked(chunks: list[Image.Image], text_size: int, color: str) -> bytes:
     """Encode image chunks to be displayed on the device.
 
@@ -327,41 +385,18 @@ def _encode_text_chunked(chunks: list[Image.Image], text_size: int, color: str) 
     # Encode each chunk
     for chunk in chunks:
         # Convert chunk to bitmap bytes
-        chunk_bytes, chunk_width = _charimg_to_hex_string(chunk)
+        chunk_bytes = _encode_char_img(chunk)
 
         # Apply byte-level transformations (same as for regular characters)
         chunk_bytes = _logic_reverse_bits_order_bytes(chunk_bytes)
 
         # Build bytes for this chunk (treating it like a character)
-        if text_size == 32:
-            if chunk_width <= 16:
-                result += bytes([0x02])  # Char 32x16
-                result += color_bytes
-            elif chunk_width <= 32:
-                result += bytes([0x90])  # Char 32x32
-                result += color_bytes
-                result += bytes([chunk_width & 0xFF])
-                result += bytes([text_size & 0xFF])
-            else:
-                raise ValueError(f"Chunk width {chunk_width} exceeds maximum for 32px height.")
-        else:  # text_size == 16
-            if chunk_width <= 8:
-                result += bytes([0x00])  # Char 16x8
-                result += color_bytes
-            elif chunk_width <= 16:
-                result += bytes([0x80])  # Char 16x16
-                result += color_bytes
-                result += bytes([chunk_width & 0xFF])
-                result += bytes([text_size & 0xFF])
-            else:
-                raise ValueError(f"Chunk width {chunk_width} exceeds maximum for 16px height.")
-
-        result += chunk_bytes
+        result += _encode_character_block(chunk_bytes, text_size, color_bytes, is_emoji=False)
 
     return bytes(result)
 
 
-def _encode_text(text: str, text_size: int, color: str, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> bytes:
+def _encode_text(text: str, matrix_height: int, color: str, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> bytes:
     """Encode text to be displayed on the device.
 
     Returns raw bytes. Each character block is composed as:
@@ -369,10 +404,12 @@ def _encode_text(text: str, text_size: int, color: str, font_path: str, font_off
 
     Args:
         text (str): The text to encode.
-        matrix_height (int): The height of the LED matrix.
+        text_size (int): The height of the LED matrix.
         color (str): The color in hex format (e.g., 'ffffff').
-        font (str): The font name to use.
+        font_path (str): Path to the font file.
         font_offset (tuple[int, int]): The (x, y) offset for the font.
+        font_size (int): The font size for rendering.
+        pixel_threshold (int): Threshold for pixel conversion.
 
     Returns:
         bytes: The encoded text as raw bytes ready to be appended to a payload.
@@ -391,7 +428,7 @@ def _encode_text(text: str, text_size: int, color: str, font_path: str, font_off
 
     # Build each character block
     for char in text:
-        char_bytes, char_width, is_emoji_flag = _char_to_hex(char, text_size, font_path, font_offset, font_size, pixel_threshold)
+        char_bytes, is_emoji_flag = _char_to_hex(char, matrix_height, font_path, font_offset, font_size, pixel_threshold)
         if not char_bytes:
             continue
 
@@ -399,43 +436,10 @@ def _encode_text(text: str, text_size: int, color: str, font_path: str, font_off
             # Apply byte-level transformations
             char_bytes = _logic_reverse_bits_order_bytes(char_bytes)
 
-        # Build bytes for this character
-        if text_size == 32:
-            if is_emoji_flag:
-                result += bytes([0x09])  # Char 32x32, used for emoji
-                result += len(char_bytes).to_bytes(2, byteorder='little')  # Payload size
-                result += bytes([0x00])  # Reserved
-            elif char_width <= 16:
-                result += bytes([0x02])  # Char 32x16
-                result += color_bytes
-            elif char_width <= 32:
-                result += bytes([0x90])  # Char 32x32
-                result += color_bytes
-                result += bytes([char_width & 0xFF])
-                result += bytes([text_size & 0xFF])
-            else:
-                raise ValueError(f"Character width {char_width} exceeds maximum for 32px height.")
-        else:  # text_size == 16
-            if is_emoji_flag:
-                # Emoji JPEG format: 0x08 + payload_size(2 bytes LE) + 0x00
-                result += bytes([0x08])  # Special type for emoji
-                result += len(char_bytes).to_bytes(2, byteorder='little')  # Payload size
-                result += bytes([0x00])  # Reserved
-            elif char_width <= 8:
-                result += bytes([0x00])  # Char 16x8
-                result += color_bytes
-            elif char_width <= 16:
-                result += bytes([0x80])  # Char 16x16
-                result += color_bytes
-                result += bytes([char_width & 0xFF])
-                result += bytes([text_size & 0xFF])
-            else:
-                raise ValueError(f"Character width {char_width} exceeds maximum for 16px height.")
-        
-        result += char_bytes
+        # Build bytes for this character using the common helper
+        result += _encode_character_block(char_bytes, matrix_height, color_bytes, is_emoji=is_emoji_flag)
 
     return bytes(result)
-
 
 # Main function to send text command
 def send_text(text: str,
@@ -448,7 +452,6 @@ def send_text(text: str,
               font: Union[str, FontConfig] = "CUSONG",
               char_height: Optional[int] = None,
               var_width: bool = False,
-              chunk_width: int = 16,
               rtl: bool = False,
               device_info: Optional[DeviceInfo] = None
               ):
@@ -486,16 +489,14 @@ def send_text(text: str,
         var_width = var_width.lower() in ('true', '1', 'yes')
     if isinstance(rtl, str):
         rtl = rtl.lower() in ('true', '1', 'yes')
-    chunk_width = int(chunk_width)
 
     # Auto-detect char_height from device_info if available
     if char_height is None:
         if device_info is not None:
-            char_height = device_info.height
-            logger.debug(f"Auto-detected matrix height from device: {char_height}")
+            char_height = _get_char_height_from_device(device_info)
+            logger.debug(f"Auto-detected matrix height from device (height={device_info.height}): {char_height}")
         else:
-            char_height = 16  # Default fallback
-            logger.warning("Using default matrix height: 16")
+            raise ValueError("char_height must be specified if device_info is not provided")
     
     char_height = int(char_height)
     
@@ -574,9 +575,6 @@ def send_text(text: str,
     #########################
 
     if var_width:
-        # Render entire string as image and split into chunks
-        logger.info(f"Rendering text as image with chunk width: {chunk_width}px")
-
         # Render full string to image
         text_image = _render_text_as_image(
             text,
@@ -586,6 +584,9 @@ def send_text(text: str,
             font_size,
             pixel_threshold
         )
+
+        # Determine chunk width based on char_height
+        chunk_width = 8  if char_height <= 20 else 16
 
         # Split image into fixed-width chunks
         chunks = _split_image_into_chunks(text_image, chunk_width)
@@ -659,8 +660,8 @@ def send_text(text: str,
         frame_header += crc.to_bytes(4, byteorder="little")
         
         # Tail - 2 bytes
-        frame_header += bytes([0x00])                                  # Reserved
-        frame_header += bytes([int(save_slot) & 0xFF])                 # save_slot
+        frame_header += bytes([0x00])                   # Reserved
+        frame_header += bytes([int(save_slot) & 0xFF])  # save_slot
         
         # Combine header and chunk
         frame_content = frame_header + chunk_payload

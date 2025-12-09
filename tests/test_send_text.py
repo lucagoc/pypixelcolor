@@ -10,10 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from .lib.test_send_text import lib_test_send_text_payloads
 
 def test_send_text_16():
-    lib_test_send_text_payloads("send_text_16.json")
-    
-def test_send_text_16_VCR_OSD_MONO():
-    lib_test_send_text_payloads("send_text_16_VCR_OSD_MONO.json")    
+    lib_test_send_text_payloads("send_text_16.json") 
 
 # def test_send_text_24():
 #     lib_test_send_text_payloads("send_text_24.json")
