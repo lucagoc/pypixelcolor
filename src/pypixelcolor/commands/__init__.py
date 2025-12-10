@@ -9,7 +9,8 @@ from . import (
     set_orientation,
     set_power,
     send_text,
-    send_image
+    send_image,
+    show_slot
 )
 
 COMMANDS = {
@@ -27,6 +28,7 @@ COMMANDS = {
     "send_image": send_image.send_image,
     "send_image_hex": send_image.send_image_hex,
     "set_power": set_power.set_power,
+    "show_slot": show_slot.show_slot,
 }
 
 # 0x80  -> ?
