@@ -253,19 +253,19 @@ def _encode_char_img(img: Image.Image) -> bytes:
     return bytes(data_bytes)
 
 
-def _emoji_to_hex(emoji: str, char_size: int) -> Optional[bytes]:
+def _emoji_to_hex(emoji: str, emoji_height: int) -> Optional[bytes]:
     """Convert an emoji to JPEG bytes.
     
     Args:
         emoji (str): The emoji character to convert.
-        char_size (int): The size of the emoji (height of the matrix).
+        emoji_height (int): The size of the emoji (height of the matrix).
         
     Returns:
         Optional[bytes]: JPEG bytes of the emoji, or None if conversion fails.
     """
     try:
         # Download and load emoji image from Twemoji
-        img = get_emoji_image(emoji, size=char_size)
+        img = get_emoji_image(emoji, size=emoji_height)
         
         if img is None:
             logger.error(f"Failed to get emoji image for {emoji}")
@@ -291,12 +291,12 @@ def _emoji_to_hex(emoji: str, char_size: int) -> Optional[bytes]:
         return None
 
 
-def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> Optional[bytes]:
+def _char_to_hex(character: str, char_height: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> Optional[bytes]:
     """Convert a character to its bitmap bytes.
     
     Args:
         character (str): The character to convert.
-        char_size (int): The size of the text (height of the matrix).
+        char_height (int): The size of the text (height of the matrix).
         font_path (str): The path to the font file.
         font_offset (tuple[int, int]): The (x, y) offset for the font.
         font_size (int): The font size to use for rendering.
@@ -308,7 +308,7 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
     try:
         # Generate image with dynamic width
         # First, create a temporary large image to measure text in grayscale
-        temp_img = Image.new('L', (100, char_size), 0)
+        temp_img = Image.new('L', (100, char_height), 0)
         temp_draw = ImageDraw.Draw(temp_img)
         font_obj = ImageFont.truetype(font_path, font_size)
         
@@ -317,7 +317,7 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
         text_width = bbox[2] - bbox[0]
 
         # Clamp text_width between min and max values to prevent crash
-        if char_size == 32:
+        if char_height == 32:
             min_width = 9
             max_width = 16
         else:
@@ -326,7 +326,7 @@ def _char_to_hex(character: str, char_size: int, font_path: str, font_offset: tu
         text_width = int(max(min_width, min(text_width, max_width)))
 
         # Create final image in grayscale mode for pixel-perfect rendering
-        img = Image.new('L', (int(text_width), int(char_size)), 0)
+        img = Image.new('L', (int(text_width), int(char_height)), 0)
         d = ImageDraw.Draw(img)
         
         # Draw text in white (255) for pixel-perfect rendering
@@ -476,7 +476,7 @@ def _encode_text_chunked(text: str, char_height: int, color: str, font_path: str
         else:
             current_text += char
     
-    # Don't forget the last text segment if it exists
+    # Add remaining text segment
     if current_text:
         segments.append(TextSegment(SegmentType.TEXT, current_text))
     
@@ -517,9 +517,6 @@ def _encode_text_chunked(text: str, char_height: int, color: str, font_path: str
 
 def _encode_text(text: str, matrix_height: int, color: str, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int, reverse: bool = False) -> bytes:
     """Encode text to be displayed on the device.
-
-    Returns raw bytes. Each character block is composed as:
-      0x80 + color(3 bytes) + char_width(1 byte) + matrix_height(1 byte) + frame_bytes...
 
     Args:
         text (str): The text to encode.
@@ -622,7 +619,7 @@ def send_text(text: str,
     font_size = metrics["font_size"]
     font_offset = metrics["offset"]
     pixel_threshold = metrics["pixel_threshold"]
-    var_width = metrics.get("var_width", False)  # Get var_width from font config
+    var_width = metrics["var_width"]
     
     # properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 1 byte bg flag + 3 bytes bg color
     try:

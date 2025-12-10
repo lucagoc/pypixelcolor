@@ -54,9 +54,10 @@ class FontConfig:
                 "16": {
                     "font_size": 16,
                     "offset": [0, 0],
-                    "pixel_threshold": 70
+                    "pixel_threshold": 70,
+                    "var_width": false
                 },
-                "20": { ... },
+                "24": { ... },
                 ...
             }
         }
@@ -83,11 +84,12 @@ class FontConfig:
         if not json_path.exists():
             font_name = name or font_path.stem
             metrics = {}
-            for height in [16, 20, 24, 32]:
+            for height in [16, 24, 32]:
                 metrics[height] = {
                     "font_size": height,
                     "offset": (0, 0),
-                    "pixel_threshold": 70
+                    "pixel_threshold": 70,
+                    "var_width": False
                 }
             return cls(name=font_name, path=str(font_path), metrics=metrics)
         
