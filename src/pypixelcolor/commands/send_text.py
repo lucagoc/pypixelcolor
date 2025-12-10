@@ -3,6 +3,8 @@
 # Imports
 import os
 import binascii
+from enum import Enum
+from dataclasses import dataclass
 from PIL import Image, ImageDraw, ImageFont
 from logging import getLogger
 from typing import Optional, Union
@@ -15,6 +17,27 @@ from ..lib.font_config import FontConfig, BUILTIN_FONTS
 from ..lib.emoji_manager import is_emoji, get_emoji_image
 
 logger = getLogger(__name__)
+
+
+class SegmentType(Enum):
+    """Type of text segment."""
+    TEXT = "text"
+    EMOJI = "emoji"
+
+
+@dataclass
+class TextSegment:
+    """A segment of text, either regular characters or an emoji."""
+    type: SegmentType
+    content: str
+    
+    @property
+    def is_emoji(self) -> bool:
+        return self.type == SegmentType.EMOJI
+    
+    @property
+    def is_text(self) -> bool:
+        return self.type == SegmentType.TEXT
 
 # Helper functions for byte-level transformations
 
@@ -250,9 +273,6 @@ def _emoji_to_hex(emoji: str, char_size: int) -> Optional[bytes]:
         
         # Convert to JPEG format
         buffer = BytesIO()
-        # Save JPEG with Adobe format (used by official app)
-        # subsampling=0 means 4:4:4 (best quality, preserves colors)
-        # quality=95 for high quality
         img.save(buffer, format='JPEG', quality=95, subsampling=0, optimize=True)
         jpeg_bytes = buffer.getvalue()
         
@@ -359,15 +379,38 @@ def _split_image_into_chunks(img: Image.Image, chunk_width: int) -> list[Image.I
     return chunks
 
 
-def _encode_character_block(char_bytes: bytes, text_size: int, color_bytes: bytes, is_emoji: bool = False) -> bytes:
-    """Build the encoded bytes for a single character or chunk block.
+def _encode_emoji_block(emoji_bytes: bytes, text_size: int) -> bytes:
+    """Build the encoded bytes for an emoji block (JPEG format).
+    
+    Args:
+        emoji_bytes (bytes): The JPEG bytes of the emoji.
+        text_size (int): The height of the text (16 or 32).
+        
+    Returns:
+        bytes: The encoded emoji block with appropriate header and payload.
+    """
+    result = bytearray()
+    
+    if text_size == 32:
+        result += bytes([0x09])  # Emoji 32x32
+        result += len(emoji_bytes).to_bytes(2, byteorder='little')  # Payload size
+        result += bytes([0x00])  # Reserved
+    else:  # text_size == 16
+        result += bytes([0x08])  # Emoji 16x16 (JPEG format)
+        result += len(emoji_bytes).to_bytes(2, byteorder='little')  # Payload size
+        result += bytes([0x00])  # Reserved
+    
+    result += emoji_bytes
+    return bytes(result)
+
+
+def _encode_character_block(char_bytes: bytes, text_size: int, color_bytes: bytes) -> bytes:
+    """Build the encoded bytes for a character or chunk block.
 
     Args:
         char_bytes (bytes): The raw character/chunk bitmap bytes.
-        char_width (int): The width of the character/chunk in pixels.
         text_size (int): The height of the text (16 or 32).
         color_bytes (bytes): The RGB color bytes.
-        is_emoji (bool): Whether this is an emoji (JPEG format).
 
     Returns:
         bytes: The encoded character block with appropriate header and payload.
@@ -375,28 +418,17 @@ def _encode_character_block(char_bytes: bytes, text_size: int, color_bytes: byte
     result = bytearray()
 
     if text_size == 32:
-        if is_emoji:
-            result += bytes([0x09])  # Char 32x32, used for emoji
-            result += len(char_bytes).to_bytes(2, byteorder='little')  # Payload size
-            result += bytes([0x00])  # Reserved
-        else:
-            result += bytes([0x02])  # Char 32x16
-            result += color_bytes
+        result += bytes([0x02])  # Char 32x16
+        result += color_bytes
     else:  # text_size == 16
-        if is_emoji:
-            # Emoji JPEG format: 0x08 + payload_size(2 bytes LE) + 0x00
-            result += bytes([0x08])  # Special type for emoji
-            result += len(char_bytes).to_bytes(2, byteorder='little')  # Payload size
-            result += bytes([0x00])  # Reserved
-        else:
-            result += bytes([0x00])  # Char 16x8
-            result += color_bytes
+        result += bytes([0x00])  # Char 16x8
+        result += color_bytes
 
     result += char_bytes
     return bytes(result)
 
 
-def _encode_text_chunked(text: str, matrix_height: int, color: str, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int, chunk_width: int, reverse: bool = False) -> tuple[bytes, int]:
+def _encode_text_chunked(text: str, char_height: int, color: str, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int, chunk_width: int, reverse: bool = False) -> tuple[bytes, int]:
     """Encode text with variable width chunks, handling both regular text and emojis.
     
     This function processes text segment by segment:
@@ -405,7 +437,7 @@ def _encode_text_chunked(text: str, matrix_height: int, color: str, font_path: s
     
     Args:
         text (str): The text to encode.
-        matrix_height (int): The height of the LED matrix.
+        char_height (int): The height of the character used for rendering.
         color (str): The color in hex format (e.g., 'ffffff').
         font_path (str): Path to the font file.
         font_offset (tuple[int, int]): The (x, y) offset for the font.
@@ -426,45 +458,51 @@ def _encode_text_chunked(text: str, matrix_height: int, color: str, font_path: s
     if len(color_bytes) != 3:
         raise ValueError("Color must be 3 bytes (6 hex chars), e.g. 'ffffff'")
     
-    # First pass: collect all items (chunks and emojis) without reversing
-    items = []  # List of encoded character blocks
-    
-    # Segment text into regular text and emojis
-    segments = []  # List of (type, content) tuples
+    items = []  
+    segments: list[TextSegment] = []
     current_text = ""
+    
+    #################
+    # Segment Text  #
+    #################
     
     for char in text:
         if is_emoji(char):
-            # Save current text segment if any
+            # Save current text segment if exists
             if current_text:
-                segments.append(("text", current_text))
+                segments.append(TextSegment(SegmentType.TEXT, current_text))
                 current_text = ""
-            # Add emoji segment
-            segments.append(("emoji", char))
+            segments.append(TextSegment(SegmentType.EMOJI, char))
         else:
             current_text += char
     
-    # Don't forget the last text segment
+    # Don't forget the last text segment if it exists
     if current_text:
-        segments.append(("text", current_text))
+        segments.append(TextSegment(SegmentType.TEXT, current_text))
     
-    # Process each segment and collect items
-    for seg_type, seg_content in segments:
-        if seg_type == "emoji":
-            # Encode emoji as JPEG
-            emoji_bytes = _emoji_to_hex(seg_content, matrix_height)
+    ####################
+    # Process Segments #
+    ####################
+    
+    for segment in segments:
+        if segment.is_emoji:
+            emoji_bytes = _emoji_to_hex(segment.content, char_height)
             if emoji_bytes:
-                items.append(_encode_character_block(emoji_bytes, matrix_height, color_bytes, is_emoji=True))
+                items.append(_encode_emoji_block(emoji_bytes, char_height))
         else:
-            # Render text segment and split into chunks using helper
-            chunks = _render_text_segment_to_chunks(seg_content, matrix_height, font_path, 
+            # Render text segment and split into chunks
+            chunks = _render_text_segment_to_chunks(segment.content, char_height, font_path, 
                                                     font_offset, font_size, pixel_threshold, chunk_width)
             
             # Encode each chunk as an item
             for chunk in chunks:
                 char_bytes = _encode_char_img(chunk)
                 char_bytes = _logic_reverse_bits_order_bytes(char_bytes)
-                items.append(_encode_character_block(char_bytes, matrix_height, color_bytes, is_emoji=False))
+                items.append(_encode_character_block(char_bytes, char_height, color_bytes))
+    
+    ###################
+    # Final Assembly  #
+    ###################
     
     # Reverse items if needed (for RTL)
     if reverse:
@@ -511,27 +549,27 @@ def _encode_text(text: str, matrix_height: int, color: str, font_path: str, font
     # Reverse text if requested
     text_to_process = text[::-1] if reverse else text
 
-    # Build each character block
+    ##############
+    # Processing #
+    ##############
+
     for char in text_to_process:
         if is_emoji(char):
-            # Encode emoji as JPEG
             char_bytes = _emoji_to_hex(char, matrix_height)
             if char_bytes:
-                result += _encode_character_block(char_bytes, matrix_height, color_bytes, is_emoji=True)
+                result += _encode_emoji_block(char_bytes, matrix_height)
+            else:
+                logger.error(f"Failed to encode emoji: {char}")
         else:
-            # Encode character as bitmap
             char_bytes = _char_to_hex(char, matrix_height, font_path, font_offset, font_size, pixel_threshold)
             if char_bytes:
-                # Apply byte-level transformations
                 char_bytes = _logic_reverse_bits_order_bytes(char_bytes)
-                result += _encode_character_block(char_bytes, matrix_height, color_bytes, is_emoji=False)
+                result += _encode_character_block(char_bytes, matrix_height, color_bytes)
+            else:
+                logger.error(f"Failed to encode character: {char}")
 
     return bytes(result)
 
-
-
-
-# Main function to send text command
 def send_text(text: str,
               rainbow_mode: int = 0,
               animation: int = 0,
