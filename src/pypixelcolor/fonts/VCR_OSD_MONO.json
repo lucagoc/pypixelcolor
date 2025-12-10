@@ -4,22 +4,26 @@
     "16": {
       "font_size": 16,
       "offset": [0, 0],
-      "pixel_threshold": 70
+      "pixel_threshold": 70,
+      "var_width": true
     },
     "20": {
       "font_size": 20,
       "offset": [0, 0],
-      "pixel_threshold": 70
+      "pixel_threshold": 70,
+      "var_width": true
     },
     "24": {
       "font_size": 24,
       "offset": [0, 0],
-      "pixel_threshold": 70
+      "pixel_threshold": 70,
+      "var_width": true
     },
     "32": {
       "font_size": 28,
       "offset": [-1, 2],
-      "pixel_threshold": 30
+      "pixel_threshold": 30,
+      "var_width": true
     }
   }
 }

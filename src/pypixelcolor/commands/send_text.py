@@ -451,8 +451,6 @@ def send_text(text: str,
               bg_color: Optional[str] = None,
               font: Union[str, FontConfig] = "CUSONG",
               char_height: Optional[int] = None,
-              var_width: bool = False,
-              rtl: bool = False,
               device_info: Optional[DeviceInfo] = None
               ):
     """
@@ -469,9 +467,6 @@ def send_text(text: str,
         bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).
         font (str | FontConfig, optional): Built-in font name, file path, or FontConfig object. Defaults to "CUSONG". Built-in fonts are "CUSONG", "SIMSUN", "VCR_OSD_MONO".
         char_height (int, optional): Character height. Auto-detected from device_info if not specified.
-        var_width (bool, optional): If True, renders the entire string as an image and splits it into chunks for variable character width. Defaults to False.
-        chunk_width (int, optional): Width of each chunk in pixels when var_width is True. Defaults to 16.
-        rtl (bool, optional): If True, reverses the order of chunks for right-to-left text display. Only applies when var_width is True. Defaults to False.
         device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).
 
     Returns:
@@ -483,12 +478,6 @@ def send_text(text: str,
     
     # Resolve font configuration
     font_config = _resolve_font_config(font)
-
-    # Convert parameters that may come as strings from CLI
-    if isinstance(var_width, str):
-        var_width = var_width.lower() in ('true', '1', 'yes')
-    if isinstance(rtl, str):
-        rtl = rtl.lower() in ('true', '1', 'yes')
 
     # Auto-detect char_height from device_info if available
     if char_height is None:
@@ -505,6 +494,7 @@ def send_text(text: str,
     font_size = metrics["font_size"]
     font_offset = metrics["offset"]
     pixel_threshold = metrics["pixel_threshold"]
+    var_width = metrics.get("var_width", False)  # Get var_width from font config
     
     # properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 1 byte bg flag + 3 bytes bg color
     try:
@@ -531,6 +521,11 @@ def send_text(text: str,
     if device_info and (device_info.height != 32 or device_info.width != 32):
         if (int(animation) == 3 or int(animation) == 4):
             raise ValueError("This animation is not supported with this font on non-32x32 devices.")
+
+    # Determine if RTL mode should be enabled (only for animation 2)
+    rtl = int(animation) == 2
+    if rtl:
+        logger.debug("RTL mode enabled for animation 2")
 
     #---------------- BUILD PAYLOAD ----------------#
 

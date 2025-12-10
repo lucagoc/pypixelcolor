@@ -2,6 +2,7 @@ import asyncio
 from dataclasses import dataclass, field
 from typing import Iterable, Callable, Awaitable, Optional, Any
 from logging import getLogger
+from bleak import BleakClient
 
 from .ack_manager import AckManager, AckPolicy
 from .window import Window
@@ -48,7 +49,7 @@ def _chunk_bytes(buf: bytes, size: int):
         yield buf[pos:end]
         pos = end
 
-async def send_plan(client, plan: SendPlan, ack_mgr: AckManager, *, write_uuid: str = WRITE_UUID, ack_timeout: float = 8.0) -> CommandResult:
+async def send_plan(client: BleakClient, plan: SendPlan, ack_mgr: AckManager, *, write_uuid: str = WRITE_UUID, ack_timeout: float = 8.0) -> CommandResult:
     """
     Send a SendPlan generically.
 

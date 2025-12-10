@@ -132,10 +132,16 @@ class FontConfig:
             elif not isinstance(offset, tuple):
                 raise ValueError(f"Offset must be an array [x, y] for height {height} in {json_path}")
             
+            # Get var_width with default value of False
+            var_width = metric_dict.get("var_width", False)
+            if not isinstance(var_width, bool):
+                raise ValueError(f"'var_width' must be a boolean for height {height} in {json_path}")
+            
             metrics[height] = {
                 "font_size": int(metric_dict["font_size"]),
                 "offset": offset,
-                "pixel_threshold": int(metric_dict["pixel_threshold"])
+                "pixel_threshold": int(metric_dict["pixel_threshold"]),
+                "var_width": var_width
             }
         
         if not metrics:
