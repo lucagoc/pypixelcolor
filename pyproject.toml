@@ -38,6 +38,7 @@ dev = [
   "mkdocs-material",
   "mike",
   "mkdocstrings[python]",
+  "mkdocs-static-i18n"
 ]
 
 [project.scripts]

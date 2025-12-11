@@ -48,6 +48,14 @@ extra:
 
 plugins:
   - search
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: en
+          name: English
+          default: true
+        - locale: fr
+          name: Français
   - mkdocstrings:
       handlers:
         python:
@@ -59,7 +67,8 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
 copyright: Copyright &copy; 2025 lucagoc | Licensed under the MIT License
