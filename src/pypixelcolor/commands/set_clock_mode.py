@@ -15,8 +15,8 @@ def set_clock_mode(style: int = 1, date="", show_date: bool = True, format_24: b
         show_date (bool, optional): Whether to show the date. Defaults to True.
         format_24 (bool, optional): Whether to use 24-hour format. Defaults to True.
 
-    Returns:
-        bytes: Encoded command to send to the device.
+    Raises:
+        ValueError: If any parameter is out of range or invalid.
     """
     if isinstance(show_date, str):
         show_date = show_date.lower() in ("true", "1", "yes", "on")

@@ -6,10 +6,9 @@ from typing import Optional
 def set_fun_mode(enable : bool = False):
     """
     Enable or disable fun mode.
+
     Args:
         enable: Boolean or equivalent, enables (True) or disables (False) fun mode.
-    Returns:
-        A SendPlan to enable/disable fun mode.
     """
     
     # Convert bool
@@ -31,12 +30,11 @@ def set_fun_mode(enable : bool = False):
 def set_pixel(x: int, y: int, color: str, device_info: Optional[DeviceInfo] = None):
     """
     Defines the color of a specific pixel.
+    
     Args:
         x: X coordinate of the pixel (0-...).
         y: Y coordinate of the pixel (0-...).
         color: Color in hexadecimal format (e.g., 'FF0000' for red).
-    Returns:
-        A SendPlan to define the color of the pixel.
     """
     
     # Validate coordinates range if device info is provided

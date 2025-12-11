@@ -42,9 +42,6 @@ def send_text(text: str,
         char_height (int, optional): Character height. Auto-detected from device_info if not specified.
         device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).
 
-    Returns:
-        bytes: Encoded command to send to the device.
-
     Raises:
         ValueError: If an invalid animation is selected or parameters are out of range.
     """

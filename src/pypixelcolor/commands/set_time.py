@@ -14,9 +14,6 @@ def set_time(hour: Optional[int] = None, minute: Optional[int] = None, second: O
         hour: Hour to set (0-23). If None, uses current hour.
         minute: Minute to set (0-59). If None, uses current minute.
         second: Second to set (0-59). If None, uses current second.
-    
-    Returns:
-        A SendPlan to set the device time.
     """
     # Get current time if any component is None
     if hour is None or minute is None or second is None:

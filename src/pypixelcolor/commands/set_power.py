@@ -3,10 +3,9 @@ from ..lib.transport.send_plan import single_window_plan
 def set_power(on: bool = True):
     """
     Set the power state of the device.
+
     Args:
         on: True to turn on, False to turn off.
-    Returns:
-        A SendPlan to set the power state.
     """
     if isinstance(on, str):
         on = on.lower() in ("true", "1", "yes", "on")

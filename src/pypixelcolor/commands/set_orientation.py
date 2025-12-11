@@ -6,9 +6,6 @@ def set_orientation(orientation: int = 0):
     
     Args:
         orientation (int): The orientation value to set (0-3).
-    
-    Returns:
-        SendPlan: The command plan to set the orientation.
     """
     
     if (int(orientation) < 0 or int(orientation) > 3):

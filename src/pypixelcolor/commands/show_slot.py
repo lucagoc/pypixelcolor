@@ -3,6 +3,9 @@ from ..lib.transport.send_plan import single_window_plan
 def show_slot(number: int):
     """
     Shows the specified slot on the device.
+
+    Args:
+        number: The slot number to display.
     """
     cmd = bytes([
         0x07,

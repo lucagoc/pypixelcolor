@@ -376,9 +376,6 @@ def send_image(path: Union[str, Path], resize_method: Union[str, ResizeMethod] =
                   'fit' will fit the entire image with black padding.
         save_slot: If >= 1, will save to that slot.
         
-    Returns:
-        A SendPlan for sending the image/animation.
-        
     Note:
         If device_info is available, the image will be automatically resized
         to match the target device dimensions if necessary.

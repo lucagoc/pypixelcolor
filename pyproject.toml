@@ -35,7 +35,9 @@ extra = [
 dev = [
   "pytest>=7.0.0",
   "pytest-cov>=4.0.0",
-  "pydoc-markdown>=4.0.0",
+  "mkdocs-material",
+  "mike",
+  "mkdocstrings[python]",
 ]
 
 [project.scripts]

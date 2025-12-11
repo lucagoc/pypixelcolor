@@ -17,9 +17,6 @@ def set_rhythm_mode(style=0, l1 : int = 0, l2 : int = 0, l3 : int = 0, l4 : int 
         l10 (int): Level 10 (0-15).
         l11 (int): Level 11 (0-15).
 
-    Returns:
-        bytes: Byte sequence for the command payload used to set the rhythm mode.
-
     Raises:
         ValueError: If ``style`` is not in 0..4 or any level is not in 0..15.
     """
