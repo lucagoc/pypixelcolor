@@ -34,14 +34,10 @@ jobs:
       - name: Deploy Release Version
         if: github.event_name == 'release'
         run: |
-          # 1. Déploie le tag actuel (ex: v1.0.0) ET met à jour l'alias "latest"
           mike deploy --push --update-aliases ${{ github.ref_name }} latest
-          
-          # 2. Définit "latest" comme la version par défaut (redirige la racine vers latest)
           mike set-default --push latest
 
       - name: Deploy Main Version (Dev)
         if: github.event_name == 'push'
         run: |
-          # Déploie simplement la version "main" sans changer le défaut
           mike deploy --push main
