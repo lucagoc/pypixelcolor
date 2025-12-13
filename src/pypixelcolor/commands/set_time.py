@@ -18,7 +18,7 @@ def set_time(hour: Optional[int] = None, minute: Optional[int] = None, second: O
         ValueError: If any parameter is out of range.
         
     Note:
-        Command is the same as get_device_info.
+        Command is the same as `get_device_info`.
     """
     # Get current time if any component is None
     if hour is None or minute is None or second is None:

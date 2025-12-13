@@ -1,5 +1,10 @@
 # Gestion des données
 
+L'appareil fournit des "slots" pour stocker les données de texte et d'image.
+![Emplacements des données](../assets/pngs/slots.png)
+
+L'enregistrement de contenu (texte ou image) dans ces emplacements se fait via l'argument `save_slot=` dans leurs commandes respectives. Cela permet un accès plus rapide et réduit le temps nécessaire pour afficher le contenu sur la matrice LED.
+
 ## `clear`
 
 ::: pypixelcolor.commands.clear.clear

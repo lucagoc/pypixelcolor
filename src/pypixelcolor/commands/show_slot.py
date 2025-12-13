@@ -6,6 +6,9 @@ def show_slot(number: int):
 
     Args:
         number: The slot number to display.
+        
+    Note:
+        If the slot is empty, the device will cycle through available slots.
     """
     cmd = bytes([
         0x07,

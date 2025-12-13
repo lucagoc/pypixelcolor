@@ -2,7 +2,10 @@ from ..lib.transport.send_plan import single_window_plan
 
 def clear():
     """
-    Clears the EEPROM.
+    Clears the ROM data on the device.
+    
+    Note:
+        This command removes all stored content from the device's memory, including device settings.
     """
     cmd = bytes([
         4,     # Command length

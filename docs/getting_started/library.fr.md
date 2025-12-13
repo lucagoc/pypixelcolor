@@ -78,4 +78,5 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-> ⚠️ Les opérations lourdes en données (comme l'envoi d'images) ne sont pas stables lorsqu'elles sont effectuées simultanément sur plusieurs appareils en raison des limitations potentielles du backend Bluetooth.
+!!! warning "Précaution"
+    Les opérations lourdes en données (comme l'envoi d'images) ne sont pas stables lorsqu'elles sont effectuées simultanément sur plusieurs appareils en raison des limitations potentielles du backend Bluetooth.

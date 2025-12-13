@@ -16,6 +16,9 @@ nav:
     - Managing Data: commands/data.md
     - Device Settings: commands/settings.md
     - Others: commands/other.md
+  - Reference:
+    - Sync Client: reference/sync_client.md
+    - Async Client: reference/async_client.md
   - Troubleshooting: 
     - Bluetooth Connection: troubleshooting/bluetooth_connection.md
   - Guides:
@@ -53,11 +56,14 @@ extra_css:
   - assets/css/custom.css
 
 extra:
+  generator: false
   version:
     provider: mike
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/lucagoc/pypixelcolor
+    - icon: fontawesome/solid/coffee
+      link: https://ko-fi.com/lucagoc
 
 plugins:
   - search
@@ -71,7 +77,7 @@ plugins:
           name: Français
           nav_translations:
             Home: Accueil
-            Getting Started: Bien démarrer
+            Getting Started: Démarrage
             Commands: Commandes
             Troubleshooting: Dépannage
             Guides: Guides
@@ -83,6 +89,9 @@ plugins:
             Managing Data: Gestion des données
             Device Settings: Paramètres de l'appareil
             Others: Autres
+            Reference: Référence
+            Sync Client: Client Synchrone
+            Async Client: Client Asynchrone
             Custom Fonts: Polices personnalisées
             Android BLE Logs: Journaux BLE Android
   - mkdocstrings:
@@ -100,4 +109,4 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
-copyright: Copyright &copy; 2025 lucagoc | Licensed under the MIT License
+copyright: Project "pypixelcolor" by lucagoc and contributors. Licensed under MIT.

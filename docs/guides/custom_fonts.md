@@ -51,10 +51,11 @@ A file must be created named with the same name as the TTF file but with a `.jso
   - `font_size`: The size of the font to be used.
   - `offset`: A list of two integers representing the x and y offset for rendering the font.
   - `pixel_threshold`: An integer value that determines the pixel intensity threshold for rendering the font.
-  - `var_width`: A boolean indicating whether the font is variable width or fixed width.
+  - `var_width`: A boolean indicating whether the font is variable width or fixed width. See the schema below for more details.
 
-## Notes
+![Schema](../assets/pngs/var_width.png)
 
-- Ensure that the TTF and JSON files are in the same directory.
-- The font sizes specified in the JSON file should match the sizes you intend to use when sending text.
-- Adjust the `offset` and `pixel_threshold` values as needed to achieve the desired appearance on your pixel device.
+!!! Notes
+    - Ensure that the TTF and JSON files are in the same directory.
+    - The font sizes specified in the JSON file should match the sizes you intend to use when sending text.
+    - Adjust the `offset` and `pixel_threshold` values as needed to achieve the desired appearance on your device.

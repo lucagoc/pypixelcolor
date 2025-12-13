@@ -4,7 +4,7 @@
 
 **pypixelcolor** (aussi connu sous le nom de `iPixel-CLI`) est une bibliothèque Python et un outil en ligne de commande (CLI) pour contrôler les appareils iPixel Color LED matrix via Bluetooth Low Energy (BLE). Il vous permet d'envoyer des commandes à l'appareil pour manipuler l'affichage LED, récupérer des informations sur l'appareil, et plus encore.
 
-[Commencer](getting_started/installation.fr.md){ .md-button .md-button--primary }
+[Démarrage](getting_started/installation.fr.md){ .md-button .md-button--primary }
 [Commandes](commands/content.fr.md){ .md-button .md-button--primary }
 
 ## Fonctionnalités

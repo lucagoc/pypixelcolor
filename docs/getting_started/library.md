@@ -78,4 +78,5 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-> ⚠️ Heavy data operations (like image sending) are not stable when performed concurrently on multiple devices due to potential Bluetooth backend limitations.
+!!! warning "Caution"
+    Heavy data operations (like image sending) are not stable when performed concurrently on multiple devices due to potential Bluetooth backend limitations.

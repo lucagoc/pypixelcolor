@@ -51,10 +51,11 @@ Un fichier doit être créé avec le même nom que le fichier TTF mais avec une 
   - `font_size` : La taille de la police à utiliser.
   - `offset` : Une liste de deux entiers représentant le décalage x et y pour le rendu de la police.
   - `pixel_threshold` : Une valeur entière qui détermine le seuil d'intensité des pixels pour le rendu de la police.
-  - `var_width` : Un booléen indiquant si la police est à largeur variable ou fixe.
+  - `var_width` : Un booléen indiquant si la police est à largeur variable ou fixe. Voir le schéma ci-dessous pour plus de détails.
 
-## Notes
+![Schéma](../assets/pngs/var_width.png)
 
-- Assurez-vous que les fichiers TTF et JSON sont dans le même répertoire.
-- Les tailles de police spécifiées dans le fichier JSON doivent correspondre aux tailles que vous avez l'intention d'utiliser lors de l'envoi de texte.
-- Ajustez les valeurs `offset` et `pixel_threshold` selon les besoins pour obtenir l'apparence souhaitée sur votre appareil pixel.
+!!! Notes
+    - Assurez-vous que les fichiers TTF et JSON sont dans le même répertoire.
+    - Les tailles de police spécifiées dans le fichier JSON doivent correspondre aux tailles que vous avez l'intention d'utiliser lors de l'envoi de texte.
+    - Ajustez les valeurs `offset` et `pixel_threshold` selon les besoins pour obtenir l'apparence souhaitée sur votre appareil.
