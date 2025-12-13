@@ -1074,6 +1074,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pypixelcolorlibtransportsend_plan-errors-with-bleak-20x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pypixelcolor.lib.transport.send_plan errors with bleak 2.0.x
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1253,6 +1264,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pypixelcolorlibtransportsend_plan-errors-with-bleak-20x" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pypixelcolor.lib.transport.send_plan errors with bleak 2.0.x
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1291,6 +1313,15 @@
 <li>Restart the Bluetooth service on your computer.</li>
 <li>Power cycle the LED device.</li>
 </ul>
+<h2 id="pypixelcolorlibtransportsend_plan-errors-with-bleak-20x"><code>pypixelcolor.lib.transport.send_plan</code> errors with <code>bleak</code> 2.0.x</h2>
+<p>I'm investigating issues with the new version of <code>bleak</code> 2.0.x that may cause connection problems on some systems.
+See <a href="https://github.com/lucagoc/pypixelcolor/issues/58">issue #58</a> for more details.</p>
+<div class="highlight"><pre><span></span><code>Failed to enable response notifications: [org.freedesktop.DBus.Error.UnknownObject] Method &quot;AcquireNotify&quot; with signature &quot;a{sv}&quot; on interface &quot;org.bluez.GattCharacteristic1&quot; doesn&#39;t exist
+</code></pre></div>
+<p>If you experience persistent connection issues, consider downgrading to <code>bleak</code> 1.1.1 as a temporary workaround:</p>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>uninstall<span class="w"> </span>bleak
+pip<span class="w"> </span>install<span class="w"> </span><span class="nv">bleak</span><span class="o">==</span><span class="m">1</span>.1.1
+</code></pre></div>
 
 
 
