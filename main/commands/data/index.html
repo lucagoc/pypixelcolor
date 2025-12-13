@@ -1301,6 +1301,11 @@
 
 
 <h1 id="managing-data">Managing Data</h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using slots can cause bootloops if the send command contains corrupted data.
+Before sending data to a slot, make sure that sending works correctly without using slots.</p>
+</div>
 <p>The device provides "slots" to store the text and image data.
 <img alt="Data slots" src="../../assets/pngs/slots.png" /></p>
 <p>Saving content (text or image) in these slots is done via the <code>save_slot=</code> argument in their respective commands. This allows for faster access and reduces the time needed to display the content on the LED matrix.</p>

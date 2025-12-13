@@ -1303,6 +1303,11 @@
 
 
 <h1 id="gestion-des-donnees">Gestion des données</h1>
+<div class="admonition warning">
+<p class="admonition-title">Précaution</p>
+<p>L'utilisation des slots peut entraîner des bootloops si la commande envoyer contient des données corrompues.
+Avant d'envoyer des données à un slot, assurez-vous que l'envoi fonctionne correctement sans utiliser de slots.</p>
+</div>
 <p>L'appareil fournit des "slots" pour stocker les données de texte et d'image.
 <img alt="Emplacements des données" src="../../../assets/pngs/slots.png" /></p>
 <p>L'enregistrement de contenu (texte ou image) dans ces emplacements se fait via l'argument <code>save_slot=</code> dans leurs commandes respectives. Cela permet un accès plus rapide et réduit le temps nécessaire pour afficher le contenu sur la matrice LED.</p>
