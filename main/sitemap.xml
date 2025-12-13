@@ -2,114 +2,184 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/"/>
     </url>
     <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/clock/</loc>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/commands/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/commands/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/commands/clock/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/commands/clock/"/>
     </url>
     <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/troubleshooting/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/content/</loc>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/troubleshooting/"/>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/troubleshooting/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/commands/content/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/commands/content/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/data/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/commands/data/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/commands/data/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/other/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/commands/other/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/commands/other/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/settings/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/commands/settings/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/commands/settings/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/cli/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/getting_started/cli/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/getting_started/cli/"/>
     </url>
     <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/installation/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/getting_started/installation/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/getting_started/installation/"/>
+    </url>
+    <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/library/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/getting_started/library/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/getting_started/library/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/websocket/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/getting_started/websocket/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/getting_started/websocket/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/guides/android_ble_logs/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/guides/android_ble_logs/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/guides/android_ble_logs/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/guides/custom_fonts/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/guides/custom_fonts/"/>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/guides/custom_fonts/"/>
     </url>
     <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/troubleshooting/bluetooth_connection/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/troubleshooting/bluetooth_connection/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/troubleshooting/bluetooth_connection/"/>
+    </url>
+    <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/fr/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main"/>
     </url>
     <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/commands/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/commands/clock/</loc>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/commands/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maincommands/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/commands/clock/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maincommands/clock/"/>
     </url>
     <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/troubleshooting/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/commands/content/</loc>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/troubleshooting/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maintroubleshooting/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/commands/content/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maincommands/content/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/commands/data/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/commands/data/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maincommands/data/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/commands/other/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/commands/other/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maincommands/other/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/commands/settings/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/commands/settings/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maincommands/settings/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/fr/getting_started/cli/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/getting_started/cli/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maingetting_started/cli/"/>
     </url>
     <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/getting_started/installation/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/getting_started/installation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maingetting_started/installation/"/>
+    </url>
+    <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/fr/getting_started/library/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/getting_started/library/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maingetting_started/library/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/fr/getting_started/websocket/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/getting_started/websocket/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maingetting_started/websocket/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/fr/guides/android_ble_logs/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/guides/android_ble_logs/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/mainguides/android_ble_logs/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/fr/guides/custom_fonts/</loc>
-        <lastmod>2025-12-12</lastmod>
+        <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/guides/custom_fonts/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/mainguides/custom_fonts/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/troubleshooting/bluetooth_connection/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/troubleshooting/bluetooth_connection/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/maintroubleshooting/bluetooth_connection/"/>
     </url>
 </urlset>

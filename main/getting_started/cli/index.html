@@ -11,7 +11,7 @@
         <link rel="canonical" href="https://lucagoc.github.io/pypixelcolor/main/getting_started/cli/">
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../installation/">
       
       
         <link rel="next" href="../websocket/">
@@ -29,7 +29,7 @@
     
     
       
-        <title>CLI - pypixelcolor</title>
+        <title>Using CLI - pypixelcolor</title>
       
     
     
@@ -50,12 +50,14 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Red+Hat+Display:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Red Hat Display";--md-code-font:"JetBrains Mono"}</style>
       
     
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../assets/css/custom.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -119,7 +121,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CLI
+              Using CLI
             
           </span>
         </div>
@@ -279,7 +281,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../installation/" class="md-tabs__link">
           
   
   
@@ -296,17 +298,18 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../commands/" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item">
+        <a href="../../commands/content/" class="md-tabs__link">
+          
+  
   
   Commands
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -315,17 +318,18 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../troubleshooting/" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item">
+        <a href="../../troubleshooting/bluetooth_connection/" class="md-tabs__link">
+          
+  
   
   Troubleshooting
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -481,6 +485,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -493,6 +525,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using CLI
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -500,7 +550,7 @@
   <span class="md-ellipsis">
     
   
-    CLI
+    Using CLI
   
 
     
@@ -509,6 +559,58 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scanning-for-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scanning for devices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sending-a-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending a command
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -529,7 +631,7 @@
   <span class="md-ellipsis">
     
   
-    WebSocket
+    Using WebSocket
   
 
     
@@ -557,7 +659,7 @@
   <span class="md-ellipsis">
     
   
-    Python library
+    Using Python library
   
 
     
@@ -584,9 +686,25 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../commands/" class="md-nav__link">
+    
+    
+    
+    
+      
+      
         
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -600,7 +718,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Commands
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/content/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sending Content
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/clock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clock Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managing Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Device Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/other/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Others
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -611,9 +885,25 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+    
+    
+    
+    
+      
+      
         
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -627,7 +917,51 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Troubleshooting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/bluetooth_connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bluetooth Connection
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -767,6 +1101,47 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scanning-for-devices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scanning for devices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sending-a-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sending a command
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -791,6 +1166,7 @@
 
 
 <h1 id="getting-started-with-cli">Getting started with CLI</h1>
+<h2 id="scanning-for-devices">Scanning for devices</h2>
 <p>Find your device's MAC address by scanning for nearby Bluetooth devices:</p>
 <div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>--scan
 </code></pre></div>
@@ -804,16 +1180,20 @@
 <blockquote>
 <p>If your device is not found, ensure it is powered, in range and not connected to another device.</p>
 </blockquote>
-<p>To send a text message to your device, use the following command, replacing the MAC address with your device's MAC address:</p>
+<p>See <a href="../../troubleshooting/bluetooth_connection/">troubleshooting</a> for more help.</p>
+<h2 id="sending-a-command">Sending a command</h2>
+<p>CLI commands are sent using the <code>-c</code> option, along with the <code>-a</code> or <code>--address</code> option to specify the target device's MAC address.</p>
+<p>For instance, to send a text message to your device, use the following command, replacing the MAC address with your device's MAC address:</p>
 <div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>send_text<span class="w"> </span><span class="s2">&quot;Hello pypixelcolor&quot;</span>
 </code></pre></div>
 <p>You can also add optional parameters to customize the display:</p>
 <div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>send_text<span class="w"> </span><span class="s2">&quot;Hello pypixelcolor&quot;</span><span class="w"> </span><span class="nv">animation</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">speed</span><span class="o">=</span><span class="m">100</span>
 </code></pre></div>
+<p>For more information on available commands, refer to the <a href="../../commands/content/">Commands</a> page.</p>
+<h2 id="advanced-usage">Advanced usage</h2>
 <p>You can execute multiple commands in a single call. For example, to clear the display, set the brightness to 0, and switch to clock mode, you can run:</p>
 <div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>clear<span class="w"> </span>-c<span class="w"> </span>set_brightness<span class="w"> </span><span class="m">0</span><span class="w"> </span>-c<span class="w"> </span>set_clock_mode
 </code></pre></div>
-<p>For more information on available commands, refer to the <a href="commands.md">Commands</a> page.</p>
 
 
 

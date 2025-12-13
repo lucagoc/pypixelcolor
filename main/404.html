@@ -12,9 +12,9 @@
       
       
         
-          <link rel="alternate" href="/pypixelcolor/main/guides/custom_fonts/" hreflang="en">
+          <link rel="alternate" href="/pypixelcolor/main/troubleshooting/bluetooth_connection/" hreflang="en">
         
-          <link rel="alternate" href="/pypixelcolor/main/fr/guides/custom_fonts/" hreflang="fr">
+          <link rel="alternate" href="/pypixelcolor/main/fr/troubleshooting/bluetooth_connection/" hreflang="fr">
         
       
       
@@ -44,14 +44,16 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Red+Hat+Display:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Red Hat Display";--md-code-font:"JetBrains Mono"}</style>
       
     
     
       <link rel="stylesheet" href="/pypixelcolor/main/assets/_mkdocstrings.css">
     
       <link rel="stylesheet" href="/pypixelcolor/main/assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="/pypixelcolor/main/assets/css/custom.css">
     
     <script>__md_scope=new URL("/pypixelcolor/main",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -157,13 +159,13 @@
       <ul class="md-select__list">
         
           <li class="md-select__item">
-            <a href="/pypixelcolor/main/guides/custom_fonts/" hreflang="en" class="md-select__link">
+            <a href="/pypixelcolor/main/troubleshooting/bluetooth_connection/" hreflang="en" class="md-select__link">
               English
             </a>
           </li>
         
           <li class="md-select__item">
-            <a href="/pypixelcolor/main/fr/guides/custom_fonts/" hreflang="fr" class="md-select__link">
+            <a href="/pypixelcolor/main/fr/troubleshooting/bluetooth_connection/" hreflang="fr" class="md-select__link">
               Français
             </a>
           </li>
@@ -253,7 +255,7 @@
   
     
   
-  Home
+  Accueil
 
       </a>
     </li>
@@ -268,11 +270,11 @@
     
     
       <li class="md-tabs__item">
-        <a href="/pypixelcolor/main/fr/getting_started/cli/" class="md-tabs__link">
+        <a href="/pypixelcolor/main/fr/getting_started/installation/" class="md-tabs__link">
           
   
   
-  Getting Started
+  Bien démarrer
 
         </a>
       </li>
@@ -285,17 +287,18 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="/pypixelcolor/main/fr/commands/" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item">
+        <a href="/pypixelcolor/main/fr/commands/content/" class="md-tabs__link">
+          
   
-  Commands
+  
+  Commandes
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -304,17 +307,18 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="/pypixelcolor/main/fr/troubleshooting/" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item">
+        <a href="/pypixelcolor/main/fr/troubleshooting/bluetooth_connection/" class="md-tabs__link">
+          
   
-  Troubleshooting
+  
+  Dépannage
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -396,7 +400,7 @@
   <span class="md-ellipsis">
     
   
-    Home
+    Accueil
   
 
     
@@ -439,7 +443,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Bien démarrer
   
 
     
@@ -455,11 +459,39 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Bien démarrer
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/pypixelcolor/main/fr/getting_started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -475,7 +507,7 @@
   <span class="md-ellipsis">
     
   
-    CLI
+    Utilisation du CLI
   
 
     
@@ -503,7 +535,7 @@
   <span class="md-ellipsis">
     
   
-    WebSocket
+    Utilisation de WebSocket
   
 
     
@@ -531,7 +563,7 @@
   <span class="md-ellipsis">
     
   
-    Python library
+    Utilisation de la bibliothèque Python
   
 
     
@@ -558,15 +590,67 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commandes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Commandes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="/pypixelcolor/main/fr/commands/" class="md-nav__link">
+      <a href="/pypixelcolor/main/fr/commands/content/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Commands
+    Envoi de contenu
   
 
     
@@ -578,22 +662,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="/pypixelcolor/main/fr/troubleshooting/" class="md-nav__link">
+      <a href="/pypixelcolor/main/fr/commands/clock/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Troubleshooting
+    Mode horloge
   
 
     
@@ -602,6 +687,185 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/pypixelcolor/main/fr/commands/data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gestion des données
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/pypixelcolor/main/fr/commands/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paramètres de l'appareil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/pypixelcolor/main/fr/commands/other/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autres
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dépannage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dépannage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="/pypixelcolor/main/fr/troubleshooting/bluetooth_connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bluetooth Connection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -672,7 +936,7 @@
   <span class="md-ellipsis">
     
   
-    Custom Fonts
+    Polices personnalisées
   
 
     
@@ -700,7 +964,7 @@
   <span class="md-ellipsis">
     
   
-    Android BLE Logs
+    Journaux BLE Android
   
 
     

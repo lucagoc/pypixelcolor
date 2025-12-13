@@ -29,7 +29,7 @@
     
     
       
-        <title>WebSocket - pypixelcolor</title>
+        <title>Utilisation de WebSocket - pypixelcolor</title>
       
     
     
@@ -50,14 +50,16 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Red+Hat+Display:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Red Hat Display";--md-code-font:"JetBrains Mono"}</style>
       
     
     
       <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
       <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../../assets/css/custom.css">
     
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -121,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              WebSocket
+              Utilisation de WebSocket
             
           </span>
         </div>
@@ -264,7 +266,7 @@
   
     
   
-  Home
+  Accueil
 
       </a>
     </li>
@@ -281,11 +283,11 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../cli/" class="md-tabs__link">
+        <a href="../installation/" class="md-tabs__link">
           
   
   
-  Getting Started
+  Bien démarrer
 
         </a>
       </li>
@@ -298,17 +300,18 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../commands/" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item">
+        <a href="../../commands/content/" class="md-tabs__link">
+          
   
-  Commands
+  
+  Commandes
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -317,17 +320,18 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../troubleshooting/" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item">
+        <a href="../../troubleshooting/bluetooth_connection/" class="md-tabs__link">
+          
   
-  Troubleshooting
+  
+  Dépannage
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -409,7 +413,7 @@
   <span class="md-ellipsis">
     
   
-    Home
+    Accueil
   
 
     
@@ -457,7 +461,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Bien démarrer
   
 
     
@@ -473,11 +477,39 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Bien démarrer
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -493,7 +525,7 @@
   <span class="md-ellipsis">
     
   
-    CLI
+    Utilisation du CLI
   
 
     
@@ -523,6 +555,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilisation de WebSocket
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -530,7 +580,7 @@
   <span class="md-ellipsis">
     
   
-    WebSocket
+    Utilisation de WebSocket
   
 
     
@@ -539,6 +589,47 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table des matières">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#demarrer-le-serveur-websocket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Démarrer le serveur WebSocket
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#envoyer-des-commandes-via-websocket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Envoyer des commandes via WebSocket
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -559,7 +650,7 @@
   <span class="md-ellipsis">
     
   
-    Python library
+    Utilisation de la bibliothèque Python
   
 
     
@@ -586,15 +677,67 @@
   
   
   
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commandes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Commandes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../commands/" class="md-nav__link">
+      <a href="../../commands/content/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Commands
+    Envoi de contenu
   
 
     
@@ -606,22 +749,23 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
   
   
     <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+      <a href="../../commands/clock/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Troubleshooting
+    Mode horloge
   
 
     
@@ -630,6 +774,185 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gestion des données
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paramètres de l'appareil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/other/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autres
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dépannage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dépannage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/bluetooth_connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bluetooth Connection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -700,7 +1023,7 @@
   <span class="md-ellipsis">
     
   
-    Custom Fonts
+    Polices personnalisées
   
 
     
@@ -728,7 +1051,7 @@
   <span class="md-ellipsis">
     
   
-    Android BLE Logs
+    Journaux BLE Android
   
 
     
@@ -769,6 +1092,36 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table des matières
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#demarrer-le-serveur-websocket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Démarrer le serveur WebSocket
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#envoyer-des-commandes-via-websocket" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Envoyer des commandes via WebSocket
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -793,13 +1146,15 @@
 
 
 <h1 id="executer-le-serveur-websocket">Exécuter le serveur WebSocket</h1>
+<h2 id="demarrer-le-serveur-websocket">Démarrer le serveur WebSocket</h2>
 <p>Un serveur WebSocket est inclus pour permettre le contrôle en temps réel de votre appareil. Pour démarrer le serveur, utilisez la commande suivante :</p>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pypixelcolor.websocket<span class="w"> </span>-a<span class="w"> </span>&lt;ADRESSE_MAC&gt;
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pypixelcolor.websocket<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;
 </code></pre></div>
 <p>Par défaut, le serveur écoute sur <code>localhost:4444</code>. Vous pouvez spécifier un hôte et un port différents en utilisant les options <code>--host</code> et <code>--port</code> :</p>
-<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pypixelcolor.websocket<span class="w"> </span>-a<span class="w"> </span>&lt;ADRESSE_MAC&gt;<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">4444</span>
+<div class="highlight"><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>pypixelcolor.websocket<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">4444</span>
 </code></pre></div>
-<p>Utilisez un client WebSocket (par exemple, <a href="https://websocketking.com/">WebSocket King</a>), et connectez-vous au serveur à l'hôte et au port spécifiés (par défaut <code>ws://localhost:4444</code>).
+<h2 id="envoyer-des-commandes-via-websocket">Envoyer des commandes via WebSocket</h2>
+<p>En utilisant un client WebSocket (par exemple, <a href="https://websocketking.com/">WebSocket King</a>), connectez-vous au serveur à l'hôte et au port spécifiés (par défaut <code>ws://localhost:4444</code>).
 Une fois connecté, vous pouvez envoyer des commandes au format JSON. Par exemple, pour envoyer un message texte avec des paramètres d'animation et de vitesse, vous pouvez utiliser la charge utile JSON suivante :</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;send_text&quot;</span><span class="p">,</span>
@@ -810,7 +1165,7 @@ Une fois connecté, vous pouvez envoyer des commandes au format JSON. Par exempl
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Pour plus d'informations sur les commandes disponibles, consultez la page <a href="https://github.com/lucagoc/pypixelcolor/wiki/Commands">Commandes</a>.</p>
+<p>Pour plus d'informations sur les commandes disponibles, consultez la page <a href="../../commands/content/">Commandes</a>.</p>
 
 
 

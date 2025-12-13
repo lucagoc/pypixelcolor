@@ -48,12 +48,14 @@
         
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
-        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Red+Hat+Display:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Red Hat Display";--md-code-font:"JetBrains Mono"}</style>
       
     
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../assets/css/custom.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -275,7 +277,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../getting_started/cli/" class="md-tabs__link">
+        <a href="../../getting_started/installation/" class="md-tabs__link">
           
   
   
@@ -292,17 +294,18 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../commands/" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item">
+        <a href="../../commands/content/" class="md-tabs__link">
+          
+  
   
   Commands
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -311,17 +314,18 @@
   
   
   
-    <li class="md-tabs__item">
-      <a href="../../troubleshooting/" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item">
+        <a href="../../troubleshooting/bluetooth_connection/" class="md-tabs__link">
+          
+  
   
   Troubleshooting
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -477,6 +481,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../getting_started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../getting_started/cli/" class="md-nav__link">
         
   
@@ -484,7 +516,7 @@
   <span class="md-ellipsis">
     
   
-    CLI
+    Using CLI
   
 
     
@@ -512,7 +544,7 @@
   <span class="md-ellipsis">
     
   
-    WebSocket
+    Using WebSocket
   
 
     
@@ -540,7 +572,7 @@
   <span class="md-ellipsis">
     
   
-    Python library
+    Using Python library
   
 
     
@@ -567,9 +599,25 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../commands/" class="md-nav__link">
+    
+    
+    
+    
+      
+      
         
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -583,7 +631,163 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Commands
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/content/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sending Content
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/clock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clock Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managing Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Device Settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commands/other/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Others
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -594,9 +798,25 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../troubleshooting/" class="md-nav__link">
+    
+    
+    
+    
+      
+      
         
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -610,7 +830,51 @@
   
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Troubleshooting
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../troubleshooting/bluetooth_connection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bluetooth Connection
+  
+
+    
+  </span>
+  
+  
+
       </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -973,9 +1237,11 @@
 </ul>
 <p><em>Steps may vary slightly depending on your Android version and device manufacturer.</em></p>
 <h3 id="enable-bluetooth-hci-snoop-log-on-your-android-device">Enable Bluetooth HCI snoop log on your Android device</h3>
-<p>Go to <strong>Settings</strong> &gt; <strong>Developer options</strong>.
-Scroll down and set <strong>Bluetooth HCI snoop log</strong> to <strong>Enabled</strong>.
-Restart the bluetooth service by toggling Bluetooth off and then on again.</p>
+<ul>
+<li>Go to <strong>Settings</strong> &gt; <strong>Developer options</strong>.</li>
+<li>Scroll down and set <strong>Bluetooth HCI snoop log</strong> to <strong>Enabled</strong>.</li>
+<li>Restart the bluetooth service by toggling Bluetooth off and then on again.</li>
+</ul>
 <p>You can now do actions on your Android device that will generate BLE logs.</p>
 <h3 id="capture-the-ble-logs">Capture the BLE logs</h3>
 <p>When you are done, follow these steps to retrieve the logs:</p>
@@ -987,14 +1253,18 @@ Restart the bluetooth service by toggling Bluetooth off and then on again.</p>
 <div class="highlight"><pre><span></span><code>adb<span class="w"> </span>devices
 </code></pre></div>
 <p>You should see your device listed.</p>
-<p><em>If you see "unauthorized", make sure to accept the USB debugging prompt on your Android device.</em>
-4. <strong>Generate a bugreport</strong> from your device by running:</p>
-<div class="highlight"><pre><span></span><code>adb<span class="w"> </span>bugreport<span class="w"> </span>
+<p><em>If you see "unauthorized", make sure to accept the USB debugging prompt on your Android device.</em></p>
+<ol>
+<li><strong>Generate a bugreport</strong> from your device by running:</li>
+</ol>
+<div class="highlight"><pre><span></span><code>adb<span class="w"> </span>bugreport
 </code></pre></div>
 <p>This command will create a zip file containing various logs, including the Bluetooth HCI snoop log.
-   The zip file will be saved in the current directory with a name like <code>bugreport-&lt;device_name&gt;-&lt;timestamp&gt;.zip</code>.
-5. <strong>Extract the log</strong> from the bug report by unzipping <code>FS/data/misc/bluetooth/logs/btsnoop_hci_&lt;date&gt;_&lt;time&gt;.log</code>.
-    If you only have a file named <code>btsnooz_hci.log</code>, data sent to BLE devices has been filtered from logging, make sure you set Bluetooth HCI snoop log to <strong>Enabled</strong> and restart your device.</p>
+   The zip file will be saved in the current directory with a name like <code>bugreport-&lt;device_name&gt;-&lt;timestamp&gt;.zip</code>.</p>
+<ol>
+<li><strong>Extract the log</strong> from the bug report by unzipping <code>FS/data/misc/bluetooth/logs/btsnoop_hci_&lt;date&gt;_&lt;time&gt;.log</code>.</li>
+</ol>
+<p>If you only have a file named <code>btsnooz_hci.log</code>, data sent to BLE devices has been filtered from logging, make sure you set Bluetooth HCI snoop log to <strong>Enabled</strong> and restart your device.</p>
 <ol>
 <li><strong>Analyze the log file</strong>:</li>
 <li>You can open the <code>btsnoop_hci.log</code> file in Wireshark for analysis.</li>
