@@ -85,6 +85,20 @@
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/guides/custom_fonts/"/>
     </url>
     <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/reference/async_client/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/reference/async_client/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/reference/async_client/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/reference/sync_client/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/main/reference/sync_client/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/mainfr/reference/sync_client/"/>
+    </url>
+    <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/troubleshooting/bluetooth_connection/</loc>
         <lastmod>2025-12-13</lastmod>
         <changefreq>daily</changefreq>
@@ -174,6 +188,20 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/guides/custom_fonts/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/mainguides/custom_fonts/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/reference/async_client/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/reference/async_client/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/mainreference/async_client/"/>
+    </url>
+    <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/fr/reference/sync_client/</loc>
+        <lastmod>2025-12-13</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://lucagoc.github.io/pypixelcolor/main/fr/reference/sync_client/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://lucagoc.github.io/pypixelcolor/mainreference/sync_client/"/>
     </url>
     <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/fr/troubleshooting/bluetooth_connection/</loc>
