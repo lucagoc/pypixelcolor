@@ -279,7 +279,7 @@ def _resize_image(file_bytes: bytes, is_gif: bool, target_width: int, target_hei
     else:
         # Handle static image (PNG)
         if needs_resize:
-            if fit_mode == 'fit':
+            if fit_mode == ResizeMethod.FIT:
                 resized_img = _resize_and_fit_image(img, target_width, target_height)
             else:
                 resized_img = _resize_and_crop_image(img, target_width, target_height)
