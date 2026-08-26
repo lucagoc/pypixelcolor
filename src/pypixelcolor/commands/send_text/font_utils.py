@@ -13,30 +13,30 @@ logger = getLogger(__name__)
 
 def resolve_font_config(font: Union[str, FontConfig]) -> FontConfig:
     """Resolve a font specification to a FontConfig object.
-    
+
     Args:
         font: Either a built-in font name (str), a file path (str), or a FontConfig object
-        
+
     Returns:
         FontConfig object
-        
+
     Raises:
         ValueError: If the font cannot be resolved
     """
     if isinstance(font, FontConfig):
         return font
-    
+
     if not isinstance(font, str):
         raise ValueError(f"Font must be a string or FontConfig, got {type(font)}")
-    
+
     # Try built-in fonts first
     if font in BUILTIN_FONTS:
         return BUILTIN_FONTS[font]
-    
+
     # Try loading as file path
     if os.path.exists(font):
         return FontConfig.from_file(font)
-    
+
     # Fallback to default font
     logger.warning(f"Font '{font}' not found. Using default font CUSONG.")
     return BUILTIN_FONTS["CUSONG"]
@@ -47,7 +47,7 @@ def get_char_height_from_device(device_info: DeviceInfo) -> int:
 
     Args:
         device_info (DeviceInfo): Device information with width and height.
-        
+
     Returns:
         int: The recommended character height (8, 16, or 32).
     """
