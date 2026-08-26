@@ -16,11 +16,11 @@ class TextSegment:
     """A segment of text, either regular characters or an emoji."""
     type: SegmentType
     content: str
-
+    
     @property
     def is_emoji(self) -> bool:
         return self.type == SegmentType.EMOJI
-
+    
     @property
     def is_text(self) -> bool:
         return self.type == SegmentType.TEXT

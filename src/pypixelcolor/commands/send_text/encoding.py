@@ -6,8 +6,9 @@ from logging import getLogger
 from ...lib.emoji_manager import is_emoji
 from .models import SegmentType, TextSegment
 from .image_processing import (
-    render_text_segment_to_chunks, encode_char_img, emoji_to_hex, char_to_hex
+    render_text_segment_to_chunks, render_char_to_chunks, encode_char_img, emoji_to_hex
 )
+from .font_utils import resolve_font_for_char
 
 logger = getLogger(__name__)
 
@@ -168,24 +169,48 @@ def encode_text_chunked(text: str, char_height: int, color: str, font_path: str,
     return bytes(result), len(items)
 
 
-def encode_text(text: str, matrix_height: int, color: str, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int, reverse: bool = False) -> bytes:
+def encode_text(text: str, matrix_height: int, color: str, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int, reverse: bool = False, fallback_font_paths: list = None) -> tuple[bytes, int]:
     """Encode text to be displayed on the device.
+
+    Each character block on the device is a FIXED-size slot (8px wide for
+    16px-tall text, 16px wide for 32px-tall text - this is what the "Char
+    16x8" / "Char 32x16" block types mean; there is no width field in the
+    protocol, so the device assumes this fixed slot size per block).
+
+    Latin/ASCII glyphs are narrow enough to fit in one slot. Wider glyphs -
+    most CJK, full-width, and many other non-Latin characters - do NOT fit
+    in a single slot. Rather than silently clipping those glyphs to the
+    slot width (which chops off a large portion of the character), any
+    character that doesn't fit is rendered once and split across as many
+    fixed-width slots as it needs, using the same chunking approach the
+    library already uses for variable-width fonts. This keeps every glyph
+    fully intact regardless of a font's declared var_width setting.
+
+    A font may also simply lack a glyph for a given character (e.g. Polish
+    ł/ć/ś are outside many fonts' coverage even when ó/ń are present). A
+    missing glyph doesn't error - FreeType silently substitutes a .notdef
+    shape (often a box or near-empty), which looks like corrupted output.
+    If fallback_font_paths is provided, each character that the primary
+    font doesn't cover is rendered with the first fallback font that does
+    cover it, instead of silently corrupting.
 
     Args:
         text (str): The text to encode.
         matrix_height (int): The height of the LED matrix.
         color (str): The color in hex format (e.g., 'ffffff').
-        font_path (str): Path to the font file.
+        font_path (str): Path to the primary font file.
         font_offset (tuple[int, int]): The (x, y) offset for the font.
         font_size (int): The font size for rendering.
         pixel_threshold (int): Threshold for pixel conversion.
         reverse (bool): If True, reverses the order of characters. Defaults to False.
+        fallback_font_paths (list[str], optional): Font paths to try, in
+            order, for any character the primary font doesn't cover.
 
     Returns:
-        bytes: The encoded text as raw bytes ready to be appended to a payload.
+        tuple: (encoded_bytes, num_items) where num_items is the number of
+            character/chunk/emoji blocks generated (>= len(text) whenever
+            any character needed more than one slot).
     """
-    result = bytearray()
-
     # Convert color to bytes
     try:
         color_bytes = bytes.fromhex(color)
@@ -199,23 +224,47 @@ def encode_text(text: str, matrix_height: int, color: str, font_path: str, font_
     # Reverse text if requested
     text_to_process = text[::-1] if reverse else text
 
+    # Fixed slot width dictated by the device protocol for this matrix height
+    # (matches the 16x8 / 32x16 block types in encode_character_block).
+    slot_width = 16 if matrix_height == 32 else 8
+
     ##############
     # Processing #
     ##############
+
+    items = []
 
     for char in text_to_process:
         if is_emoji(char):
             char_bytes = emoji_to_hex(char, matrix_height)
             if char_bytes:
-                result += encode_emoji_block(char_bytes, matrix_height)
+                items.append(encode_emoji_block(char_bytes, matrix_height))
             else:
                 logger.error(f"Failed to encode emoji: {char}")
         else:
-            char_bytes = char_to_hex(char, matrix_height, font_path, font_offset, font_size, pixel_threshold)
-            if char_bytes:
-                char_bytes = _logic_reverse_bits_order_bytes(char_bytes)
-                result += encode_character_block(char_bytes, matrix_height, color_bytes)
-            else:
-                logger.error(f"Failed to encode character: {char}")
+            # Pick whichever font (primary, then fallbacks) actually has
+            # a glyph for this character.
+            char_font_path = resolve_font_for_char(char, font_path, fallback_font_paths)
 
-    return bytes(result)
+            # Render the character and split it into as many fixed-width
+            # slots as it actually needs - never clip it into one slot,
+            # and never pad it into an extra slot it doesn't need.
+            chunks = render_char_to_chunks(
+                char, matrix_height, char_font_path, font_offset, font_size,
+                pixel_threshold, slot_width
+            )
+            if len(chunks) > 1:
+                logger.debug(
+                    f"Character {char!r} is wider than one {slot_width}px "
+                    f"slot; split into {len(chunks)} slots to avoid clipping."
+                )
+            for chunk in chunks:
+                char_bytes = encode_char_img(chunk)
+                char_bytes = _logic_reverse_bits_order_bytes(char_bytes)
+                items.append(encode_character_block(char_bytes, matrix_height, color_bytes))
+
+    result = bytearray()
+    for item in items:
+        result += item
+
+    return bytes(result), len(items)

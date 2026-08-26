@@ -23,6 +23,7 @@ def send_text(text: str,
               color: str = "ffffff",
               bg_color: Optional[str] = None,
               font: Union[str, FontConfig] = "CUSONG",
+              fallback_fonts: Optional[list] = None,
               char_height: Optional[int] = None,
               device_info: Optional[DeviceInfo] = None
               ):
@@ -39,6 +40,10 @@ def send_text(text: str,
         color (str, optional): Text color in hex. Defaults to "ffffff".
         bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).
         font (str | FontConfig, optional): Built-in font name, file path, or FontConfig object. Defaults to "CUSONG". Built-in fonts are "CUSONG", "SIMSUN", "VCR_OSD_MONO".
+        fallback_fonts (list[str | FontConfig], optional): Additional fonts to try, in order,
+            for any character the primary font doesn't have a glyph for (e.g. a font covering
+            Polish/Central European characters when the primary font doesn't). Only used in the
+            fixed-width (non var_width) character-by-character encoding path.
         char_height (int, optional): Character height. Auto-detected from device_info if not specified.
         device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).
 
@@ -48,6 +53,10 @@ def send_text(text: str,
 
     # Resolve font configuration
     font_config = resolve_font_config(font)
+
+    # Resolve any fallback fonts (used for characters the primary font
+    # doesn't have a glyph for - see encode_text / resolve_font_for_char)
+    fallback_font_paths = [resolve_font_config(f).path for f in (fallback_fonts or [])]
 
     # Auto-detect char_height from device_info if available
     if char_height is None:
@@ -156,8 +165,11 @@ def send_text(text: str,
             reverse=rtl
         )
     else:
-        # Original character-by-character encoding
-        characters_bytes = encode_text(
+        # Character-by-character encoding. Characters wider than a single
+        # fixed-width slot are automatically split across multiple slots
+        # (see encode_text), so num_chars reflects the actual block count,
+        # not len(text).
+        characters_bytes, num_chars = encode_text(
             text,
             char_height,
             color,
@@ -165,11 +177,9 @@ def send_text(text: str,
             font_offset,
             font_size,
             pixel_threshold,
-            reverse=rtl
+            reverse=rtl,
+            fallback_font_paths=fallback_font_paths
         )
-
-        # Number of characters is the length of the text
-        num_chars = len(text)
 
     # Build data payload with character count
     data_payload = bytes([num_chars]) + properties + characters_bytes

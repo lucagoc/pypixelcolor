@@ -87,6 +87,40 @@ def render_text_segment_to_chunks(text: str, height: int, font_path: str,
     return split_image_into_chunks(img, chunk_width)
 
 
+def render_char_to_chunks(character: str, height: int, font_path: str,
+                           offset: tuple[int, int], font_size: int,
+                           pixel_threshold: int, chunk_width: int) -> list[Image.Image]:
+    """Render a single character and split it into fixed-width chunks.
+
+    Unlike render_text_segment_to_chunks, this crops tightly to the
+    character's own measured width with no extra padding. The +4px pad
+    used for multi-character segments exists to give a long continuous
+    strip a small safety margin at its far right edge - applied to a
+    single character it's large relative to one 8px/16px slot and pushes
+    plenty of normal, single-slot-width characters into needing a second,
+    mostly-blank slot (visible as oversized gaps between characters).
+    A character only needs more than one chunk_width slot when its own
+    glyph is genuinely wider than that - never because of padding.
+
+    Args:
+        character (str): Single character to render.
+        height (int): Image height in pixels.
+        font_path (str): Path to font file.
+        offset (tuple[int, int]): (x, y) offset for text rendering.
+        font_size (int): Font size in points.
+        pixel_threshold (int): Threshold for binary conversion.
+        chunk_width (int): Width of each chunk in pixels.
+
+    Returns:
+        list[Image.Image]: List of image chunks (length 1 for characters
+            that fit in a single slot, more only for genuinely wide glyphs).
+    """
+    img, meta = create_text_image(character, height, font_path, offset, font_size, pixel_threshold)
+    width = max(1, meta['width'])
+    img = img.crop((0, 0, width, height))
+    return split_image_into_chunks(img, chunk_width)
+
+
 def encode_char_img(img: Image.Image) -> bytes:
     """
     Convert a character image to a bytes representation (one line after another).
