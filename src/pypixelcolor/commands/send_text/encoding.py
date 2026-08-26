@@ -177,23 +177,6 @@ def encode_text(text: str, matrix_height: int, color: str, font_path: str, font_
     16x8" / "Char 32x16" block types mean; there is no width field in the
     protocol, so the device assumes this fixed slot size per block).
 
-    Latin/ASCII glyphs are narrow enough to fit in one slot. Wider glyphs -
-    most CJK, full-width, and many other non-Latin characters - do NOT fit
-    in a single slot. Rather than silently clipping those glyphs to the
-    slot width (which chops off a large portion of the character), any
-    character that doesn't fit is rendered once and split across as many
-    fixed-width slots as it needs, using the same chunking approach the
-    library already uses for variable-width fonts. This keeps every glyph
-    fully intact regardless of a font's declared var_width setting.
-
-    A font may also simply lack a glyph for a given character (e.g. Polish
-    ł/ć/ś are outside many fonts' coverage even when ó/ń are present). A
-    missing glyph doesn't error - FreeType silently substitutes a .notdef
-    shape (often a box or near-empty), which looks like corrupted output.
-    If fallback_font_paths is provided, each character that the primary
-    font doesn't cover is rendered with the first fallback font that does
-    cover it, instead of silently corrupting.
-
     Args:
         text (str): The text to encode.
         matrix_height (int): The height of the LED matrix.
