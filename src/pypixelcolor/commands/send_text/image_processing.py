@@ -93,14 +93,7 @@ def render_char_to_chunks(character: str, height: int, font_path: str,
     """Render a single character and split it into fixed-width chunks.
 
     Unlike render_text_segment_to_chunks, this crops tightly to the
-    character's own measured width with no extra padding. The +4px pad
-    used for multi-character segments exists to give a long continuous
-    strip a small safety margin at its far right edge - applied to a
-    single character it's large relative to one 8px/16px slot and pushes
-    plenty of normal, single-slot-width characters into needing a second,
-    mostly-blank slot (visible as oversized gaps between characters).
-    A character only needs more than one chunk_width slot when its own
-    glyph is genuinely wider than that - never because of padding.
+    character's own measured width with no extra padding.
 
     Args:
         character (str): Single character to render.
