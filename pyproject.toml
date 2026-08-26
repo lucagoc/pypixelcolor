@@ -35,10 +35,9 @@ extra = [
 dev = [
   "pytest>=7.0.0",
   "pytest-cov>=4.0.0",
-  "mkdocs-material",
-  "mike",
+  "zensical",
   "mkdocstrings[python]",
-  "mkdocs-static-i18n"
+  "mike @ git+https://github.com/squidfunk/mike.git",
 ]
 
 [project.scripts]

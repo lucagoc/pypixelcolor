@@ -18,3 +18,8 @@ pip-wheel-metadata/
 
 # Personal test files
 tmp/
+
+# Documentation build artifacts
+site/
+.zensical/
+.cache/

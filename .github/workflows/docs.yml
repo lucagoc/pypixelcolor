@@ -4,7 +4,8 @@ on:
     types: [published]
   push:
     branches:
-      - main 
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -28,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install mkdocs-material mike mkdocstrings[python] mkdocs-static-i18n
+          pip install zensical "mkdocstrings[python]" git+https://github.com/squidfunk/mike.git
           pip install .
 
       - name: Deploy Release Version
