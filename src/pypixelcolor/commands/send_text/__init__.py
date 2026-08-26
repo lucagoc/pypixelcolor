@@ -45,7 +45,7 @@ def send_text(text: str,
     Raises:
         ValueError: If an invalid animation is selected or parameters are out of range.
     """
-    
+
     # Resolve font configuration
     font_config = resolve_font_config(font)
 
@@ -56,16 +56,16 @@ def send_text(text: str,
             logger.debug(f"Auto-detected matrix height from device (height={device_info.height}): {char_height}")
         else:
             raise ValueError("char_height must be specified if device_info is not provided")
-    
+
     char_height = int(char_height)
-    
+
     # Get metrics for this character height
     metrics = font_config.get_metrics(char_height)
     font_size = metrics["font_size"]
     font_offset = metrics["offset"]
     pixel_threshold = metrics["pixel_threshold"]
     var_width = metrics["var_width"]
-    
+
     # properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 1 byte bg flag + 3 bytes bg color
     try:
         color_bytes = bytes.fromhex(color)
@@ -189,45 +189,45 @@ def send_text(text: str,
     window_size = 12 * 1024
     pos = 0
     window_index = 0
-    
+
     while pos < payload_size:
         window_end = min(pos + window_size, payload_size)
         chunk_payload = data_payload[pos:window_end]
-        
+
         # Option: 0x00 for first frame, 0x02 for subsequent frames
         option = 0x00 if window_index == 0 else 0x02
-        
+
         # Construct header for this frame
         # [00 01 Option] [Payload Size (4)] [CRC (4)] [00 SaveSlot]
-        
+
         frame_header = bytearray()
         frame_header += bytes([
             0x00,   # Reserved
             0x01,   # Command
             option  # Option
         ])
-        
+
         # Payload Size (Total) - 4 bytes little endian
         frame_header += payload_size.to_bytes(4, byteorder="little")
-        
+
         # CRC - 4 bytes little endian
         frame_header += crc.to_bytes(4, byteorder="little")
-        
+
         # Tail - 2 bytes
         frame_header += bytes([0x00])                   # Reserved
         frame_header += bytes([int(save_slot) & 0xFF])  # save_slot
-        
+
         # Combine header and chunk
         frame_content = frame_header + chunk_payload
-        
+
         # Calculate frame length prefix
         # Total size = len(frame_content) + 2 (for the prefix itself)
         frame_len = len(frame_content) + 2
         prefix = frame_len.to_bytes(2, byteorder="little")
-        
+
         message = prefix + frame_content
         windows.append(Window(data=message, requires_ack=True))
-        
+
         window_index += 1
         pos = window_end
 
