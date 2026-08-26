@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1445,22 +1445,22 @@ to match the target device dimensions if necessary.</p>
 <span class="normal">400</span>
 <span class="normal">401</span>
 <span class="normal">402</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_image</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">resize_method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ResizeMethod</span><span class="p">]</span> <span class="o">=</span> <span class="n">ResizeMethod</span><span class="o">.</span><span class="n">CROP</span><span class="p">,</span> <span class="n">device_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DeviceInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_slot</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Send an image or animation.</span>
 <span class="sd">    Supports `.png`, `.webp`, `.jpg`, `.jpeg`, `.bmp`, `.tiff`, `.gif` and `.heic, .heif` if pillow-heif library is installed.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        path: File path.</span>
 <span class="sd">        device_info: Device information (injected automatically by DeviceSession).</span>
-<span class="sd">        resize_method: Resize method - &#39;crop&#39; (default) or &#39;fit&#39;. </span>
-<span class="sd">                  &#39;crop&#39; will fill the entire target area and crop excess.</span>
-<span class="sd">                  &#39;fit&#39; will fit the entire image with black padding.</span>
+<span class="sd">        resize_method: Resize method - 'crop' (default) or 'fit'. </span>
+<span class="sd">                  'crop' will fill the entire target area and crop excess.</span>
+<span class="sd">                  'fit' will fit the entire image with black padding.</span>
 <span class="sd">        save_slot: If &gt;= 1, will save to that slot.</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        If device_info is available, the image will be automatically resized</span>
 <span class="sd">        to match the target device dimensions if necessary.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Input normalization</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resize_method</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -1471,19 +1471,19 @@ to match the target device dimensions if necessary.</p>
 
     <span class="c1"># Load image data</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">file_bytes</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">file_bytes</span><span class="p">,</span> <span class="n">is_gif</span> <span class="o">=</span> <span class="n">_process_loaded_bytes</span><span class="p">(</span><span class="n">file_bytes</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"File not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Resize image if device_info is available</span>
     <span class="k">if</span> <span class="n">device_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">file_bytes</span> <span class="o">=</span> <span class="n">_resize_image</span><span class="p">(</span><span class="n">file_bytes</span><span class="p">,</span> <span class="n">is_gif</span><span class="p">,</span> <span class="n">device_info</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">device_info</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Device info not provided; skipping image resizing.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Device info not provided; skipping image resizing."</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">_build_send_plan</span><span class="p">(</span><span class="n">file_bytes</span><span class="p">,</span> <span class="n">is_gif</span><span class="p">,</span> <span class="n">plan_name</span><span class="o">=</span><span class="s2">&quot;send_image&quot;</span><span class="p">,</span> <span class="n">save_slot</span><span class="o">=</span><span class="n">save_slot</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_build_send_plan</span><span class="p">(</span><span class="n">file_bytes</span><span class="p">,</span> <span class="n">is_gif</span><span class="p">,</span> <span class="n">plan_name</span><span class="o">=</span><span class="s2">"send_image"</span><span class="p">,</span> <span class="n">save_slot</span><span class="o">=</span><span class="n">save_slot</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1627,18 +1627,18 @@ to match the target device dimensions if necessary.</p>
 <span class="normal">429</span>
 <span class="normal">430</span>
 <span class="normal">431</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_image_hex</span><span class="p">(</span><span class="n">hex_string</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">file_extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ResizeMethod</span><span class="p">]</span> <span class="o">=</span> <span class="n">ResizeMethod</span><span class="o">.</span><span class="n">CROP</span><span class="p">,</span> <span class="n">device_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DeviceInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">save_slot</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Send an image or animation from a hexadecimal string.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        hex_string: Hexadecimal representation of image data.</span>
 <span class="sd">        file_extension: File extension to indicate image type (e.g. `.png`, `.gif`).</span>
 <span class="sd">        device_info: Device information (injected automatically by DeviceSession).</span>
-<span class="sd">        resize_method: Resize method - &#39;crop&#39; (default) or &#39;fit&#39;. </span>
-<span class="sd">                  &#39;crop&#39; will fill the entire target area and crop excess.</span>
-<span class="sd">                  &#39;fit&#39; will fit the entire image with black padding.</span>
+<span class="sd">        resize_method: Resize method - 'crop' (default) or 'fit'. </span>
+<span class="sd">                  'crop' will fill the entire target area and crop excess.</span>
+<span class="sd">                  'fit' will fit the entire image with black padding.</span>
 <span class="sd">        save_slot: If &gt;= 1, will save to that slot.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Input normalization</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resize_method</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">resize_method</span> <span class="o">=</span> <span class="n">ResizeMethod</span><span class="p">(</span><span class="n">resize_method</span><span class="p">)</span>
@@ -1650,9 +1650,9 @@ to match the target device dimensions if necessary.</p>
     <span class="k">if</span> <span class="n">device_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">file_bytes</span> <span class="o">=</span> <span class="n">_resize_image</span><span class="p">(</span><span class="n">file_bytes</span><span class="p">,</span> <span class="n">is_gif</span><span class="p">,</span> <span class="n">device_info</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">device_info</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Device info not provided; skipping image resizing.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Device info not provided; skipping image resizing."</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">_build_send_plan</span><span class="p">(</span><span class="n">file_bytes</span><span class="p">,</span> <span class="n">is_gif</span><span class="p">,</span> <span class="n">plan_name</span><span class="o">=</span><span class="s2">&quot;send_image_hex&quot;</span><span class="p">,</span> <span class="n">save_slot</span><span class="o">=</span><span class="n">save_slot</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_build_send_plan</span><span class="p">(</span><span class="n">file_bytes</span><span class="p">,</span> <span class="n">is_gif</span><span class="p">,</span> <span class="n">plan_name</span><span class="o">=</span><span class="s2">"send_image_hex"</span><span class="p">,</span> <span class="n">save_slot</span><span class="o">=</span><span class="n">save_slot</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2094,13 +2094,13 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
               <span class="n">animation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
               <span class="n">save_slot</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
               <span class="n">speed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
-              <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ffffff&quot;</span><span class="p">,</span>
+              <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ffffff"</span><span class="p">,</span>
               <span class="n">bg_color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">font</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">FontConfig</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;CUSONG&quot;</span><span class="p">,</span>
+              <span class="n">font</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">FontConfig</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"CUSONG"</span><span class="p">,</span>
               <span class="n">char_height</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">device_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DeviceInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
               <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Send a text to the device with configurable parameters.</span>
 <span class="sd">    If emojis are included in the text, they will be rendered using Twemoji.</span>
 
@@ -2110,15 +2110,15 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
 <span class="sd">        animation (int, optional): Animation type (0-7, except 3 and 4). Defaults to 0.</span>
 <span class="sd">        save_slot (int, optional): Save slot (1-10). Defaults to 1.</span>
 <span class="sd">        speed (int, optional): Animation speed (0-100). Defaults to 80.</span>
-<span class="sd">        color (str, optional): Text color in hex. Defaults to &quot;ffffff&quot;.</span>
-<span class="sd">        bg_color (str, optional): Background color in hex (e.g., &quot;ff0000&quot; for red). Defaults to None (no background).</span>
-<span class="sd">        font (str | FontConfig, optional): Built-in font name, file path, or FontConfig object. Defaults to &quot;CUSONG&quot;. Built-in fonts are &quot;CUSONG&quot;, &quot;SIMSUN&quot;, &quot;VCR_OSD_MONO&quot;.</span>
+<span class="sd">        color (str, optional): Text color in hex. Defaults to "ffffff".</span>
+<span class="sd">        bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).</span>
+<span class="sd">        font (str | FontConfig, optional): Built-in font name, file path, or FontConfig object. Defaults to "CUSONG". Built-in fonts are "CUSONG", "SIMSUN", "VCR_OSD_MONO".</span>
 <span class="sd">        char_height (int, optional): Character height. Auto-detected from device_info if not specified.</span>
 <span class="sd">        device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: If an invalid animation is selected or parameters are out of range.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Resolve font configuration</span>
     <span class="n">font_config</span> <span class="o">=</span> <span class="n">resolve_font_config</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
@@ -2127,49 +2127,49 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
     <span class="k">if</span> <span class="n">char_height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">device_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">char_height</span> <span class="o">=</span> <span class="n">get_char_height_from_device</span><span class="p">(</span><span class="n">device_info</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Auto-detected matrix height from device (height=</span><span class="si">{</span><span class="n">device_info</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">char_height</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Auto-detected matrix height from device (height=</span><span class="si">{</span><span class="n">device_info</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">char_height</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;char_height must be specified if device_info is not provided&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"char_height must be specified if device_info is not provided"</span><span class="p">)</span>
 
     <span class="n">char_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">char_height</span><span class="p">)</span>
 
     <span class="c1"># Get metrics for this character height</span>
     <span class="n">metrics</span> <span class="o">=</span> <span class="n">font_config</span><span class="o">.</span><span class="n">get_metrics</span><span class="p">(</span><span class="n">char_height</span><span class="p">)</span>
-    <span class="n">font_size</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;font_size&quot;</span><span class="p">]</span>
-    <span class="n">font_offset</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;offset&quot;</span><span class="p">]</span>
-    <span class="n">pixel_threshold</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;pixel_threshold&quot;</span><span class="p">]</span>
-    <span class="n">var_width</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">&quot;var_width&quot;</span><span class="p">]</span>
+    <span class="n">font_size</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"font_size"</span><span class="p">]</span>
+    <span class="n">font_offset</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"offset"</span><span class="p">]</span>
+    <span class="n">pixel_threshold</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"pixel_threshold"</span><span class="p">]</span>
+    <span class="n">var_width</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"var_width"</span><span class="p">]</span>
 
     <span class="c1"># properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 1 byte bg flag + 3 bytes bg color</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">color_bytes</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid color hex: </span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid color hex: </span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">color_bytes</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Color must be 3 bytes (6 hex chars), e.g. &#39;ffffff&#39;&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Color must be 3 bytes (6 hex chars), e.g. 'ffffff'"</span><span class="p">)</span>
 
     <span class="c1"># Validate parameter ranges</span>
     <span class="n">checks</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rainbow_mode</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;Rainbow mode&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">animation</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;Animation&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">save_slot</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="s2">&quot;Save slot&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">speed</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;Speed&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;Text length&quot;</span><span class="p">),</span>
-        <span class="p">(</span><span class="n">char_height</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="s2">&quot;Char height&quot;</span><span class="p">),</span>
+        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rainbow_mode</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">"Rainbow mode"</span><span class="p">),</span>
+        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">animation</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">"Animation"</span><span class="p">),</span>
+        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">save_slot</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="s2">"Save slot"</span><span class="p">),</span>
+        <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">speed</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"Speed"</span><span class="p">),</span>
+        <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">"Text length"</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">char_height</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="s2">"Char height"</span><span class="p">),</span>
     <span class="p">]</span>
     <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">checks</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">min_val</span> <span class="o">&lt;=</span> <span class="n">param</span> <span class="o">&lt;=</span> <span class="n">max_val</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be between </span><span class="si">{</span><span class="n">min_val</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_val</span><span class="si">}</span><span class="s2"> (got </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be between </span><span class="si">{</span><span class="n">min_val</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">max_val</span><span class="si">}</span><span class="s2"> (got </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 
     <span class="c1"># Disable unsupported animations (bootloop)</span>
     <span class="k">if</span> <span class="n">device_info</span> <span class="ow">and</span> <span class="p">(</span><span class="n">device_info</span><span class="o">.</span><span class="n">height</span> <span class="o">!=</span> <span class="mi">32</span> <span class="ow">or</span> <span class="n">device_info</span><span class="o">.</span><span class="n">width</span> <span class="o">!=</span> <span class="mi">32</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">animation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">or</span> <span class="nb">int</span><span class="p">(</span><span class="n">animation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This animation is not supported with this font on non-32x32 devices.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"This animation is not supported with this font on non-32x32 devices."</span><span class="p">)</span>
 
     <span class="c1"># Determine if RTL mode should be enabled (only for animation 2)</span>
     <span class="n">rtl</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">animation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">rtl</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reversed chunk order for RTL display&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Reversed chunk order for RTL display"</span><span class="p">)</span>
 
     <span class="c1">#---------------- BUILD PAYLOAD ----------------#</span>
 
@@ -2195,12 +2195,12 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">bg_color_bytes</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">bg_color</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid background color hex: </span><span class="si">{</span><span class="n">bg_color</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid background color hex: </span><span class="si">{</span><span class="n">bg_color</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bg_color_bytes</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Background color must be 3 bytes (6 hex chars), e.g. &#39;ff0000&#39;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Background color must be 3 bytes (6 hex chars), e.g. 'ff0000'"</span><span class="p">)</span>
         <span class="n">properties</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">([</span><span class="mh">0x01</span><span class="p">])</span>  <span class="c1"># Enable background</span>
         <span class="n">properties</span> <span class="o">+=</span> <span class="n">bg_color_bytes</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Background color enabled: #</span><span class="si">{</span><span class="n">bg_color</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Background color enabled: #</span><span class="si">{</span><span class="n">bg_color</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">properties</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">([</span>
             <span class="mh">0x00</span><span class="p">,</span>   <span class="c1"># Background disabled</span>
@@ -2282,10 +2282,10 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
         <span class="p">])</span>
 
         <span class="c1"># Payload Size (Total) - 4 bytes little endian</span>
-        <span class="n">frame_header</span> <span class="o">+=</span> <span class="n">payload_size</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">)</span>
+        <span class="n">frame_header</span> <span class="o">+=</span> <span class="n">payload_size</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">"little"</span><span class="p">)</span>
 
         <span class="c1"># CRC - 4 bytes little endian</span>
-        <span class="n">frame_header</span> <span class="o">+=</span> <span class="n">crc</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">)</span>
+        <span class="n">frame_header</span> <span class="o">+=</span> <span class="n">crc</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">"little"</span><span class="p">)</span>
 
         <span class="c1"># Tail - 2 bytes</span>
         <span class="n">frame_header</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">([</span><span class="mh">0x00</span><span class="p">])</span>                   <span class="c1"># Reserved</span>
@@ -2297,7 +2297,7 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
         <span class="c1"># Calculate frame length prefix</span>
         <span class="c1"># Total size = len(frame_content) + 2 (for the prefix itself)</span>
         <span class="n">frame_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_content</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="n">frame_len</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">&quot;little&quot;</span><span class="p">)</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">frame_len</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s2">"little"</span><span class="p">)</span>
 
         <span class="n">message</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">frame_content</span>
         <span class="n">windows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Window</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">requires_ack</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
@@ -2305,8 +2305,8 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
         <span class="n">window_index</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="n">window_end</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Split text into </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">windows</span><span class="p">)</span><span class="si">}</span><span class="s2"> frames&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">SendPlan</span><span class="p">(</span><span class="s2">&quot;send_text&quot;</span><span class="p">,</span> <span class="n">windows</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Split text into </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">windows</span><span class="p">)</span><span class="si">}</span><span class="s2"> frames"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">SendPlan</span><span class="p">(</span><span class="s2">"send_text"</span><span class="p">,</span> <span class="n">windows</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2390,7 +2390,7 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1391,16 +1391,16 @@
 <span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_fun_mode</span><span class="p">(</span><span class="n">enable</span> <span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Enable or disable fun mode.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        enable: Boolean or equivalent, enables (True) or disables (False) fun mode.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Convert bool</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enable</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">enable</span> <span class="o">=</span> <span class="n">enable</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;on&quot;</span><span class="p">)</span>
+        <span class="n">enable</span> <span class="o">=</span> <span class="n">enable</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"true"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"on"</span><span class="p">)</span>
 
     <span class="c1"># Build payload using bytes</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
@@ -1411,7 +1411,7 @@
         <span class="mi">1</span> <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">enable</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>  <span class="c1"># Fun mode value</span>
     <span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;set_fun_mode&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_fun_mode"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1529,24 +1529,24 @@
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_pixel</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DeviceInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Defines the color of a specific pixel.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        x: X coordinate of the pixel (0-...).</span>
 <span class="sd">        y: Y coordinate of the pixel (0-...).</span>
-<span class="sd">        color: Color in hexadecimal format (e.g., &#39;FF0000&#39; for red).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        color: Color in hexadecimal format (e.g., 'FF0000' for red).</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Validate coordinates range if device info is provided</span>
     <span class="k">if</span> <span class="n">device_info</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">device_info</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">device_info</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid coordinates range. Range are x[0:</span><span class="si">{</span><span class="n">device_info</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">] y[0:</span><span class="si">{</span><span class="n">device_info</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid coordinates range. Range are x[0:</span><span class="si">{</span><span class="n">device_info</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">] y[0:</span><span class="si">{</span><span class="n">device_info</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 
     <span class="c1"># Validate color format</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> 
         <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">color</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span> 
-        <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39;0123456789abcdefABCDEF&#39;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">color</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Color must be a 6-character hexadecimal string.&quot;</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="s1">'0123456789abcdefABCDEF'</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">color</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Color must be a 6-character hexadecimal string."</span><span class="p">)</span>
 
     <span class="c1"># Build payload using bytes</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
@@ -1562,7 +1562,7 @@
         <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>                    <span class="c1"># Y coordinate</span>
     <span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;set_pixel&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">requires_ack</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_pixel"</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">requires_ack</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1853,7 +1853,7 @@
 <span class="normal">41</span>
 <span class="normal">42</span>
 <span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_rhythm_mode</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l1</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l2</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l3</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l4</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l5</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l6</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l7</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l8</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l9</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l10</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l11</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the rhythm mode of the device.</span>
+<span class="w">    </span><span class="sd">"""Set the rhythm mode of the device.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        style (int): The style of the rhythm mode (0-4).</span>
@@ -1871,16 +1871,16 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: If ``style`` is not in 0..4 or any level is not in 0..15.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Validation</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">style</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rhythm mode style must be between 0 and 4, got </span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"rhythm mode style must be between 0 and 4, got </span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">[</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l3</span><span class="p">,</span> <span class="n">l4</span><span class="p">,</span> <span class="n">l5</span><span class="p">,</span> <span class="n">l6</span><span class="p">,</span> <span class="n">l7</span><span class="p">,</span> <span class="n">l8</span><span class="p">,</span> <span class="n">l9</span><span class="p">,</span> <span class="n">l10</span><span class="p">,</span> <span class="n">l11</span><span class="p">]]</span>
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">lv</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">levels</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">lv</span> <span class="o">&lt;=</span> <span class="mi">15</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;level </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> must be between 0 and 15, got </span><span class="si">{</span><span class="n">lv</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"level </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> must be between 0 and 15, got </span><span class="si">{</span><span class="n">lv</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Build payload</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
@@ -1892,7 +1892,7 @@
     <span class="p">])</span>
     <span class="n">payload</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;set_rhythm_mode&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">requires_ack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_rhythm_mode"</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">requires_ack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2036,7 +2036,7 @@
 <span class="normal">75</span>
 <span class="normal">76</span>
 <span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_rhythm_mode_2</span><span class="p">(</span><span class="n">style</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the rhythm mode of the device (alternative version).</span>
+<span class="w">    </span><span class="sd">"""Set the rhythm mode of the device (alternative version).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        style (int): The style of the rhythm mode. Allowed values are 0 or 1.</span>
@@ -2047,14 +2047,14 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: If ``style`` is not in 0..1 or ``t`` is not in 0..7.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Validation</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">style</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rhythm mode style must be between 0 and 1, got </span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"rhythm mode style must be between 0 and 1, got </span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">7</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Level (t) must be between 0 and 7, got </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Level (t) must be between 0 and 7, got </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Build payload using bytes</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
@@ -2066,7 +2066,7 @@
         <span class="nb">int</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>      <span class="c1"># Style</span>
     <span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;set_rhythm_mode_2&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_rhythm_mode_2"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2150,7 +2150,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1345,19 +1345,19 @@ Avant d'envoyer des données à un slot, assurez-vous que l'envoi fonctionne cor
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Clears the ROM data on the device.</span>
 
 <span class="sd">    Note:</span>
-<span class="sd">        This command removes all stored content from the device&#39;s memory, including device settings.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        This command removes all stored content from the device's memory, including device settings.</span>
+<span class="sd">    """</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
         <span class="mi">4</span><span class="p">,</span>     <span class="c1"># Command length</span>
         <span class="mi">0</span><span class="p">,</span>     <span class="c1"># Reserved</span>
         <span class="mi">3</span><span class="p">,</span>     <span class="c1"># Command ID</span>
         <span class="mh">0x80</span><span class="p">,</span>  <span class="c1"># Command type ID</span>
     <span class="p">])</span>
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;clear&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"clear"</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1433,7 +1433,7 @@ Avant d'envoyer des données à un slot, assurez-vous que l'envoi fonctionne cor
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show_slot</span><span class="p">(</span><span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Shows the specified slot on the device.</span>
 
 <span class="sd">    Args:</span>
@@ -1441,7 +1441,7 @@ Avant d'envoyer des données à un slot, assurez-vous que l'envoi fonctionne cor
 
 <span class="sd">    Note:</span>
 <span class="sd">        If the slot is empty, the device will cycle through available slots.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
         <span class="mh">0x07</span><span class="p">,</span>
         <span class="mh">0x00</span><span class="p">,</span>
@@ -1451,7 +1451,7 @@ Avant d'envoyer des données à un slot, assurez-vous que l'envoi fonctionne cor
         <span class="mh">0x00</span><span class="p">,</span>
         <span class="nb">int</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">,</span>
     <span class="p">])</span>
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;show_slot&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"show_slot"</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1521,14 +1521,14 @@ Avant d'envoyer des données à un slot, assurez-vous que l'envoi fonctionne cor
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Delete a specific slot by its index.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        n: Index of the slot to delete.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">255</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Slot index must be between 0 and 255&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Slot index must be between 0 and 255"</span><span class="p">)</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
         <span class="mi">7</span><span class="p">,</span>      <span class="c1"># Command length</span>
         <span class="mi">0</span><span class="p">,</span>      <span class="c1"># Reserved</span>
@@ -1538,7 +1538,7 @@ Avant d'envoyer des données à un slot, assurez-vous que l'envoi fonctionne cor
         <span class="mi">0</span><span class="p">,</span>      <span class="c1"># Reserved</span>
         <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>  <span class="c1"># Slot index</span>
     <span class="p">])</span>
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;delete_slot&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"delete_slot"</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1622,7 +1622,7 @@ Avant d'envoyer des données à un slot, assurez-vous que l'envoi fonctionne cor
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copi\u00e9 dans le presse-papier", "clipboard.copy": "Copier dans le presse-papier", "search.result.more.one": "1 de plus sur cette page", "search.result.more.other": "# de plus sur cette page", "search.result.none": "Aucun document trouv\u00e9", "search.result.one": "1 document trouv\u00e9", "search.result.other": "# documents trouv\u00e9s", "search.result.placeholder": "Taper pour d\u00e9marrer la recherche", "search.result.term.missing": "Non trouv\u00e9", "select.version": "S\u00e9lectionner la version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1927,25 +1927,25 @@ automatically for simpler usage in non-async code.</p>
 <span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Client</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Synchronous client for controlling the LED matrix via BLE.</span>
+<span class="w">    </span><span class="sd">"""Synchronous client for controlling the LED matrix via BLE.</span>
 
 <span class="sd">    This is a synchronous wrapper around AsyncClient that handles the event loop</span>
 <span class="sd">    automatically for simpler usage in non-async code.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the Client.</span>
+<span class="w">        </span><span class="sd">"""Initialize the Client.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            address: Bluetooth device address (e.g., &quot;1D:6B:5E:B5:A5:54&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_async_client</span> <span class="o">=</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop_thread</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_loop</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_setup_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up a persistent event loop in a separate thread.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set up a persistent event loop in a separate thread."""</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">start_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">):</span>
@@ -1960,7 +1960,7 @@ automatically for simpler usage in non-async code.</p>
         <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_on_exit</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_cleanup_on_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cleanup handler for atexit.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Cleanup handler for atexit."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_async_client</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
@@ -1970,22 +1970,22 @@ automatically for simpler usage in non-async code.</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_loop</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_run_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coro</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run an async coroutine synchronously using the persistent loop.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Run an async coroutine synchronously using the persistent loop."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Event loop not initialized&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Event loop not initialized"</span><span class="p">)</span>
 
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run_coroutine_threadsafe</span><span class="p">(</span><span class="n">coro</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delegate attribute access to async client, wrapping coroutines.</span>
+<span class="w">        </span><span class="sd">"""Delegate attribute access to async client, wrapping coroutines.</span>
 
 <span class="sd">        This allows automatic synchronous wrapping of all async methods without</span>
 <span class="sd">        explicit redefinition, reducing code duplication.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_async_client</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
-        <span class="c1"># If it&#39;s a coroutine function, wrap it to run synchronously</span>
+        <span class="c1"># If it's a coroutine function, wrap it to run synchronously</span>
         <span class="k">if</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
             <span class="k">def</span><span class="w"> </span><span class="nf">sync_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_async</span><span class="p">(</span><span class="n">attr</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
@@ -1998,12 +1998,12 @@ automatically for simpler usage in non-async code.</p>
         <span class="k">return</span> <span class="n">attr</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_cleanup_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up the event loop.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Clean up the event loop."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">call_soon_threadsafe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cleanup on deletion.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Cleanup on deletion."""</span>
         <span class="c1"># Unregister atexit handler if object is deleted manually</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">atexit</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_on_exit</span><span class="p">)</span>
@@ -2019,12 +2019,12 @@ automatically for simpler usage in non-async code.</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_loop</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Context manager entry.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Context manager entry."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Context manager exit.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Context manager exit."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -2073,7 +2073,7 @@ automatically for simpler usage in non-async code.</p>
 <span class="normal">207</span>
 <span class="normal">208</span>
 <span class="normal">209</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cleanup on deletion.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Cleanup on deletion."""</span>
     <span class="c1"># Unregister atexit handler if object is deleted manually</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">atexit</span><span class="o">.</span><span class="n">unregister</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_on_exit</span><span class="p">)</span>
@@ -2113,7 +2113,7 @@ automatically for simpler usage in non-async code.</p>
 <span class="normal">212</span>
 <span class="normal">213</span>
 <span class="normal">214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager entry.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Context manager entry."""</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
     <span class="k">return</span> <span class="bp">self</span>
 </code></pre></div></td></tr></table></div>
@@ -2141,7 +2141,7 @@ automatically for simpler usage in non-async code.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Context manager exit.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Context manager exit."""</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2186,14 +2186,14 @@ explicit redefinition, reducing code duplication.</p>
 <span class="normal">186</span>
 <span class="normal">187</span>
 <span class="normal">188</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delegate attribute access to async client, wrapping coroutines.</span>
+<span class="w">    </span><span class="sd">"""Delegate attribute access to async client, wrapping coroutines.</span>
 
 <span class="sd">    This allows automatic synchronous wrapping of all async methods without</span>
 <span class="sd">    explicit redefinition, reducing code duplication.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_async_client</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
-    <span class="c1"># If it&#39;s a coroutine function, wrap it to run synchronously</span>
+    <span class="c1"># If it's a coroutine function, wrap it to run synchronously</span>
     <span class="k">if</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">sync_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_async</span><span class="p">(</span><span class="n">attr</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
@@ -2267,11 +2267,11 @@ explicit redefinition, reducing code duplication.</p>
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the Client.</span>
+<span class="w">    </span><span class="sd">"""Initialize the Client.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        address: Bluetooth device address (e.g., &quot;1D:6B:5E:B5:A5:54&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")</span>
+<span class="sd">    """</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_async_client</span> <span class="o">=</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_loop_thread</span> <span class="o">=</span> <span class="kc">None</span>
@@ -2301,7 +2301,7 @@ explicit redefinition, reducing code duplication.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">110</span>
 <span class="normal">111</span>
 <span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Async context manager exit.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Async context manager exit."""</span>
     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2410,9 +2410,9 @@ This is a simple getter for the cached data.</p>
 <span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">get_device_info</span><span class="p">()</span>
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure the client is connected.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Ensure the client is connected."""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Client not connected. Call connect() first&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Client not connected. Call connect() first"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2462,7 +2462,7 @@ This is a simple getter for the cached data.</p>
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
 <span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Client</span><span class="p">:</span>
-    <span class="s2">&quot;&quot;&quot;Synchronous client for controlling the LED matrix via BLE.</span>
+    <span class="s2">"""Synchronous client for controlling the LED matrix via BLE.</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2473,7 +2473,7 @@ This is a simple getter for the cached data.</p>
 
 
 <h3 id="pypixelcolor.client.Client.send_text" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">send_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">rainbow_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">animation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">save_slot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;ffffff&#39;</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s1">&#39;CUSONG&#39;</span><span class="p">,</span> <span class="n">char_height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_info</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">send_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">rainbow_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">animation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">save_slot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'ffffff'</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s1">'CUSONG'</span><span class="p">,</span> <span class="n">char_height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_info</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2489,7 +2489,7 @@ This is a simple getter for the cached data.</p>
 <span class="normal">123</span>
 <span class="normal">124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">This</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">synchronous</span> <span class="n">wrapper</span> <span class="n">around</span> <span class="n">AsyncClient</span> <span class="n">that</span> <span class="n">handles</span> <span class="n">the</span> <span class="n">event</span> <span class="n">loop</span>
 <span class="n">automatically</span> <span class="k">for</span> <span class="n">simpler</span> <span class="n">usage</span> <span class="ow">in</span> <span class="n">non</span><span class="o">-</span><span class="k">async</span> <span class="n">code</span><span class="o">.</span>
-<span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">"""</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2514,7 +2514,7 @@ This is a simple getter for the cached data.</p>
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
 <span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="s2">&quot;&quot;&quot;Initialize the Client.</span>
+    <span class="s2">"""Initialize the Client.</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2525,7 +2525,7 @@ This is a simple getter for the cached data.</p>
 
 
 <h3 id="pypixelcolor.client.Client.set_clock_mode" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">set_clock_mode</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">show_date</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">format_24</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">set_clock_mode</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">show_date</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">format_24</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
 </h3>
 
@@ -2539,7 +2539,7 @@ This is a simple getter for the cached data.</p>
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
 <span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Args</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">:</span> <span class="n">Bluetooth</span> <span class="n">device</span> <span class="n">address</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="s2">&quot;1D:6B:5E:B5:A5:54&quot;</span><span class="p">)</span>
+    <span class="n">address</span><span class="p">:</span> <span class="n">Bluetooth</span> <span class="n">device</span> <span class="n">address</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="s2">"1D:6B:5E:B5:A5:54"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2564,7 +2564,7 @@ This is a simple getter for the cached data.</p>
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">131</span>
 <span class="normal">132</span>
-<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="s2">&quot;&quot;&quot;</span>
+<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="s2">"""</span>
 <span class="s2">self._async_client = AsyncClient(address)</span>
 <span class="s2">self._loop: Optional[asyncio.AbstractEventLoop] = None</span>
 </code></pre></div></td></tr></table></div>
@@ -2617,7 +2617,7 @@ This is a simple getter for the cached data.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">137</span>
 <span class="normal">138</span>
 <span class="normal">139</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_setup_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up a persistent event loop in a separate thread.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Set up a persistent event loop in a separate thread."""</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2746,7 +2746,7 @@ This is a simple getter for the cached data.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_cleanup_on_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cleanup handler for atexit.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Cleanup handler for atexit."""</span>
     <span class="k">try</span><span class="p">:</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2772,7 +2772,7 @@ This is a simple getter for the cached data.</p>
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
 <span class="normal">107</span>
-<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="sd">&quot;&quot;&quot;Async context manager entry.&quot;&quot;&quot;</span>
+<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="sd">"""Async context manager entry."""</span>
 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
 <span class="k">return</span> <span class="bp">self</span>
 </code></pre></div></td></tr></table></div>
@@ -2866,7 +2866,7 @@ This is a simple getter for the cached data.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

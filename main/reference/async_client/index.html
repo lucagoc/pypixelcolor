@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1843,41 +1843,41 @@
 <span class="normal">110</span>
 <span class="normal">111</span>
 <span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AsyncClient</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Asynchronous client for controlling the LED matrix via BLE.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Asynchronous client for controlling the LED matrix via BLE."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the AsyncClient.</span>
+<span class="w">        </span><span class="sd">"""Initialize the AsyncClient.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            address: Bluetooth device address (e.g., &quot;1D:6B:5E:B5:A5:54&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">DeviceSession</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect to the BLE device and retrieve device info.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Connect to the BLE device and retrieve device info."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Already connected&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Already connected"</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from the BLE device.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Disconnect from the BLE device."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not connected&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Not connected"</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the client library version.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the client library version."""</span>
         <span class="k">return</span> <span class="n">VERSION</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_device_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeviceInfo</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get cached device information.</span>
 
 <span class="sd">        Device info is automatically retrieved during connect().</span>
@@ -1888,21 +1888,21 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            RuntimeError: If not connected.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">get_device_info</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure the client is connected.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Ensure the client is connected."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Client not connected. Call connect() first&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Client not connected. Call connect() first"</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Async context manager entry.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Async context manager entry."""</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Async context manager exit.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Async context manager exit."""</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -1944,7 +1944,7 @@
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Async context manager entry.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Async context manager entry."""</span>
     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
     <span class="k">return</span> <span class="bp">self</span>
 </code></pre></div></td></tr></table></div>
@@ -1976,7 +1976,7 @@
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">110</span>
 <span class="normal">111</span>
 <span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Async context manager exit.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Async context manager exit."""</span>
     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2039,11 +2039,11 @@
 <span class="normal">59</span>
 <span class="normal">60</span>
 <span class="normal">61</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the AsyncClient.</span>
+<span class="w">    </span><span class="sd">"""Initialize the AsyncClient.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        address: Bluetooth device address (e.g., &quot;1D:6B:5E:B5:A5:54&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")</span>
+<span class="sd">    """</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">DeviceSession</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span>
 </code></pre></div></td></tr></table></div>
@@ -2074,9 +2074,9 @@
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
 <span class="normal">37</span>
-<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command &#39;</span><span class="si">{</span><span class="n">command_name</span><span class="si">}</span><span class="s2">&#39; executed successfully&quot;</span><span class="p">)</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Command '</span><span class="si">{</span><span class="n">command_name</span><span class="si">}</span><span class="s2">' executed successfully"</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command &#39;</span><span class="si">{</span><span class="n">command_name</span><span class="si">}</span><span class="s2">&#39; executed successfully with data&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Command '</span><span class="si">{</span><span class="n">command_name</span><span class="si">}</span><span class="s2">' executed successfully with data"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2111,9 +2111,9 @@
 <span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Connect to the BLE device and retrieve device info.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Connect to the BLE device and retrieve device info."""</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Already connected&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Already connected"</span><span class="p">)</span>
         <span class="k">return</span>
 
     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
@@ -2181,9 +2181,9 @@
 <span class="normal">77</span>
 <span class="normal">78</span>
 <span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Disconnect from the BLE device.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Disconnect from the BLE device."""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not connected&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Not connected"</span><span class="p">)</span>
         <span class="k">return</span>
 
     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
@@ -2272,7 +2272,7 @@ This is a simple getter for the cached data.</p>
 <span class="normal">96</span>
 <span class="normal">97</span>
 <span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_device_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeviceInfo</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get cached device information.</span>
 
 <span class="sd">    Device info is automatically retrieved during connect().</span>
@@ -2283,7 +2283,7 @@ This is a simple getter for the cached data.</p>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        RuntimeError: If not connected.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">get_device_info</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2315,7 +2315,7 @@ This is a simple getter for the cached data.</p>
 <span class="normal">43</span>
 <span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">data</span>
 
-<span class="c1"># Preserve the original function&#39;s metadata for better introspection</span>
+<span class="c1"># Preserve the original function's metadata for better introspection</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2355,7 +2355,7 @@ This is a simple getter for the cached data.</p>
 
 
 <h3 id="pypixelcolor.client.AsyncClient.send_text" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">send_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">rainbow_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">animation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">save_slot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;ffffff&#39;</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s1">&#39;CUSONG&#39;</span><span class="p">,</span> <span class="n">char_height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_info</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">send_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">rainbow_mode</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">animation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">save_slot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'ffffff'</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="s1">'CUSONG'</span><span class="p">,</span> <span class="n">char_height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device_info</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -2400,7 +2400,7 @@ This is a simple getter for the cached data.</p>
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">51</span>
 <span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">AsyncClient</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Asynchronous client for controlling the LED matrix via BLE.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Asynchronous client for controlling the LED matrix via BLE."""</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2411,7 +2411,7 @@ This is a simple getter for the cached data.</p>
 
 
 <h3 id="pypixelcolor.client.AsyncClient.set_clock_mode" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">set_clock_mode</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">show_date</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">format_24</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">set_clock_mode</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">show_date</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">format_24</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-async"><code>async</code></small>
@@ -2429,7 +2429,7 @@ This is a simple getter for the cached data.</p>
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">54</span>
 <span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="s2">&quot;&quot;&quot;Initialize the AsyncClient.</span>
+    <span class="s2">"""Initialize the AsyncClient.</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2459,8 +2459,8 @@ This is a simple getter for the cached data.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">57</span>
 <span class="normal">58</span>
 <span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Args</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">:</span> <span class="n">Bluetooth</span> <span class="n">device</span> <span class="n">address</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="s2">&quot;1D:6B:5E:B5:A5:54&quot;</span><span class="p">)</span>
-<span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">address</span><span class="p">:</span> <span class="n">Bluetooth</span> <span class="n">device</span> <span class="n">address</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="s2">"1D:6B:5E:B5:A5:54"</span><span class="p">)</span>
+<span class="s2">"""</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2519,7 +2519,7 @@ This is a simple getter for the cached data.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">63</span>
 <span class="normal">64</span>
 <span class="normal">65</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Connect to the BLE device and retrieve device info.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Connect to the BLE device and retrieve device info."""</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2548,7 +2548,7 @@ This is a simple getter for the cached data.</p>
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Already connected&quot;</span><span class="p">)</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Already connected"</span><span class="p">)</span>
 <span class="k">return</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2608,7 +2608,7 @@ This is a simple getter for the cached data.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Disconnect from the BLE device.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Disconnect from the BLE device."""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2637,7 +2637,7 @@ This is a simple getter for the cached data.</p>
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Not connected&quot;</span><span class="p">)</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Not connected"</span><span class="p">)</span>
 <span class="k">return</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2693,7 +2693,7 @@ This is a simple getter for the cached data.</p>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">81</span>
 <span class="normal">82</span>
 <span class="normal">83</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the client library version.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Get the client library version."""</span>
     <span class="k">return</span> <span class="n">VERSION</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2786,7 +2786,7 @@ This is a simple getter for the cached data.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

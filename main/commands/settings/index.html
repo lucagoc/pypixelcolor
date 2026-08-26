@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1366,14 +1366,14 @@
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_power</span><span class="p">(</span><span class="n">on</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Set the power state of the device.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        on: True to turn on, False to turn off.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">on</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">on</span> <span class="o">=</span> <span class="n">on</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;on&quot;</span><span class="p">)</span>
+        <span class="n">on</span> <span class="o">=</span> <span class="n">on</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"true"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"on"</span><span class="p">)</span>
 
     <span class="c1"># Build command</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
@@ -1383,7 +1383,7 @@
         <span class="mi">1</span><span class="p">,</span>              <span class="c1"># Command type ID</span>
         <span class="mi">1</span> <span class="k">if</span> <span class="n">on</span> <span class="k">else</span> <span class="mi">0</span>  <span class="c1"># Power state</span>
     <span class="p">])</span>
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;set_power&quot;</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_power"</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1451,14 +1451,14 @@
 <span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_brightness</span><span class="p">(</span><span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Set the brightness of the device.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        level (int): Brightness level (0-100).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&gt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">level</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">level</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Brightness level must be between 0 and 100&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Brightness level must be between 0 and 100"</span><span class="p">)</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
         <span class="mi">5</span><span class="p">,</span>          <span class="c1"># Command length</span>
         <span class="mi">0</span><span class="p">,</span>          <span class="c1"># Reserved</span>
@@ -1466,7 +1466,7 @@
         <span class="mh">0x80</span><span class="p">,</span>       <span class="c1"># Command type ID</span>
         <span class="nb">int</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>  <span class="c1"># Brightness value</span>
     <span class="p">])</span>
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;set_brightness&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_brightness"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1536,15 +1536,15 @@
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_orientation</span><span class="p">(</span><span class="n">orientation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Set the orientation of the device.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        orientation (int): The orientation value to set (0-3).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">int</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Orientation must be between 0 and 3&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Orientation must be between 0 and 3"</span><span class="p">)</span>
 
     <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
         <span class="mi">5</span><span class="p">,</span>                  <span class="c1"># Command length</span>
@@ -1553,7 +1553,7 @@
         <span class="mh">0x80</span><span class="p">,</span>               <span class="c1"># Command type ID</span>
         <span class="nb">int</span><span class="p">(</span><span class="n">orientation</span><span class="p">)</span>    <span class="c1"># Orientation value</span>
     <span class="p">])</span>
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">&quot;set_orientation&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_orientation"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1637,7 +1637,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
