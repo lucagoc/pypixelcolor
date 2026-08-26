@@ -75,5 +75,3 @@ This project is not affiliated with or endorsed by the original manufacturer of 
 
 Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
 To get started on how to dump BLE logs from an Android device, refer to the [How to get BLE logs](https://github.com/lucagoc/pypixelcolor/wiki/Tutorials#getting-ble-logs-from-an-android-device) guide.
-
-[![Star History Chart](https://api.star-history.com/svg?repos=lucagoc/pypixelcolor&type=date&logscale&legend=bottom-right)](https://www.star-history.com/#lucagoc/pypixelcolor&type=date&logscale&legend=bottom-right)
