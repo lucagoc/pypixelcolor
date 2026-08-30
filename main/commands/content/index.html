@@ -2245,7 +2245,7 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
         <span class="n">window_index</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="n">window_end</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Split text into </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">windows</span><span class="p">)</span><span class="si">}</span><span class="s2"> frames"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Split text into </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">windows</span><span class="p">)</span><span class="si">}</span><span class="s2"> frames"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">SendPlan</span><span class="p">(</span><span class="s2">"send_text"</span><span class="p">,</span> <span class="n">windows</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
