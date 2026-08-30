@@ -8,6 +8,7 @@ font/cache
 
 # Virtual environments
 .venv/
+uv.lock
 
 # Python build artifacts
 dist/

@@ -191,10 +191,10 @@ def _resize_image(file_bytes: bytes, is_gif: bool, target_width: int, target_hei
     
     if needs_resize:
         resize_method = "fit with padding" if fit_mode == ResizeMethod.FIT else "crop"
-        logger.info(f"Resizing image from {img.size[0]}x{img.size[1]} to {target_width}x{target_height} (preserving aspect ratio with {resize_method})")
+        logger.debug(f"Resizing image from {img.size[0]}x{img.size[1]} to {target_width}x{target_height} (preserving aspect ratio with {resize_method})")
     
     if needs_conversion:
-        logger.info(f"Converting image from mode {img.mode} to RGB (removing palette)")
+        logger.debug(f"Converting image from mode {img.mode} to RGB (removing palette)")
     
     if is_gif:
         # Always re-encode GIFs by iterating per-frame. Use per-frame
@@ -234,7 +234,7 @@ def _resize_image(file_bytes: bytes, is_gif: bool, target_width: int, target_hei
             disposal_methods.append(f.info.get('disposal', img.info.get('disposal', 2)))
 
         frame_count = len(frames)
-        logger.info(f"Processing {frame_count} frames for animated GIF")
+        logger.debug(f"Processing {frame_count} frames for animated GIF")
 
         # Normalize durations and disposal_methods so their length equals frame_count
         durations = [int(d) for d in durations]
@@ -273,7 +273,7 @@ def _resize_image(file_bytes: bytes, is_gif: bool, target_width: int, target_hei
         )
         
         # Size
-        logger.info(f"Resized GIF to {len(output.getvalue())} bytes")
+        logger.debug(f"Resized GIF to {len(output.getvalue())} bytes")
         
         return output.getvalue()
     else:
@@ -311,7 +311,7 @@ def _process_loaded_bytes(file_bytes: bytes, extension: str) -> tuple[bytes, boo
                 "Install with: pip install pillow-heif"
             )
 
-        logger.info(f"Converting image from {ext} to PNG format")
+        logger.debug(f"Converting image from {ext} to PNG format")
         img = Image.open(BytesIO(file_bytes))
         output = BytesIO()
         img.save(output, format="PNG")

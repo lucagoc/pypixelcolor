@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pypixelcolor"
-version = "0.4.0"
+version = "0.5.0"
 authors = [
   { name="Lucas Balmès", email="lucagoc@pm.me" },
 ]
@@ -16,6 +16,7 @@ dependencies = [
   "bleak",
   "Pillow",
   "crccheck",
+  "rich",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

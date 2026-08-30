@@ -62,7 +62,7 @@ async def send_plan(client: BleakClient, plan: SendPlan, ack_mgr: AckManager, *,
     Returns:
         CommandResult with optional data from response_handler
     """
-    logger.info(f"Sending plan '{plan.id}'")
+    logger.debug(f"Sending plan '{plan.id}'")
     
     # If this command expects a response, set up response capture
     response_data = None

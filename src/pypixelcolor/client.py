@@ -11,6 +11,7 @@ from typing import Optional
 from .lib.device_session import DeviceSession
 from .lib.device_info import DeviceInfo
 from .commands import COMMANDS
+from .scanner import scan_devices, scan_devices_sync
 from .__version__ import VERSION
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,11 @@ def _create_async_method(command_name: str, command_func):
 
 class AsyncClient:
     """Asynchronous client for controlling the LED matrix via BLE."""
+    
+    @staticmethod
+    async def scan(timeout: float = 5.0):
+        """Scan for compatible LED devices asynchronously."""
+        return await scan_devices(timeout=timeout)
     
     def __init__(self, address: str):
         """Initialize the AsyncClient.
@@ -122,6 +128,11 @@ class Client:
     This is a synchronous wrapper around AsyncClient that handles the event loop
     automatically for simpler usage in non-async code.
     """
+    
+    @staticmethod
+    def scan(timeout: float = 5.0):
+        """Scan for compatible LED devices synchronously."""
+        return scan_devices_sync(timeout=timeout)
     
     def __init__(self, address: str):
         """Initialize the Client.

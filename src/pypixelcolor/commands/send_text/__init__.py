@@ -231,7 +231,7 @@ def send_text(text: str,
         window_index += 1
         pos = window_end
 
-    logger.info(f"Split text into {len(windows)} frames")
+    logger.debug(f"Split text into {len(windows)} frames")
     return SendPlan("send_text", windows)
 
 

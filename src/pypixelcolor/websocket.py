@@ -182,10 +182,10 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--port", type=int, default=4444, help="Specify the port for the server")
     parser.add_argument("--host", default="localhost", help="Bind address (e.g., 0.0.0.0, ::, or localhost)")
     parser.add_argument("-a", "--address", required=True, help="Specify the Bluetooth device address")
-    parser.add_argument("--noemojis", action="store_true", help="Disable emojis in log output")
+    parser.add_argument("--loglevel", default="INFO", help="Set logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)")
     
     args = parser.parse_args()
     
-    setup_logging(use_emojis=not args.noemojis)
+    setup_logging(level=args.loglevel.upper())
 
     asyncio.run(start_server(args.host, args.port, args.address))

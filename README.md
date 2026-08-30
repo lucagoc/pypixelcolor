@@ -63,8 +63,6 @@ hatch run pytest
 hatch build
 ```
 
-> 💡 If your terminal doesn't support emojis, you can disable them with the `--noemojis` flag.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/lucagoc/pypixelcolor/blob/main/LICENSE.md) file for details.
