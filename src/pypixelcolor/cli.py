@@ -155,10 +155,10 @@ def main() -> None:
             sys.exit(0)
         except Exception as e:
             if loglevel_specified and args.loglevel.upper() == "DEBUG":
-                logger.error(f"An error occurred: {e}")
+                logger.error(f"{e}")
                 logger.exception("Traceback (DEBUG):")
             else:
-                logger.error(f"An error occurred: {e}. Run with --loglevel DEBUG to see the full traceback.")
+                logger.error(f"{e} Run with --loglevel DEBUG to see the full traceback.")
             sys.exit(1)
 
     if is_interactive:
