@@ -56,27 +56,41 @@ def encode_emoji_block(emoji_bytes: bytes, text_size: int) -> bytes:
     return bytes(result)
 
 
-def encode_character_block(char_bytes: bytes, text_size: int, color_bytes: bytes) -> bytes:
+def encode_character_block(char_bytes: bytes, text_size: int, color_bytes: bytes, char_width: int | None = None) -> bytes:
     """Build the encoded bytes for a character or chunk block.
+
+    The protocol uses a 2-bit opcode to define character cell dimensions:
+    - Bit 1 (value 2): Height flag (0 for height <= 20, 1 for height 32)
+    - Bit 0 (value 1): Width flag (0 for half-width, 1 for full-width)
+
+    Opcodes:
+    - 0x00: Height 16/20, half-width (8px)  -> 16 bytes bitmap (20B total)
+    - 0x01: Height 16/20, full-width (16px) -> 32 bytes bitmap (36B total)
+    - 0x02: Height 32, half-width (16px)    -> 64 bytes bitmap (68B total)
+    - 0x03: Height 32, full-width (32px)    -> 128 bytes bitmap (132B total)
 
     Args:
         char_bytes (bytes): The raw character/chunk bitmap bytes.
-        text_size (int): The height of the text (16 or 32).
+        text_size (int): The height of the text (16, 20, or 32).
         color_bytes (bytes): The RGB color bytes.
+        char_width (int | None): The width of the character/chunk in pixels.
 
     Returns:
-        bytes: The encoded character block with appropriate header and payload.
+        bytes: The encoded character block (1B opcode + 3B RGB + bitmap).
     """
+    is_32 = 1 if text_size >= 32 else 0
+    if char_width is None:
+        bytes_per_line = len(char_bytes) // text_size if text_size > 0 else 1
+        is_wide = 1 if bytes_per_line > (2 if is_32 else 1) else 0
+    else:
+        is_wide = 1 if char_width > (16 if is_32 else 8) else 0
+
+    opcode = (is_32 << 1) | is_wide
+
     result = bytearray()
-
-    if text_size == 32:
-        result += bytes([0x02])  # Char 32x16
-        result += color_bytes
-    else:  # text_size == 16
-        result += bytes([0x00])  # Char 16x8
-        result += color_bytes
-
-    result += char_bytes
+    result.append(opcode)
+    result.extend(color_bytes)
+    result.extend(char_bytes)
     return bytes(result)
 
 
@@ -150,7 +164,7 @@ def encode_text_chunked(text: str, char_height: int, color: str, font_path: str,
             for chunk in chunks:
                 char_bytes = encode_char_img(chunk)
                 char_bytes = _logic_reverse_bits_order_bytes(char_bytes)
-                items.append(encode_character_block(char_bytes, char_height, color_bytes))
+                items.append(encode_character_block(char_bytes, char_height, color_bytes, char_width=chunk.width))
     
     ###################
     # Final Assembly  #
@@ -211,10 +225,10 @@ def encode_text(text: str, matrix_height: int, color: str, font_path: str, font_
             else:
                 logger.error(f"Failed to encode emoji: {char}")
         else:
-            char_bytes = char_to_hex(char, matrix_height, font_path, font_offset, font_size, pixel_threshold)
+            char_bytes, char_width = char_to_hex(char, matrix_height, font_path, font_offset, font_size, pixel_threshold)
             if char_bytes:
                 char_bytes = _logic_reverse_bits_order_bytes(char_bytes)
-                result += encode_character_block(char_bytes, matrix_height, color_bytes)
+                result += encode_character_block(char_bytes, matrix_height, color_bytes, char_width=char_width)
             else:
                 logger.error(f"Failed to encode character: {char}")
 

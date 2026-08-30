@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Image processing utilities for text rendering."""
 
+import unicodedata
 from typing import Optional
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -181,8 +182,8 @@ def emoji_to_hex(emoji: str, emoji_height: int) -> Optional[bytes]:
         return None
 
 
-def char_to_hex(character: str, char_height: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> Optional[bytes]:
-    """Convert a character to its bitmap bytes.
+def char_to_hex(character: str, char_height: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> tuple[Optional[bytes], int]:
+    """Convert a character to its bitmap bytes and measured width.
     
     Args:
         character (str): The character to convert.
@@ -193,7 +194,7 @@ def char_to_hex(character: str, char_height: int, font_path: str, font_offset: t
         pixel_threshold (int): Threshold for converting grayscale to binary.
         
     Returns:
-        Optional[bytes]: Encoded bitmap bytes of the character, or None if conversion fails.
+        tuple[Optional[bytes], int]: (bytes_data, char_width), or (None, 0) if conversion fails.
     """
     try:
         # Generate image with dynamic width
@@ -206,17 +207,17 @@ def char_to_hex(character: str, char_height: int, font_path: str, font_offset: t
         bbox = temp_draw.textbbox((0, 0), character, font=font_obj)
         text_width = bbox[2] - bbox[0]
 
-        # Clamp text_width between min and max values to prevent crash
-        if char_height == 32:
-            min_width = 9
-            max_width = 16
-        else:
-            min_width = 1
-            max_width = 8
-        text_width = int(max(min_width, min(text_width, max_width)))
+        # Snap to half-width or full-width cell based on character and char_height
+        # For height <= 20: half-width is 8, full-width is 16
+        # For height >= 32: half-width is 16, full-width is 32
+        is_32 = char_height >= 32
+        half_width = 16 if is_32 else 8
+        full_width = 32 if is_32 else 16
+        is_wide = unicodedata.east_asian_width(character) in ('W', 'F') or text_width > int(half_width * 1.25)
+        slot_width = full_width if is_wide else half_width
 
         # Create final image in grayscale mode for pixel-perfect rendering
-        img = Image.new('L', (int(text_width), int(char_height)), 0)
+        img = Image.new('L', (slot_width, int(char_height)), 0)
         d = ImageDraw.Draw(img)
         
         # Draw text in white (255) for pixel-perfect rendering
@@ -226,10 +227,10 @@ def char_to_hex(character: str, char_height: int, font_path: str, font_offset: t
         img = apply_pixel_threshold(img, pixel_threshold)
 
         bytes_data = encode_char_img(img)
-        return bytes_data
+        return bytes_data, slot_width
     except Exception as e:
         logger.error(f"Error occurred while converting character to hex: {e}")
-        return None
+        return None, 0
 
 
 def split_image_into_chunks(img: Image.Image, chunk_width: int) -> list[Image.Image]:

@@ -108,7 +108,7 @@ def download_emoji(char: str) -> Optional[Image.Image]:
     
     # Download from Twemoji CDN
     url = f"{TWEMOJI_BASE_URL}{codepoint}.png"
-    logger.debug(f"Downloading emoji from: {url}")
+    logger.info(f"Downloading emoji from: {url}")
     
     try:
         # Download the image

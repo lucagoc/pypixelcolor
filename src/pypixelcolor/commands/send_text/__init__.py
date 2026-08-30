@@ -24,6 +24,8 @@ def send_text(text: str,
               bg_color: Optional[str] = None,
               font: Union[str, FontConfig] = "CUSONG",
               char_height: Optional[int] = None,
+              var_width: Optional[bool] = None,
+              chunk_width: Optional[int] = None,
               device_info: Optional[DeviceInfo] = None
               ):
     """
@@ -40,6 +42,8 @@ def send_text(text: str,
         bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).
         font (str | FontConfig, optional): Built-in font name, file path, or FontConfig object. Defaults to "CUSONG". Built-in fonts are "CUSONG", "SIMSUN", "VCR_OSD_MONO".
         char_height (int, optional): Character height. Auto-detected from device_info if not specified.
+        var_width (bool, optional): Force variable-width chunking mode (renders text as image and splits it). Defaults to font configuration.
+        chunk_width (int, optional): Width of each chunk in pixels when var_width is True. Defaults to 16 for height >= 16.
         device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).
 
     Raises:
@@ -64,7 +68,16 @@ def send_text(text: str,
     font_size = metrics["font_size"]
     font_offset = metrics["offset"]
     pixel_threshold = metrics["pixel_threshold"]
-    var_width = metrics["var_width"]
+    
+    if var_width is not None:
+        if isinstance(var_width, str):
+            var_width = var_width.lower() in ('true', '1', 'yes')
+        var_width = bool(var_width)
+    else:
+        var_width = metrics.get("var_width", False)
+        
+    if chunk_width is not None:
+        chunk_width = int(chunk_width)
     
     # properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 1 byte bg flag + 3 bytes bg color
     try:
@@ -140,8 +153,12 @@ def send_text(text: str,
     #########################
 
     if var_width:
-        # Determine chunk width based on char_height
-        chunk_width = 8  if char_height <= 20 else 16
+        # Determine chunk width: argument > font metric > default
+        actual_chunk_width = chunk_width
+        if actual_chunk_width is None:
+            actual_chunk_width = metrics.get("chunk_width")
+        if actual_chunk_width is None:
+            actual_chunk_width = 8 if char_height <= 20 else 16
 
         # Encode text with chunks and emoji support, getting both bytes and item count
         characters_bytes, num_chars = encode_text_chunked(
@@ -152,7 +169,7 @@ def send_text(text: str,
             font_offset,
             font_size,
             pixel_threshold,
-            chunk_width,
+            actual_chunk_width,
             reverse=rtl
         )
     else:
