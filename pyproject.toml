@@ -17,6 +17,7 @@ dependencies = [
   "Pillow",
   "crccheck",
   "rich",
+  "textual>=0.40.0",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

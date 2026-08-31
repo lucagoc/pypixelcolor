@@ -1,0 +1,689 @@
+# -*- coding: utf-8 -*-
+"""Interactive TUI tool for previewing and calibrating font rendering on LED matrix screens.
+
+Allows downloading Google Fonts or URLs, previewing across 16px/24px/32px matrix heights,
+adjusting font_size, offsets, pixel_threshold, var_width mode, and saving permanently to ~/.config/pypixelcolor/fonts.json.
+"""
+
+import os
+import unicodedata
+from pathlib import Path
+from typing import Optional
+
+from PIL import Image, ImageDraw, ImageFont
+from rich.text import Text
+from textual.app import App, ComposeResult
+from textual.containers import Container, Horizontal, Vertical, VerticalScroll
+from textual.reactive import reactive
+from textual.screen import ModalScreen
+from textual.widgets import (
+    Button,
+    Footer,
+    Header,
+    Input,
+    Label,
+    Select,
+    Static,
+    Tab,
+    Tabs,
+)
+
+from ..lib.font_calibrator import (
+    calculate_font_metrics,
+    download_font_url,
+    download_google_font,
+    get_cached_metrics,
+    get_fonts_cache_dir,
+)
+from ..lib.font_config import UNIFONT_PATH
+from ..lib.user_config import get_user_fonts_config_path, save_user_font_metrics
+
+
+class AddFontModal(ModalScreen[Optional[str]]):
+    """Modal dialog for downloading or loading a new font."""
+
+    CSS = """
+    AddFontModal {
+        align: center middle;
+    }
+    
+    #modal-dialog {
+        width: 64;
+        height: auto;
+        border: thick $primary;
+        background: $panel;
+        padding: 1 2;
+    }
+    
+    #modal-title {
+        text-style: bold;
+        margin-bottom: 1;
+    }
+    
+    #modal-input {
+        margin-top: 1;
+        margin-bottom: 1;
+    }
+    
+    #modal-buttons {
+        height: auto;
+        align: right middle;
+    }
+    
+    #modal-buttons Button {
+        margin-left: 1;
+    }
+    """
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="modal-dialog"):
+            yield Label("Add / Download Font", id="modal-title")
+            yield Label("Enter a Google Font family name (e.g. Silkscreen, Roboto),\na direct font URL, or a local file path:")
+            yield Input(placeholder="e.g. Silkscreen, Roboto, https://...", id="modal-input")
+            with Horizontal(id="modal-buttons"):
+                yield Button("Cancel", id="btn-modal-cancel")
+                yield Button("Load", id="btn-modal-load", variant="primary")
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "btn-modal-cancel":
+            self.dismiss(None)
+        elif event.button.id == "btn-modal-load":
+            val = self.query_one("#modal-input", Input).value.strip()
+            self.dismiss(val if val else None)
+
+
+class MatrixPreview(Static):
+    """Widget rendering simulated LED matrix pixels for text."""
+
+    def render_matrix(
+        self,
+        text: str,
+        font_path: str,
+        height: int,
+        font_size: int,
+        offset: tuple[int, int],
+        pixel_threshold: int,
+        var_width: bool = False,
+    ) -> Text:
+        """Render text onto PIL image and convert to rich Text representing LED pixels.
+        
+        Args:
+            text: Text to render (up to 16 characters).
+            font_path: Path to the TTF/OTF font file.
+            height: Matrix height in pixels (16, 24, 32).
+            font_size: Font size in points.
+            offset: (x, y) offset tuple.
+            pixel_threshold: Threshold for active pixels (0-255).
+            var_width: If True, renders continuously with proportional spacing.
+                       If False, renders character by character into fixed cells (8px/16px).
+        """
+        display_text = text[:16]
+        if not display_text or not font_path or not os.path.exists(font_path):
+            return Text("No font loaded or empty text.", style="dim italic")
+
+        try:
+            font_obj = ImageFont.truetype(font_path, max(1, font_size))
+        except Exception as e:
+            return Text(f"Font loading error: {e}", style="bold red")
+
+        if var_width:
+            # Proportional / continuous chunked rendering
+            temp_img = Image.new("L", (2000, height), 0)
+            temp_draw = ImageDraw.Draw(temp_img)
+            bbox = temp_draw.textbbox((0, 0), display_text, font=font_obj)
+            rendered_w = max(32, (bbox[2] - bbox[0]) + abs(offset[0]) + 6) if bbox else 32
+            max_display_w = rendered_w
+
+            img = Image.new("L", (max_display_w, height), 0)
+            draw = ImageDraw.Draw(img)
+            draw.text(offset, display_text, fill=255, font=font_obj)
+            mode_label = "Variable Width (proportional)"
+        else:
+            # Fixed-width cells mode (standard LED per-character cells)
+            is_32 = height >= 32
+            half_width = 16 if is_32 else 8
+            full_width = 32 if is_32 else 16
+
+            temp_img = Image.new("L", (200, height), 0)
+            temp_draw = ImageDraw.Draw(temp_img)
+
+            cell_images = []
+            for character in display_text:
+                bbox = temp_draw.textbbox((0, 0), character, font=font_obj)
+                text_w = (bbox[2] - bbox[0]) if bbox else 0
+                is_wide = unicodedata.east_asian_width(character) in ("W", "F") or text_w > int(half_width * 1.25)
+                slot_w = full_width if is_wide else half_width
+
+                c_img = Image.new("L", (slot_w, height), 0)
+                c_draw = ImageDraw.Draw(c_img)
+                c_draw.text(offset, character, fill=255, font=font_obj)
+                cell_images.append(c_img)
+
+            total_cell_w = sum(c.width for c in cell_images)
+            max_display_w = max(32, total_cell_w)
+
+            img = Image.new("L", (max_display_w, height), 0)
+            x_cursor = 0
+            for c_img in cell_images:
+                img.paste(c_img, (x_cursor, 0))
+                x_cursor += c_img.width
+
+            mode_label = f"Fixed Width (cells: {half_width}px / {full_width}px)"
+
+        # Apply threshold to match real hardware binary output (only ON or OFF)
+        bin_img = img.point(lambda p: 255 if p >= pixel_threshold else 0, mode="L")
+        pbbox = bin_img.getbbox()
+        ink_info = f"Ink: {pbbox[2]-pbbox[0]}x{pbbox[3]-pbbox[1]} px" if pbbox else "Ink: 0x0 px"
+        bounds_info = f"[Lines {pbbox[1]}..{pbbox[3]-1}]" if pbbox else ""
+
+        result = Text(no_wrap=True)
+        result.append(
+            f"Matrix {max_display_w} x {height} px  |  {ink_info} {bounds_info}  |  {mode_label}\n",
+            style="bold yellow",
+        )
+
+        for y in range(height):
+            result.append(f"{y:02d}: ", style="dim")
+            for x in range(max_display_w):
+                if bin_img.getpixel((x, y)) > 0:
+                    result.append("██", style="bold cyan")
+                else:
+                    result.append("··", style="dim")
+            result.append("\n")
+
+        return result
+
+
+class FontTUIApp(App):
+    """Textual TUI for font configuration and preview."""
+
+    CSS = """
+    Screen {
+        background: $surface-darken-1;
+    }
+    
+    #top-bar {
+        height: auto;
+        padding: 0 1;
+        background: $panel;
+        border-bottom: solid $primary;
+        align: left middle;
+    }
+    
+    #top-bar Horizontal, #top-bar Vertical {
+        height: auto;
+    }
+    
+    .top-box {
+        height: auto;
+        margin-right: 2;
+    }
+    
+    #box-font-select {
+        width: 34;
+    }
+    
+    #box-test-text {
+        width: 1fr;
+    }
+    
+    #btn-open-add-font {
+        margin-top: 1;
+        height: 3;
+    }
+    
+    #main-container {
+        height: 1fr;
+        padding: 1;
+    }
+    
+    #left-panel {
+        width: 48;
+        height: 100%;
+        background: $panel;
+        padding: 1;
+        border: round $primary;
+    }
+    
+    #right-panel {
+        width: 1fr;
+        height: 100%;
+        margin-left: 1;
+        background: $panel;
+        padding: 1;
+        border: round $primary;
+        overflow: auto auto;
+    }
+
+    #matrix-preview {
+        width: auto;
+        height: auto;
+    }
+    
+    .panel-section-title {
+        text-style: bold;
+        margin-bottom: 1;
+    }
+    
+    .control-row {
+        height: 1;
+        margin-bottom: 1;
+        align: left middle;
+    }
+    
+    .control-label {
+        width: 16;
+        content-align: left middle;
+    }
+    
+    .step-btn {
+        min-width: 3;
+        width: 3;
+        height: 1;
+        border: none;
+        padding: 0;
+        margin: 0 1;
+    }
+    
+    .val-input {
+        width: 10;
+        height: 1;
+        border: none;
+        padding: 0 1;
+        background: $surface;
+    }
+    
+    #btn-var-width {
+        min-width: 8;
+        width: 8;
+        height: 1;
+        border: none;
+        padding: 0;
+        margin-left: 1;
+    }
+    
+    #btn-row {
+        margin-top: 1;
+        height: 1;
+    }
+    
+    #btn-row Button {
+        height: 1;
+        border: none;
+        padding: 0 1;
+        min-width: 10;
+        margin-right: 1;
+    }
+    
+    #status-bar {
+        width: 100%;
+        height: 1;
+        background: $surface;
+        padding: 0 1;
+    }
+    """
+
+    BINDINGS = [
+        ("q", "quit", "Quit"),
+        ("s", "save_metrics", "Save"),
+        ("r", "auto_calibrate", "Reset"),
+        ("v", "toggle_var_width", "Toggle Var Width"),
+        ("a", "open_add_font", "Add Font"),
+    ]
+
+    current_font_name = reactive("UNIFONT")
+    current_font_path = reactive(UNIFONT_PATH)
+    current_height = reactive(16)
+    test_text = reactive("Hello 世界")
+
+    # Metrics per height: {16: {...}, 24: {...}, 32: {...}}
+    all_metrics: dict[int, dict] = {}
+    _blink_timer = None
+    _blink_count: int = 0
+    _current_status_msg: str = ""
+    _current_status_style: str = ""
+
+    def compose(self) -> ComposeResult:
+        yield Header(show_clock=True)
+
+        with Horizontal(id="top-bar"):
+            with Vertical(classes="top-box", id="box-font-select"):
+                yield Label("[b]Font:[/b]")
+                yield Select([], id="font-select", prompt="Choose font")
+            with Vertical(classes="top-box", id="box-test-text"):
+                yield Label(f"[b]Test Text ({len(self.test_text)}/16):[/b]", id="label-test-text")
+                yield Input(value=self.test_text, id="input-test-text", max_length=16)
+
+        with Horizontal(id="main-container"):
+            with VerticalScroll(id="left-panel"):
+                yield Label("Screen Height", classes="panel-section-title")
+                yield Tabs(
+                    Tab("16 px", id="tab-16"),
+                    Tab("24 px", id="tab-24"),
+                    Tab("32 px", id="tab-32"),
+                    id="height-tabs",
+                )
+
+                yield Label("\nCalibration Parameters", classes="panel-section-title")
+
+                with Horizontal(classes="control-row"):
+                    yield Label("Font size:", classes="control-label")
+                    yield Button("-", id="btn-size-dec", classes="step-btn")
+                    yield Input("16", id="input-size", classes="val-input")
+                    yield Button("+", id="btn-size-inc", classes="step-btn")
+
+                with Horizontal(classes="control-row"):
+                    yield Label("Offset X:", classes="control-label")
+                    yield Button("-", id="btn-offx-dec", classes="step-btn")
+                    yield Input("0", id="input-offx", classes="val-input")
+                    yield Button("+", id="btn-offx-inc", classes="step-btn")
+
+                with Horizontal(classes="control-row"):
+                    yield Label("Offset Y:", classes="control-label")
+                    yield Button("-", id="btn-offy-dec", classes="step-btn")
+                    yield Input("0", id="input-offy", classes="val-input")
+                    yield Button("+", id="btn-offy-inc", classes="step-btn")
+
+                with Horizontal(classes="control-row"):
+                    yield Label("Threshold:", classes="control-label")
+                    yield Button("-", id="btn-thresh-dec", classes="step-btn")
+                    yield Input("30", id="input-thresh", classes="val-input")
+                    yield Button("+", id="btn-thresh-inc", classes="step-btn")
+
+                with Horizontal(classes="control-row"):
+                    yield Label("Variable width:", classes="control-label")
+                    yield Button("OFF", id="btn-var-width", variant="default")
+
+                with Horizontal(id="btn-row"):
+                    yield Button("Reset", id="btn-auto", variant="warning")
+                    yield Button("Save", id="btn-save", variant="success")
+
+            with VerticalScroll(id="right-panel"):
+                yield MatrixPreview(id="matrix-preview")
+
+        yield Static("", id="status-bar")
+        yield Footer()
+
+    def on_mount(self) -> None:
+        """Initialize available fonts and load default font metrics."""
+        self._refresh_font_list()
+        self._load_current_font_metrics()
+
+    def _discover_fonts(self) -> list[tuple[str, str, str]]:
+        """Discover all available fonts: built-in, cached, and user-configured.
+        
+        Returns:
+            List of (display_label, font_name, font_path).
+        """
+        fonts: list[tuple[str, str, str]] = []
+        if os.path.exists(UNIFONT_PATH):
+            fonts.append(("GNU Unifont (built-in)", "UNIFONT", UNIFONT_PATH))
+
+        # Check fonts cache directory
+        cache_fonts_dir = get_fonts_cache_dir()
+        if cache_fonts_dir.exists():
+            for f in sorted(cache_fonts_dir.glob("*.*")):
+                if f.suffix.lower() in (".ttf", ".otf"):
+                    fonts.append((f"{f.stem} (cached)", f.stem, str(f)))
+
+        return fonts
+
+    def _refresh_font_list(self) -> None:
+        """Update the font select widget."""
+        discovered = self._discover_fonts()
+        options = [(label, name) for label, name, _ in discovered]
+        select_widget = self.query_one("#font-select", Select)
+        select_widget.set_options(options)
+        if options:
+            select_widget.value = self.current_font_name
+
+    def _load_current_font_metrics(self) -> None:
+        """Load or calculate metrics for current font across all heights."""
+        self.all_metrics = get_cached_metrics(
+            self.current_font_path,
+            heights=(16, 24, 32),
+            font_name=self.current_font_name,
+        )
+        self._sync_inputs_from_metrics()
+        self._update_preview()
+
+    def _sync_inputs_from_metrics(self) -> None:
+        """Update control input fields with current height's metrics."""
+        m = self.all_metrics.get(
+            self.current_height,
+            {"font_size": self.current_height, "offset": (0, 0), "pixel_threshold": 30, "var_width": False},
+        )
+        self.query_one("#input-size", Input).value = str(m["font_size"])
+        self.query_one("#input-offx", Input).value = str(m["offset"][0])
+        self.query_one("#input-offy", Input).value = str(m["offset"][1])
+        self.query_one("#input-thresh", Input).value = str(m["pixel_threshold"])
+
+        var_w = bool(m.get("var_width", False))
+        btn_var = self.query_one("#btn-var-width", Button)
+        btn_var.label = "ON" if var_w else "OFF"
+        btn_var.variant = "success" if var_w else "default"
+
+    def _update_preview(self) -> None:
+        """Refresh the matrix preview widget with current parameters."""
+        m = self.all_metrics.get(
+            self.current_height,
+            {"font_size": self.current_height, "offset": (0, 0), "pixel_threshold": 30, "var_width": False},
+        )
+        preview = self.query_one("#matrix-preview", MatrixPreview)
+        rendered = preview.render_matrix(
+            text=self.test_text,
+            font_path=self.current_font_path,
+            height=self.current_height,
+            font_size=m["font_size"],
+            offset=m["offset"],
+            pixel_threshold=m["pixel_threshold"],
+            var_width=bool(m.get("var_width", False)),
+        )
+        preview.update(rendered)
+
+    def on_select_changed(self, event: Select.Changed) -> None:
+        """Handle font selection change."""
+        if not event.value:
+            return
+        selected_name = str(event.value)
+        for _, name, path in self._discover_fonts():
+            if name == selected_name:
+                self.current_font_name = name
+                self.current_font_path = path
+                self._load_current_font_metrics()
+                break
+
+    def on_input_changed(self, event: Input.Changed) -> None:
+        """Handle real-time changes in inputs."""
+        if event.input.id == "input-test-text":
+            if len(event.value) > 16:
+                event.input.value = event.value[:16]
+                return
+            self.test_text = event.value
+            lbl = self.query_one("#label-test-text", Label)
+            lbl.update(f"[b]Test Text ({len(self.test_text)}/16):[/b]")
+            self._update_preview()
+        elif event.input.id in ("input-size", "input-offx", "input-offy", "input-thresh"):
+            self._update_metrics_from_inputs()
+
+    def _update_metrics_from_inputs(self) -> None:
+        """Read values from inputs and update current height metrics."""
+        try:
+            sz = int(self.query_one("#input-size", Input).value)
+            off_x = int(self.query_one("#input-offx", Input).value)
+            off_y = int(self.query_one("#input-offy", Input).value)
+            thresh = int(self.query_one("#input-thresh", Input).value)
+        except ValueError:
+            return
+
+        current_var = self.all_metrics.get(self.current_height, {}).get("var_width", False)
+        self.all_metrics[self.current_height] = {
+            "font_size": max(1, sz),
+            "offset": (off_x, off_y),
+            "pixel_threshold": max(0, min(255, thresh)),
+            "var_width": current_var,
+        }
+        self._update_preview()
+
+    def on_tabs_tab_activated(self, event: Tabs.TabActivated) -> None:
+        """Handle height tab switch (16, 24, 32)."""
+        tab_id = event.tab.id
+        if tab_id == "tab-16":
+            self.current_height = 16
+        elif tab_id == "tab-24":
+            self.current_height = 24
+        elif tab_id == "tab-32":
+            self.current_height = 32
+
+        self._sync_inputs_from_metrics()
+        self._update_preview()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        """Handle button clicks."""
+        btn_id = event.button.id
+        if btn_id == "btn-open-add-font":
+            self.action_open_add_font()
+        elif btn_id == "btn-size-inc":
+            self._adjust_input("#input-size", 1)
+        elif btn_id == "btn-size-dec":
+            self._adjust_input("#input-size", -1)
+        elif btn_id == "btn-offx-inc":
+            self._adjust_input("#input-offx", 1)
+        elif btn_id == "btn-offx-dec":
+            self._adjust_input("#input-offx", -1)
+        elif btn_id == "btn-offy-inc":
+            self._adjust_input("#input-offy", 1)
+        elif btn_id == "btn-offy-dec":
+            self._adjust_input("#input-offy", -1)
+        elif btn_id == "btn-thresh-inc":
+            self._adjust_input("#input-thresh", 5)
+        elif btn_id == "btn-thresh-dec":
+            self._adjust_input("#input-thresh", -5)
+        elif btn_id == "btn-var-width":
+            self.action_toggle_var_width()
+        elif btn_id == "btn-auto":
+            self.action_auto_calibrate()
+        elif btn_id == "btn-save":
+            self.action_save_metrics()
+
+    def action_open_add_font(self) -> None:
+        """Open the Add Font modal dialog."""
+        def _on_modal_dismiss(font_query: Optional[str]) -> None:
+            if font_query:
+                self._load_or_download_font(font_query)
+
+        self.push_screen(AddFontModal(), _on_modal_dismiss)
+
+    def action_toggle_var_width(self) -> None:
+        """Toggle variable width mode for current height."""
+        current = bool(self.all_metrics.get(self.current_height, {}).get("var_width", False))
+        new_val = not current
+        if self.current_height in self.all_metrics:
+            self.all_metrics[self.current_height]["var_width"] = new_val
+
+        btn_var = self.query_one("#btn-var-width", Button)
+        btn_var.label = "ON" if new_val else "OFF"
+        btn_var.variant = "success" if new_val else "default"
+        self._update_preview()
+        self._set_status(f"Variable width set to {'ON' if new_val else 'OFF'} for {self.current_height}px.")
+
+    def _adjust_input(self, selector: str, delta: int) -> None:
+        """Helper to increment/decrement integer value in an Input widget."""
+        inp = self.query_one(selector, Input)
+        try:
+            val = int(inp.value) + delta
+        except ValueError:
+            val = delta
+        inp.value = str(val)
+        self._update_metrics_from_inputs()
+
+    def _load_or_download_font(self, font_query: str) -> None:
+        """Download Google font, URL, or load local path."""
+        raw_val = font_query.strip()
+        if not raw_val:
+            return
+
+        self._set_status(f"Loading '{raw_val}'...")
+
+        try:
+            if raw_val.startswith("http://") or raw_val.startswith("https://"):
+                path = str(download_font_url(raw_val))
+                name = Path(path).stem
+            elif os.path.exists(raw_val):
+                path = str(Path(raw_val).resolve())
+                name = Path(path).stem
+            else:
+                # Treat as Google Font family
+                path = str(download_google_font(raw_val))
+                name = raw_val
+
+            self.current_font_name = name
+            self.current_font_path = path
+            self._refresh_font_list()
+            self._load_current_font_metrics()
+            self.query_one("#font-select", Select).value = name
+            self._set_status(f"Font '{name}' loaded successfully.")
+        except Exception as e:
+            self._set_status(f"Failed to load font: {e}", error=True)
+
+    def action_auto_calibrate(self) -> None:
+        """Reset current height metrics to auto-calibrated values."""
+        calibrated = calculate_font_metrics(self.current_font_path, self.current_height)
+        self.all_metrics[self.current_height] = calibrated
+        self._sync_inputs_from_metrics()
+        self._update_preview()
+        self._set_status(f"Reset applied for {self.current_height}px.")
+
+    def action_save_metrics(self) -> None:
+        """Save permanent configuration to ~/.config/pypixelcolor/fonts.json."""
+        try:
+            save_user_font_metrics(
+                font_path=self.current_font_path,
+                font_name=self.current_font_name,
+                metrics=self.all_metrics,
+            )
+            config_file = get_user_fonts_config_path()
+            self._set_status(f"Configuration saved to {config_file}.")
+        except Exception as e:
+            self._set_status(f"Failed to save: {e}", error=True)
+
+    def _set_status(self, msg: str, error: bool = False) -> None:
+        """Display feedback in the bottom full-width status bar, blinking for 2 seconds."""
+        status_bar = self.query_one("#status-bar", Static)
+        if not msg:
+            status_bar.update("")
+            return
+
+        if self._blink_timer is not None:
+            self._blink_timer.stop()
+            self._blink_timer = None
+
+        color = "bold red" if error else "bold green"
+        self._current_status_msg = msg
+        self._current_status_style = color
+        self._blink_count = 0
+
+        def _blink_step() -> None:
+            self._blink_count += 1
+            if self._blink_count >= 8:
+                status_bar.update(f"[{self._current_status_style}] {self._current_status_msg}[/{self._current_status_style}]")
+                if self._blink_timer is not None:
+                    self._blink_timer.stop()
+                    self._blink_timer = None
+            elif self._blink_count % 2 == 1:
+                status_bar.update("")
+            else:
+                status_bar.update(f"[{self._current_status_style}] {self._current_status_msg}[/{self._current_status_style}]")
+
+        status_bar.update(f"[{color}] {msg}[/{color}]")
+        self._blink_timer = self.set_interval(0.25, _blink_step)
+
+
+def run_font_tui() -> None:
+    """Launch the Font Configuration TUI."""
+    app = FontTUIApp()
+    app.run()
+
+
+if __name__ == "__main__":
+    run_font_tui()

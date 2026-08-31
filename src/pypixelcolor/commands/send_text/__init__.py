@@ -27,8 +27,7 @@ def send_text(text: str,
               font_size: Optional[int] = None,
               font_offset: Optional[tuple[int, int]] = None,
               pixel_threshold: Optional[int] = None,
-              var_width: Optional[bool] = None,
-              chunk_width: Optional[int] = None,
+              var_width: Optional[Union[bool, str]] = None,
               device_info: Optional[DeviceInfo] = None
               ):
     """
@@ -48,8 +47,7 @@ def send_text(text: str,
         font_size (int, optional): Manual font size override. Defaults to auto-calibrated font metric.
         font_offset (tuple[int, int], optional): Manual font offset override (x, y). Defaults to auto-calibrated font metric.
         pixel_threshold (int, optional): Manual pixel threshold override (0-255). Defaults to auto-calibrated font metric.
-        var_width (bool, optional): Force variable-width chunking mode (renders text as image and splits it). Defaults to False.
-        chunk_width (int, optional): Width of each chunk in pixels when var_width is True. Defaults to 16 for height >= 16.
+        var_width (bool, optional): Override variable width mode. If None, uses font configuration setting.
         device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).
 
     Raises:
@@ -72,21 +70,32 @@ def send_text(text: str,
     # Get metrics for this character height
     metrics = font_config.get_metrics(char_height)
     if font_size is None:
-        font_size = metrics["font_size"]
+        font_size = int(metrics["font_size"])
+    else:
+        font_size = int(font_size)
+
     if font_offset is None:
-        font_offset = metrics["offset"]
+        font_offset = tuple(metrics["offset"])
+    else:
+        if isinstance(font_offset, str):
+            cleaned = font_offset.strip("()[] ")
+            parts = [int(p.strip()) for p in cleaned.split(",")]
+            font_offset = (parts[0], parts[1])
+        else:
+            font_offset = (int(font_offset[0]), int(font_offset[1]))
+
     if pixel_threshold is None:
-        pixel_threshold = metrics["pixel_threshold"]
+        pixel_threshold = int(metrics["pixel_threshold"])
+    else:
+        pixel_threshold = int(pixel_threshold)
     
     if var_width is not None:
         if isinstance(var_width, str):
-            var_width = var_width.lower() in ('true', '1', 'yes')
-        var_width = bool(var_width)
+            var_width = var_width.lower() in ("true", "1", "yes", "y")
+        else:
+            var_width = bool(var_width)
     else:
-        var_width = False
-        
-    if chunk_width is not None:
-        chunk_width = int(chunk_width)
+        var_width = bool(metrics.get("var_width", False))
     
     # properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 1 byte bg flag + 3 bytes bg color
     try:
@@ -162,10 +171,7 @@ def send_text(text: str,
     #########################
 
     if var_width:
-        # Determine chunk width: argument > default
-        actual_chunk_width = chunk_width
-        if actual_chunk_width is None:
-            actual_chunk_width = 8 if char_height <= 20 else 16
+        actual_chunk_width = 8 if char_height <= 20 else 16
 
         # Encode text with chunks and emoji support, getting both bytes and item count
         characters_bytes, num_chars = encode_text_chunked(

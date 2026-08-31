@@ -7,6 +7,7 @@ import hashlib
 import urllib.request
 import urllib.parse
 import re
+import struct
 from logging import getLogger
 from pathlib import Path
 from typing import Optional
@@ -28,23 +29,24 @@ def get_cache_dir() -> Path:
 def _compute_otsu_threshold(img: Image.Image) -> int:
     """Compute optimal binarization threshold using Otsu's method."""
     hist = img.histogram()
-    total_pixels = sum(hist)
-    if total_pixels == 0:
-        return 70
+    total = sum(hist)
+    if total == 0:
+        return 60
 
-    current_max = 0.0
-    threshold = 70
     sum_total = sum(i * hist[i] for i in range(256))
-    sum_b = 0.0
+    current_max = 0.0
+    threshold = 60
+    sum_b = 0
     w_b = 0
 
     for t in range(256):
         w_b += hist[t]
         if w_b == 0:
             continue
-        w_f = total_pixels - w_b
+        w_f = total - w_b
         if w_f == 0:
             break
+
         sum_b += t * hist[t]
         m_b = sum_b / w_b
         m_f = (sum_total - sum_b) / w_f
@@ -54,6 +56,46 @@ def _compute_otsu_threshold(img: Image.Image) -> int:
             threshold = t
 
     return max(30, min(180, threshold))
+
+
+def _detect_var_width(font_path: str, font_obj: ImageFont.FreeTypeFont) -> bool:
+    """Determine whether a font is proportional (var_width=True) or monospaced (var_width=False).
+    
+    Checks both the OpenType/TrueType 'post' table (isFixedPitch flag) and
+    compares advance widths across a diverse set of Latin glyphs.
+    """
+    # 1. Inspect TrueType/OpenType 'post' table if accessible
+    try:
+        with open(font_path, "rb") as f:
+            header = f.read(12)
+            if len(header) >= 12:
+                _, num_tables = struct.unpack(">4sH", header[:6])
+                for _ in range(num_tables):
+                    record = f.read(16)
+                    if len(record) < 16:
+                        break
+                    tag, _, offset, _ = struct.unpack(">4sIII", record)
+                    if tag == b"post":
+                        f.seek(offset + 12)
+                        pitch_bytes = f.read(4)
+                        if len(pitch_bytes) == 4:
+                            is_fixed_pitch = struct.unpack(">I", pitch_bytes)[0]
+                            if is_fixed_pitch != 0:
+                                return False
+                        break
+    except Exception:
+        pass
+
+    # 2. Compare glyph advance widths across representative characters
+    try:
+        sample_chars = ["i", "l", "m", "w", "M", "W", "A", "1", "."]
+        widths = {round(font_obj.getlength(c), 2) for c in sample_chars}
+        if len(widths) <= 1:
+            return False
+    except Exception:
+        pass
+
+    return True
 
 
 def calculate_font_metrics(font_path: str, target_height: int) -> dict:
@@ -126,10 +168,19 @@ def calculate_font_metrics(font_path: str, target_height: int) -> dict:
     draw_sample.text((0, 0), render_sample, fill=255, font=font_obj)
     pixel_threshold = _compute_otsu_threshold(img_sample)
 
+    # 4. Detect variable-width vs fixed-width (monospaced)
+    # GNU Unifont at 24px defaults to var_width=True for natural continuous rendering
+    is_unifont = Path(font_path).name.lower().startswith("unifont")
+    if is_unifont and target_height == 24:
+        var_width = True
+    else:
+        var_width = _detect_var_width(font_path, font_obj)
+
     return {
         "font_size": best_size,
         "offset": (0, y_offset),
         "pixel_threshold": pixel_threshold,
+        "var_width": var_width,
     }
 
 
@@ -181,8 +232,15 @@ def get_cached_metrics(font_path: str, heights: tuple[int, ...] = (16, 24, 32), 
         del font_entry["file"]
         dirty = True
 
+    from .user_config import get_user_font_metrics
+    user_metrics = get_user_font_metrics(font_path, resolved_name)
+
     result = {}
     for h in heights:
+        if user_metrics and h in user_metrics:
+            result[h] = user_metrics[h]
+            continue
+
         h_str = str(h)
         if h_str in font_entry:
             entry = font_entry[h_str]
@@ -190,6 +248,7 @@ def get_cached_metrics(font_path: str, heights: tuple[int, ...] = (16, 24, 32), 
                 "font_size": entry["font_size"],
                 "offset": tuple(entry["offset"]),
                 "pixel_threshold": entry["pixel_threshold"],
+                "var_width": entry.get("var_width", False),
             }
         else:
             computed = calculate_font_metrics(font_path, h)
@@ -197,6 +256,7 @@ def get_cached_metrics(font_path: str, heights: tuple[int, ...] = (16, 24, 32), 
                 "font_size": computed["font_size"],
                 "offset": list(computed["offset"]),
                 "pixel_threshold": computed["pixel_threshold"],
+                "var_width": computed.get("var_width", False),
             }
             result[h] = computed
             dirty = True
