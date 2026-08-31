@@ -1824,23 +1824,7 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Force variable-width chunking mode (renders text as image and splits it). Defaults to False.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>chunk_width</code>
-            </td>
-            <td>
-                  <code><span title="int">int</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Width of each chunk in pixels when var_width is True. Defaults to 16 for height &gt;= 16.</p>
+                <p>Override variable width mode. If None, uses font configuration setting.</p>
               </div>
             </td>
             <td>
@@ -2133,7 +2117,13 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
 <span class="normal">256</span>
 <span class="normal">257</span>
 <span class="normal">258</span>
-<span class="normal">259</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
               <span class="n">rainbow_mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
               <span class="n">animation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
               <span class="n">save_slot</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -2145,8 +2135,7 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
               <span class="n">font_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">font_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">pixel_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">var_width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">chunk_width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+              <span class="n">var_width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">device_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DeviceInfo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
               <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
@@ -2166,8 +2155,7 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
 <span class="sd">        font_size (int, optional): Manual font size override. Defaults to auto-calibrated font metric.</span>
 <span class="sd">        font_offset (tuple[int, int], optional): Manual font offset override (x, y). Defaults to auto-calibrated font metric.</span>
 <span class="sd">        pixel_threshold (int, optional): Manual pixel threshold override (0-255). Defaults to auto-calibrated font metric.</span>
-<span class="sd">        var_width (bool, optional): Force variable-width chunking mode (renders text as image and splits it). Defaults to False.</span>
-<span class="sd">        chunk_width (int, optional): Width of each chunk in pixels when var_width is True. Defaults to 16 for height &gt;= 16.</span>
+<span class="sd">        var_width (bool, optional): Override variable width mode. If None, uses font configuration setting.</span>
 <span class="sd">        device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).</span>
 
 <span class="sd">    Raises:</span>
@@ -2190,21 +2178,32 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
     <span class="c1"># Get metrics for this character height</span>
     <span class="n">metrics</span> <span class="o">=</span> <span class="n">font_config</span><span class="o">.</span><span class="n">get_metrics</span><span class="p">(</span><span class="n">char_height</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">font_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">font_size</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"font_size"</span><span class="p">]</span>
+        <span class="n">font_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">metrics</span><span class="p">[</span><span class="s2">"font_size"</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">font_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">font_size</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">font_offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">font_offset</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"offset"</span><span class="p">]</span>
+        <span class="n">font_offset</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">metrics</span><span class="p">[</span><span class="s2">"offset"</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">font_offset</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">cleaned</span> <span class="o">=</span> <span class="n">font_offset</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"()[] "</span><span class="p">)</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">cleaned</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)]</span>
+            <span class="n">font_offset</span> <span class="o">=</span> <span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">font_offset</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">font_offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">font_offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
     <span class="k">if</span> <span class="n">pixel_threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pixel_threshold</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">[</span><span class="s2">"pixel_threshold"</span><span class="p">]</span>
+        <span class="n">pixel_threshold</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">metrics</span><span class="p">[</span><span class="s2">"pixel_threshold"</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pixel_threshold</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pixel_threshold</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">var_width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var_width</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">var_width</span> <span class="o">=</span> <span class="n">var_width</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'true'</span><span class="p">,</span> <span class="s1">'1'</span><span class="p">,</span> <span class="s1">'yes'</span><span class="p">)</span>
-        <span class="n">var_width</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">var_width</span><span class="p">)</span>
+            <span class="n">var_width</span> <span class="o">=</span> <span class="n">var_width</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"true"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"y"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">var_width</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">var_width</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">var_width</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="k">if</span> <span class="n">chunk_width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">chunk_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chunk_width</span><span class="p">)</span>
+        <span class="n">var_width</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"var_width"</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
     <span class="c1"># properties: 3 fixed bytes + animation + speed + rainbow + 3 bytes color + 1 byte bg flag + 3 bytes bg color</span>
     <span class="k">try</span><span class="p">:</span>
@@ -2280,10 +2279,7 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
     <span class="c1">#########################</span>
 
     <span class="k">if</span> <span class="n">var_width</span><span class="p">:</span>
-        <span class="c1"># Determine chunk width: argument &gt; default</span>
-        <span class="n">actual_chunk_width</span> <span class="o">=</span> <span class="n">chunk_width</span>
-        <span class="k">if</span> <span class="n">actual_chunk_width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">actual_chunk_width</span> <span class="o">=</span> <span class="mi">8</span> <span class="k">if</span> <span class="n">char_height</span> <span class="o">&lt;=</span> <span class="mi">20</span> <span class="k">else</span> <span class="mi">16</span>
+        <span class="n">actual_chunk_width</span> <span class="o">=</span> <span class="mi">8</span> <span class="k">if</span> <span class="n">char_height</span> <span class="o">&lt;=</span> <span class="mi">20</span> <span class="k">else</span> <span class="mi">16</span>
 
         <span class="c1"># Encode text with chunks and emoji support, getting both bytes and item count</span>
         <span class="n">characters_bytes</span><span class="p">,</span> <span class="n">num_chars</span> <span class="o">=</span> <span class="n">encode_text_chunked</span><span class="p">(</span>
