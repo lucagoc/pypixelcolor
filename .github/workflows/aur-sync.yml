@@ -1,0 +1,69 @@
+name: Sync AUR Git Package
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  sync-aur:
+    runs-on: ubuntu-latest
+    environment:
+      name: AUR
+      url: https://aur.archlinux.org/packages/python-pypixelcolor-git
+    container: archlinux:base-devel
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install system dependencies
+        run: |
+          pacman -Syu --noconfirm git openssh
+
+      - name: Setup SSH & Sync with AUR
+        env:
+          SSH_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+        run: |
+          # Allow git operations in workspace directory
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+          # Configure SSH authentication
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/aur
+          chmod 600 ~/.ssh/aur
+          ssh-keyscan -t ed25519 aur.archlinux.org >> ~/.ssh/known_hosts
+
+          # Configure Git user identity for AUR commits
+          git config --global user.name "lucagoc"
+          git config --global user.email "lucagoc@pm.me"
+
+          # Clone the AUR repository
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/aur -o StrictHostKeyChecking=accept-new" \
+            git clone ssh://aur@aur.archlinux.org/python-pypixelcolor-git.git aur_repo
+
+          git config --global --add safe.directory "$PWD/aur_repo"
+
+          # Calculate dynamic VCS version (e.g., 0.4.0.r9.g72831a6)
+          NEW_PKGVER=$(git describe --long --tags 2>/dev/null | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g' || printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)")
+          echo "Computed pkgver: $NEW_PKGVER"
+
+          # Update pkgver in PKGBUILD
+          sed -i "s/^pkgver=.*/pkgver=${NEW_PKGVER}/" aur_repo/PKGBUILD
+
+          # Generate updated .SRCINFO (makepkg requires running as non-root user)
+          cd aur_repo
+          id -u builder &>/dev/null || useradd -m builder
+          chown -R builder .
+          su builder -c "makepkg --printsrcinfo" > .SRCINFO
+
+          # Stage changes and push to AUR if differences are found
+          git add PKGBUILD .SRCINFO
+          if git diff --staged --quiet; then
+            echo "No changes detected. AUR package is already up to date."
+          else
+            git commit -m "chore: update git snapshot to ${NEW_PKGVER}"
+            GIT_SSH_COMMAND="ssh -i ~/.ssh/aur -o StrictHostKeyChecking=accept-new" \
+              git push origin master
+          fi
