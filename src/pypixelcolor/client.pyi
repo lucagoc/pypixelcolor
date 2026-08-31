@@ -45,7 +45,7 @@ class AsyncClient:
     async def send_image_hex(self, hex_string: str | bytes, file_extension: str, resize_method: str | pypixelcolor.commands.send_image.ResizeMethod = ResizeMethod.CROP, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None, save_slot: int = 0) -> None:
         """Send an image or animation from a hexadecimal string."""
         ...
-    async def send_text(self, text: str, rainbow_mode: int = 0, animation: int = 0, save_slot: int = 0, speed: int = 80, color: str = "ffffff", bg_color: str | None = None, font: str | pypixelcolor.lib.font_config.FontConfig = "CUSONG", char_height: int | None = None, var_width: bool | None = None, chunk_width: int | None = None, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
+    async def send_text(self, text: str, rainbow_mode: int = 0, animation: int = 0, save_slot: int = 0, speed: int = 80, color: str = "ffffff", bg_color: str | None = None, font: str | pypixelcolor.lib.font_config.FontConfig = "UNIFONT", char_height: int | None = None, var_width: bool | None = None, chunk_width: int | None = None, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
         """Send a text to the device with configurable parameters."""
         ...
     async def set_brightness(self, level: int) -> None:
@@ -119,7 +119,7 @@ class Client:
     def send_image_hex(self, hex_string: str | bytes, file_extension: str, resize_method: str | pypixelcolor.commands.send_image.ResizeMethod = ResizeMethod.CROP, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None, save_slot: int = 0) -> None:
         """Send an image or animation from a hexadecimal string."""
         ...
-    def send_text(self, text: str, rainbow_mode: int = 0, animation: int = 0, save_slot: int = 0, speed: int = 80, color: str = "ffffff", bg_color: str | None = None, font: str | pypixelcolor.lib.font_config.FontConfig = "CUSONG", char_height: int | None = None, var_width: bool | None = None, chunk_width: int | None = None, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
+    def send_text(self, text: str, rainbow_mode: int = 0, animation: int = 0, save_slot: int = 0, speed: int = 80, color: str = "ffffff", bg_color: str | None = None, font: str | pypixelcolor.lib.font_config.FontConfig = "UNIFONT", char_height: int | None = None, var_width: bool | None = None, chunk_width: int | None = None, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
         """Send a text to the device with configurable parameters."""
         ...
     def set_brightness(self, level: int) -> None:

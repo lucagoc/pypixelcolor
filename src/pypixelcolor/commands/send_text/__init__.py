@@ -22,8 +22,11 @@ def send_text(text: str,
               speed: int = 80,
               color: str = "ffffff",
               bg_color: Optional[str] = None,
-              font: Union[str, FontConfig] = "CUSONG",
+              font: Union[str, FontConfig] = "UNIFONT",
               char_height: Optional[int] = None,
+              font_size: Optional[int] = None,
+              font_offset: Optional[tuple[int, int]] = None,
+              pixel_threshold: Optional[int] = None,
               var_width: Optional[bool] = None,
               chunk_width: Optional[int] = None,
               device_info: Optional[DeviceInfo] = None
@@ -40,9 +43,12 @@ def send_text(text: str,
         speed (int, optional): Animation speed (0-100). Defaults to 80.
         color (str, optional): Text color in hex. Defaults to "ffffff".
         bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).
-        font (str | FontConfig, optional): Built-in font name, file path, or FontConfig object. Defaults to "CUSONG". Built-in fonts are "CUSONG", "SIMSUN", "VCR_OSD_MONO".
+        font (str | FontConfig, optional): Built-in font name ('UNIFONT'), file path, or FontConfig object. Defaults to "UNIFONT".
         char_height (int, optional): Character height. Auto-detected from device_info if not specified.
-        var_width (bool, optional): Force variable-width chunking mode (renders text as image and splits it). Defaults to font configuration.
+        font_size (int, optional): Manual font size override. Defaults to auto-calibrated font metric.
+        font_offset (tuple[int, int], optional): Manual font offset override (x, y). Defaults to auto-calibrated font metric.
+        pixel_threshold (int, optional): Manual pixel threshold override (0-255). Defaults to auto-calibrated font metric.
+        var_width (bool, optional): Force variable-width chunking mode (renders text as image and splits it). Defaults to False.
         chunk_width (int, optional): Width of each chunk in pixels when var_width is True. Defaults to 16 for height >= 16.
         device_info (DeviceInfo, optional): Device information (injected automatically by DeviceSession).
 
@@ -65,16 +71,19 @@ def send_text(text: str,
     
     # Get metrics for this character height
     metrics = font_config.get_metrics(char_height)
-    font_size = metrics["font_size"]
-    font_offset = metrics["offset"]
-    pixel_threshold = metrics["pixel_threshold"]
+    if font_size is None:
+        font_size = metrics["font_size"]
+    if font_offset is None:
+        font_offset = metrics["offset"]
+    if pixel_threshold is None:
+        pixel_threshold = metrics["pixel_threshold"]
     
     if var_width is not None:
         if isinstance(var_width, str):
             var_width = var_width.lower() in ('true', '1', 'yes')
         var_width = bool(var_width)
     else:
-        var_width = metrics.get("var_width", False)
+        var_width = False
         
     if chunk_width is not None:
         chunk_width = int(chunk_width)
@@ -153,10 +162,8 @@ def send_text(text: str,
     #########################
 
     if var_width:
-        # Determine chunk width: argument > font metric > default
+        # Determine chunk width: argument > default
         actual_chunk_width = chunk_width
-        if actual_chunk_width is None:
-            actual_chunk_width = metrics.get("chunk_width")
         if actual_chunk_width is None:
             actual_chunk_width = 8 if char_height <= 20 else 16
 
