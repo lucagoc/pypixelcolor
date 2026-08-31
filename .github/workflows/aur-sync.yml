@@ -11,28 +11,29 @@ jobs:
     environment:
       name: AUR
       url: https://aur.archlinux.org/packages/python-pypixelcolor-git
-    container: archlinux:base-devel
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: true
 
-      - name: Install system dependencies
+      - name: Calculate package version
+        id: pkgver
         run: |
-          pacman -Syu --noconfirm git openssh
+          # Compute dynamic VCS version from git history and tags
+          VERSION=$(git describe --long --tags 2>/dev/null | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g' || printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)")
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Could not calculate package version from git."
+            exit 1
+          fi
+          echo "Computed pkgver: $VERSION"
+          echo "val=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Setup SSH & Sync with AUR
         env:
           SSH_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          NEW_PKGVER: ${{ steps.pkgver.outputs.val }}
         run: |
-          # Allow git operations across container user boundaries
-          git config --global --add safe.directory '*'
-
-          # Ensure all git tags are fetched for git describe
-          git fetch --tags --force 2>/dev/null || true
-
           # Configure SSH authentication
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/aur
@@ -47,30 +48,17 @@ jobs:
           GIT_SSH_COMMAND="ssh -i ~/.ssh/aur -o StrictHostKeyChecking=accept-new" \
             git clone ssh://aur@aur.archlinux.org/python-pypixelcolor-git.git aur_repo
 
-          # Calculate dynamic VCS version (e.g., 0.4.0.r9.g72831a6)
-          if DESCRIBE=$(git describe --long --tags 2>/dev/null) && [ -n "$DESCRIBE" ]; then
-            NEW_PKGVER=$(echo "$DESCRIBE" | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g')
-          else
-            NEW_PKGVER=$(printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)")
-          fi
-
-          if [ -z "$NEW_PKGVER" ]; then
-            echo "ERROR: Failed to determine pkgver"
-            exit 1
-          fi
-
-          echo "Computed pkgver: $NEW_PKGVER"
-
           # Update pkgver in PKGBUILD
           sed -i "s/^pkgver=.*/pkgver=${NEW_PKGVER}/" aur_repo/PKGBUILD
 
-          # Generate updated .SRCINFO (makepkg requires running as non-root user)
-          cd aur_repo
-          id -u builder &>/dev/null || useradd -m builder
-          chown -R builder .
-          su builder -c "makepkg --printsrcinfo" > .SRCINFO
+          # Generate updated .SRCINFO using an Arch Linux container
+          docker run --rm -v "$PWD/aur_repo":/build -w /build archlinux:base-devel bash -c "
+            useradd -m builder && chown -R builder .
+            su builder -c 'makepkg --printsrcinfo' > .SRCINFO
+          "
 
           # Stage changes and push to AUR if differences are found
+          cd aur_repo
           git add PKGBUILD .SRCINFO
           if git diff --staged --quiet; then
             echo "No changes detected. AUR package is already up to date."
