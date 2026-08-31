@@ -51,11 +51,14 @@ jobs:
           # Update pkgver in PKGBUILD
           sed -i "s/^pkgver=.*/pkgver=${NEW_PKGVER}/" aur_repo/PKGBUILD
 
-          # Generate updated .SRCINFO using an Arch Linux container
-          docker run --rm -v "$PWD/aur_repo":/build -w /build archlinux:base-devel bash -c "
-            useradd -m builder && chown -R builder .
-            su builder -c 'makepkg --printsrcinfo' > .SRCINFO
-          "
+          # Generate updated .SRCINFO inside builder's writable home directory in the container
+          docker run --rm -v "$PWD/aur_repo/PKGBUILD":/tmp/PKGBUILD:ro archlinux:base-devel bash -c "
+            useradd -m builder
+            cp /tmp/PKGBUILD /home/builder/PKGBUILD
+            cd /home/builder
+            chown builder:builder PKGBUILD
+            su builder -c 'makepkg --printsrcinfo'
+          " > aur_repo/.SRCINFO
 
           # Stage changes and push to AUR if differences are found
           cd aur_repo
