@@ -1744,7 +1744,8 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Built-in font name ('UNIFONT'), file path, or FontConfig object. Defaults to "UNIFONT".</p>
+                <p>Built-in font name ('UNIFONT'), Google Font name (e.g. 'Silkscreen'),
+                               file path, or FontConfig object. Defaults to "UNIFONT".</p>
               </div>
             </td>
             <td>
@@ -2123,7 +2124,8 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
 <span class="normal">262</span>
 <span class="normal">263</span>
 <span class="normal">264</span>
-<span class="normal">265</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">send_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
               <span class="n">rainbow_mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
               <span class="n">animation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
               <span class="n">save_slot</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -2150,7 +2152,8 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
 <span class="sd">        speed (int, optional): Animation speed (0-100). Defaults to 80.</span>
 <span class="sd">        color (str, optional): Text color in hex. Defaults to "ffffff".</span>
 <span class="sd">        bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).</span>
-<span class="sd">        font (str | FontConfig, optional): Built-in font name ('UNIFONT'), file path, or FontConfig object. Defaults to "UNIFONT".</span>
+<span class="sd">        font (str | FontConfig, optional): Built-in font name ('UNIFONT'), Google Font name (e.g. 'Silkscreen'),</span>
+<span class="sd">                                           file path, or FontConfig object. Defaults to "UNIFONT".</span>
 <span class="sd">        char_height (int, optional): Character height. Auto-detected from device_info if not specified.</span>
 <span class="sd">        font_size (int, optional): Manual font size override. Defaults to auto-calibrated font metric.</span>
 <span class="sd">        font_offset (tuple[int, int], optional): Manual font offset override (x, y). Defaults to auto-calibrated font metric.</span>
