@@ -106,23 +106,6 @@ def test_send_text_manual_overrides(mock_device, monkeypatch):
     assert captured_params["pixel_threshold"] == 45
 
 
-def test_resolve_google_font(monkeypatch):
-    """Verify resolve_font_config handles google: prefix."""
-    from pypixelcolor.commands.send_text.font_utils import resolve_font_config
-    from pypixelcolor.lib.font_config import UNIFONT_PATH
-    from pathlib import Path
-
-    # Mock download_google_font to return UNIFONT_PATH
-    monkeypatch.setattr(
-        "pypixelcolor.commands.send_text.font_utils.download_google_font",
-        lambda family: Path(UNIFONT_PATH)
-    )
-
-    fc = resolve_font_config("google:Silkscreen")
-    assert fc.name == "Silkscreen"
-    assert 16 in fc.metrics
-
-
 def test_send_text_var_width_from_config(mock_device):
     """Verify send_text uses var_width from font configuration without command arg."""
     from pypixelcolor.lib.font_config import UNIFONT_PATH

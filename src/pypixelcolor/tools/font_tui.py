@@ -45,6 +45,23 @@ from ..lib.user_config import (
     get_user_fonts_config_path,
     save_user_font_metrics,
 )
+from textual import events
+
+WIDGET_HINTS: dict[str, str] = {
+    "font-select": "Select active font.",
+    "input-test-text": "Preview text on LED matrix (max 16 chars)",
+    "tab-16": "Config for screen height 16px",
+    "tab-24": "Config for screen height 24px",
+    "tab-32": "Config for screen height 32px",
+    "input-size": "Font size in pt",
+    "input-offx": "Offset X in px",
+    "input-offy": "Offset Y in px",
+    "input-thresh": "Pixel threshold",
+    "btn-var-width": "Hack rendering text as a continuous image then splitting it into regular chunks. Useful for non-monospace font.",
+    "btn-auto": "Reset to auto-calibrated values",
+    "btn-save": "Save configuration",
+    "btn-delete": "Delete this font configuration",
+}
 
 
 class AddFontModal(ModalScreen[Optional[str]]):
@@ -86,8 +103,8 @@ class AddFontModal(ModalScreen[Optional[str]]):
     def compose(self) -> ComposeResult:
         with Vertical(id="modal-dialog"):
             yield Label("Add / Download Font", id="modal-title")
-            yield Label("Enter a Google Font family name (e.g. Silkscreen, Roboto)\nor a local file path:")
-            yield Input(placeholder="e.g. Silkscreen, Roboto, /path/to/font.ttf", id="modal-input")
+            yield Label("Enter a Google Font family name (e.g. Silkscreen, Press Start 2P)\nor a local file path:")
+            yield Input(placeholder="e.g. Silkscreen, Press Start 2P, /path/to/font.ttf", id="modal-input")
             with Horizontal(id="modal-buttons"):
                 yield Button("Cancel", id="btn-modal-cancel")
                 yield Button("Load", id="btn-modal-load", variant="primary")
@@ -202,7 +219,7 @@ class MatrixPreview(Static):
             img = Image.new("L", (max_display_w, height), 0)
             draw = ImageDraw.Draw(img)
             draw.text(offset, display_text, fill=255, font=font_obj)
-            mode_label = "Variable Width (proportional)"
+            mode_label = "Variable Width Hack Enabled"
         else:
             # Fixed-width cells mode (standard LED per-character cells)
             is_32 = height >= 32
@@ -386,6 +403,7 @@ class FontTUIApp(App):
         background: $surface;
         padding: 0 1;
     }
+
     """
 
     BINDINGS = [
@@ -400,7 +418,7 @@ class FontTUIApp(App):
     current_font_name = reactive("UNIFONT")
     current_font_path = reactive(UNIFONT_PATH)
     current_height = reactive(16)
-    test_text = reactive("Hello 世界")
+    test_text = reactive("Quick fox jumps!")
 
     # Metrics per height: {16: {...}, 24: {...}, 32: {...}}
     all_metrics: dict[int, dict] = {}
@@ -408,6 +426,7 @@ class FontTUIApp(App):
     _blink_count: int = 0
     _current_status_msg: str = ""
     _current_status_style: str = ""
+    _current_hint: str = ""
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -457,7 +476,7 @@ class FontTUIApp(App):
                     yield Button("+", id="btn-thresh-inc", classes="step-btn")
 
                 with Horizontal(classes="control-row"):
-                    yield Label("Variable width:", classes="control-label")
+                    yield Label("var_width hack:", classes="control-label")
                     yield Button("OFF", id="btn-var-width", variant="default")
 
                 with Horizontal(id="btn-row"):
@@ -471,10 +490,220 @@ class FontTUIApp(App):
         yield Static("", id="status-bar")
         yield Footer()
 
+    PARAMETER_CONTROLS = [
+        "input-size",
+        "input-offx",
+        "input-offy",
+        "input-thresh",
+        "btn-var-width",
+    ]
+    ACTION_BUTTONS = [
+        "btn-auto",
+        "btn-save",
+        "btn-delete",
+    ]
+
     def on_mount(self) -> None:
-        """Initialize available fonts and load default font metrics."""
+        """Initialize available fonts, disable focus on step buttons, and focus first param."""
+        for btn in self.query(".step-btn"):
+            btn.can_focus = False
         self._refresh_font_list()
         self._load_current_font_metrics()
+        self.query_one("#input-size").focus()
+
+    def on_key(self, event: events.Key) -> None:
+        """Enhanced keyboard navigation: arrow keys for parameter navigation & adjustment."""
+        focused = self.focused
+        f_id = getattr(focused, "id", None)
+
+        # 1. Parameter controls (size, offx, offy, thresh, var_width)
+        if f_id in self.PARAMETER_CONTROLS:
+            idx = self.PARAMETER_CONTROLS.index(f_id)
+            if event.key == "down":
+                event.stop()
+                event.prevent_default()
+                if idx < len(self.PARAMETER_CONTROLS) - 1:
+                    self.query_one(f"#{self.PARAMETER_CONTROLS[idx + 1]}").focus()
+                else:
+                    self.query_one("#btn-save").focus()
+                return
+
+            elif event.key == "up":
+                event.stop()
+                event.prevent_default()
+                if idx > 0:
+                    self.query_one(f"#{self.PARAMETER_CONTROLS[idx - 1]}").focus()
+                else:
+                    self.query_one("#height-tabs").focus()
+                return
+
+            elif event.key in ("left", "minus", "-"):
+                event.stop()
+                event.prevent_default()
+                if f_id == "input-size":
+                    self._adjust_input("#input-size", -1)
+                elif f_id == "input-offx":
+                    self._adjust_input("#input-offx", -1)
+                elif f_id == "input-offy":
+                    self._adjust_input("#input-offy", -1)
+                elif f_id == "input-thresh":
+                    self._adjust_input("#input-thresh", -5)
+                elif f_id == "btn-var-width":
+                    self.action_toggle_var_width()
+                return
+
+            elif event.key in ("right", "plus", "+", "="):
+                event.stop()
+                event.prevent_default()
+                if f_id == "input-size":
+                    self._adjust_input("#input-size", 1)
+                elif f_id == "input-offx":
+                    self._adjust_input("#input-offx", 1)
+                elif f_id == "input-offy":
+                    self._adjust_input("#input-offy", 1)
+                elif f_id == "input-thresh":
+                    self._adjust_input("#input-thresh", 5)
+                elif f_id == "btn-var-width":
+                    self.action_toggle_var_width()
+                return
+
+            elif f_id == "btn-var-width" and event.key in ("enter", "space"):
+                event.stop()
+                event.prevent_default()
+                self.action_toggle_var_width()
+                return
+
+        # 2. Bottom action buttons (Reset, Save, Delete)
+        elif f_id in self.ACTION_BUTTONS:
+            idx = self.ACTION_BUTTONS.index(f_id)
+            if event.key == "up":
+                event.stop()
+                event.prevent_default()
+                self.query_one("#btn-var-width").focus()
+                return
+            elif event.key == "down":
+                event.stop()
+                event.prevent_default()
+                self.query_one("#font-select").focus()
+                return
+            elif event.key == "left" and idx > 0:
+                event.stop()
+                event.prevent_default()
+                self.query_one(f"#{self.ACTION_BUTTONS[idx - 1]}").focus()
+                return
+            elif event.key == "right" and idx < len(self.ACTION_BUTTONS) - 1:
+                event.stop()
+                event.prevent_default()
+                self.query_one(f"#{self.ACTION_BUTTONS[idx + 1]}").focus()
+                return
+
+        # 3. Height tabs
+        elif f_id == "height-tabs" or (
+            focused and getattr(focused, "parent", None) and getattr(focused.parent, "id", None) == "height-tabs"
+        ):
+            if event.key == "down":
+                event.stop()
+                event.prevent_default()
+                self.query_one("#input-size").focus()
+                return
+            elif event.key == "up":
+                event.stop()
+                event.prevent_default()
+                self.query_one("#font-select").focus()
+                return
+
+        # 4. Font select widget
+        elif f_id == "font-select":
+            select_widget = self.query_one("#font-select", Select)
+            if not getattr(select_widget, "expanded", False):
+                if event.key == "down":
+                    event.stop()
+                    event.prevent_default()
+                    self.query_one("#height-tabs").focus()
+                    return
+                elif event.key == "right":
+                    event.stop()
+                    event.prevent_default()
+                    self.query_one("#input-test-text").focus()
+                    return
+
+        # 5. Test text input
+        elif f_id == "input-test-text":
+            if event.key == "down":
+                event.stop()
+                event.prevent_default()
+                self.query_one("#height-tabs").focus()
+                return
+            elif event.key == "up":
+                event.stop()
+                event.prevent_default()
+                self.query_one("#font-select").focus()
+                return
+
+        # 6. Global shortcuts when not actively editing text
+        if not isinstance(focused, Input):
+            if event.key == "1":
+                self.query_one("#height-tabs", Tabs).active = "tab-16"
+                return
+            elif event.key == "2":
+                self.query_one("#height-tabs", Tabs).active = "tab-24"
+                return
+            elif event.key == "3":
+                self.query_one("#height-tabs", Tabs).active = "tab-32"
+                return
+
+    def _find_widget_hint(self, widget) -> Optional[str]:
+        """Find a configured hint for a widget or any of its ancestors."""
+        if not widget:
+            return None
+        for ancestor in getattr(widget, "ancestors_with_self", [widget]):
+            if getattr(ancestor, "id", None) in WIDGET_HINTS:
+                return WIDGET_HINTS[ancestor.id]
+        return None
+
+    def _set_hint(self, hint: str) -> None:
+        """Display a helper hint in the status bar if no temporary alert is blinking."""
+        self._current_hint = hint
+        if self._blink_timer is None:
+            try:
+                status_bar = self.query_one("#status-bar", Static)
+                status_bar.update(f"[cyan]ℹ[/cyan]  {hint}")
+            except Exception:
+                pass
+
+    def _clear_hint(self) -> None:
+        """Clear helper hint from status bar."""
+        self._current_hint = ""
+        if self._blink_timer is None:
+            try:
+                status_bar = self.query_one("#status-bar", Static)
+                status_bar.update("")
+            except Exception:
+                pass
+
+    def on_enter(self, event: events.Enter) -> None:
+        """Show status bar hint when hovering over an interactive widget."""
+        hint = self._find_widget_hint(event.control)
+        if hint:
+            self._set_hint(hint)
+
+    def on_leave(self, event: events.Leave) -> None:
+        """Clear status bar hint when mouse leaves an interactive widget."""
+        hint = self._find_widget_hint(event.control)
+        if hint and self._current_hint == hint:
+            self._clear_hint()
+
+    def on_descendant_focus(self, event: events.DescendantFocus) -> None:
+        """Show status bar hint when an interactive widget receives focus."""
+        hint = self._find_widget_hint(event.control)
+        if hint:
+            self._set_hint(hint)
+
+    def on_descendant_blur(self, event: events.DescendantBlur) -> None:
+        """Clear status bar hint when an interactive widget loses focus."""
+        hint = self._find_widget_hint(event.control)
+        if hint and self._current_hint == hint:
+            self._clear_hint()
 
     def _discover_fonts(self) -> list[tuple[str, str, str]]:
         """Discover all available fonts: built-in, cached, and user-configured.
@@ -814,10 +1043,13 @@ class FontTUIApp(App):
         def _blink_step() -> None:
             self._blink_count += 1
             if self._blink_count >= 8:
-                status_bar.update(f"[{self._current_status_style}] {self._current_status_msg}[/{self._current_status_style}]")
                 if self._blink_timer is not None:
                     self._blink_timer.stop()
                     self._blink_timer = None
+                if self._current_hint:
+                    status_bar.update(f"[cyan]ℹ[/cyan]  {self._current_hint}")
+                else:
+                    status_bar.update(f"[{self._current_status_style}] {self._current_status_msg}[/{self._current_status_style}]")
             elif self._blink_count % 2 == 1:
                 status_bar.update("")
             else:
