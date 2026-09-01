@@ -428,6 +428,14 @@ class FontTUIApp(App):
     _current_status_style: str = ""
     _current_hint: str = ""
 
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        preferred_theme = os.getenv("TEXTUAL_THEME", "ansi-dark")
+        if preferred_theme in self.available_themes:
+            self.theme = preferred_theme
+        else:
+            self.theme = "ansi-dark"
+
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
 
