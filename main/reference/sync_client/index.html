@@ -1128,10 +1128,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pypixelcolor.client.Client.set_scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        set_scores
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pypixelcolor.client.Client.set_time" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         set_time
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pypixelcolor.client.Client.set_timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        set_timer
       </span>
     </span>
   </a>
@@ -1698,10 +1720,32 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pypixelcolor.client.Client.set_scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        set_scores
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pypixelcolor.client.Client.set_time" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
         set_time
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pypixelcolor.client.Client.set_timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        set_timer
       </span>
     </span>
   </a>
@@ -2270,9 +2314,11 @@ explicit redefinition, reducing code duplication.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">110</span>
-<span class="normal">111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Async context manager entry."""</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Async context manager exit."""</span>
+    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2295,9 +2341,11 @@ explicit redefinition, reducing code duplication.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">90</span>
-<span class="normal">91</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_device_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeviceInfo</span><span class="p">:</span>
-    <span class="s2">"""</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">This</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">simple</span> <span class="n">getter</span> <span class="k">for</span> <span class="n">the</span> <span class="n">cached</span> <span class="n">data</span><span class="o">.</span>
+
+<span class="n">Returns</span><span class="p">:</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2320,9 +2368,7 @@ explicit redefinition, reducing code duplication.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
-<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="k">return</span> <span class="bp">self</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Dynamically add command methods to AsyncClient</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2345,9 +2391,9 @@ explicit redefinition, reducing code duplication.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">94</span>
-<span class="normal">95</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Device</span> <span class="n">info</span> <span class="ow">is</span> <span class="n">automatically</span> <span class="n">retrieved</span> <span class="n">during</span> <span class="n">connect</span><span class="p">()</span><span class="o">.</span>
-<span class="n">This</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">simple</span> <span class="n">getter</span> <span class="k">for</span> <span class="n">the</span> <span class="n">cached</span> <span class="n">data</span><span class="o">.</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Raises</span><span class="p">:</span>
+    <span class="ne">RuntimeError</span><span class="p">:</span> <span class="n">If</span> <span class="ow">not</span> <span class="n">connected</span><span class="o">.</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2372,19 +2418,17 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Returns</span><span class="p">:</span>
-    <span class="n">DeviceInfo</span> <span class="nb">object</span> <span class="k">with</span> <span class="n">device</span> <span class="n">specifications</span><span class="o">.</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">get_device_info</span><span class="p">()</span>
 
-<span class="n">Raises</span><span class="p">:</span>
-    <span class="ne">RuntimeError</span><span class="p">:</span> <span class="n">If</span> <span class="ow">not</span> <span class="n">connected</span><span class="o">.</span>
-<span class="s2">"""</span>
-<span class="s2">return self._session.get_device_info()</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Ensure the client is connected."""</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Client not connected. Call connect() first"</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2440,11 +2484,9 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Async context manager exit."""</span>
-    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">122</span>
+<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span> <span class="n">cmd_name</span><span class="p">,</span> <span class="n">cmd_func</span> <span class="ow">in</span> <span class="n">COMMANDS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">AsyncClient</span><span class="p">,</span> <span class="n">cmd_name</span><span class="p">,</span> <span class="n">_create_async_method</span><span class="p">(</span><span class="n">cmd_name</span><span class="p">,</span> <span class="n">cmd_func</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2467,7 +2509,9 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Dynamically add command methods to AsyncClient</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
+<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Client</span><span class="p">:</span>
+    <span class="s2">"""Synchronous client for controlling the LED matrix via BLE.</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2490,9 +2534,11 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">122</span>
-<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">for</span> <span class="n">cmd_name</span><span class="p">,</span> <span class="n">cmd_func</span> <span class="ow">in</span> <span class="n">COMMANDS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">setattr</span><span class="p">(</span><span class="n">AsyncClient</span><span class="p">,</span> <span class="n">cmd_name</span><span class="p">,</span> <span class="n">_create_async_method</span><span class="p">(</span><span class="n">cmd_name</span><span class="p">,</span> <span class="n">cmd_func</span><span class="p">))</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">This</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">synchronous</span> <span class="n">wrapper</span> <span class="n">around</span> <span class="n">AsyncClient</span> <span class="n">that</span> <span class="n">handles</span> <span class="n">the</span> <span class="n">event</span> <span class="n">loop</span>
+<span class="n">automatically</span> <span class="k">for</span> <span class="n">simpler</span> <span class="n">usage</span> <span class="ow">in</span> <span class="n">non</span><span class="o">-</span><span class="k">async</span> <span class="n">code</span><span class="o">.</span>
+<span class="s2">"""</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2515,9 +2561,9 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
-<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Client</span><span class="p">:</span>
-    <span class="s2">"""Synchronous client for controlling the LED matrix via BLE.</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">131</span>
+<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">scan</span><span class="p">(</span><span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2540,11 +2586,9 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">This</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">synchronous</span> <span class="n">wrapper</span> <span class="n">around</span> <span class="n">AsyncClient</span> <span class="n">that</span> <span class="n">handles</span> <span class="n">the</span> <span class="n">event</span> <span class="n">loop</span>
-<span class="n">automatically</span> <span class="k">for</span> <span class="n">simpler</span> <span class="n">usage</span> <span class="ow">in</span> <span class="n">non</span><span class="o">-</span><span class="k">async</span> <span class="n">code</span><span class="o">.</span>
-<span class="s2">"""</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">134</span>
+<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="sd">"""Scan for compatible LED devices synchronously."""</span>
+<span class="k">return</span> <span class="n">scan_devices_sync</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2567,9 +2611,9 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">131</span>
-<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">scan</span><span class="p">(</span><span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">137</span>
+<span class="normal">138</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="s2">"""Initialize the Client.</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2592,9 +2636,11 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">134</span>
-<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="sd">"""Scan for compatible LED devices synchronously."""</span>
-<span class="k">return</span> <span class="n">scan_devices_sync</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Args</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">:</span> <span class="n">Bluetooth</span> <span class="n">device</span> <span class="n">address</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="s2">"1D:6B:5E:B5:A5:54"</span><span class="p">)</span>
+<span class="s2">"""</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2617,9 +2663,11 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">137</span>
-<span class="normal">138</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="s2">"""Initialize the Client.</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">_async_client</span> <span class="o">=</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_loop_thread</span> <span class="o">=</span> <span class="kc">None</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2642,11 +2690,11 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">Args</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">:</span> <span class="n">Bluetooth</span> <span class="n">device</span> <span class="n">address</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="s2">"1D:6B:5E:B5:A5:54"</span><span class="p">)</span>
-<span class="s2">"""</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="bp">self</span><span class="o">.</span><span class="n">_setup_loop</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_setup_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2669,11 +2717,9 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">_async_client</span> <span class="o">=</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">_loop_thread</span> <span class="o">=</span> <span class="kc">None</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="sd">"""Set up a persistent event loop in a separate thread."""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2696,11 +2742,36 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="bp">self</span><span class="o">.</span><span class="n">_setup_loop</span><span class="p">()</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">):</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+    <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_setup_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pypixelcolor.client.Client.set_scores" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_scores</span><span class="p">(</span><span class="n">score_p1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">score_p2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set scoreboard scores for player 1 and player 2.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">155</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_loop_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">start_loop</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">,),</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2723,9 +2794,38 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
-<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="sd">"""Set up a persistent event loop in a separate thread."""</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">_loop_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># Register cleanup handler to ensure disconnection on exit</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pypixelcolor.client.Client.set_timer" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_timer</span><span class="p">(</span><span class="n">action</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Set timer action (start, pause, stop).</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cleanup_on_exit</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_cleanup_on_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2748,11 +2848,11 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">):</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
-    <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="sd">"""Cleanup handler for atexit."""</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_async_client</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2775,11 +2875,11 @@ This is a simple getter for the cached data.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/client.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Ensure the client is connected."""</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="sd">"""Async context manager entry."""</span>
+<span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+<span class="k">return</span> <span class="bp">self</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
