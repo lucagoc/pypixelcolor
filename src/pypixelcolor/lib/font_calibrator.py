@@ -274,6 +274,57 @@ def get_cached_metrics(font_path: str, heights: tuple[int, ...] = (16, 24, 32), 
     return result
 
 
+def delete_cached_metrics(font_path: str, font_name: Optional[str] = None) -> bool:
+    """Delete cached font metrics from ~/.cache/pypixelcolor/font_metrics.json.
+    
+    Args:
+        font_path: Path to font file.
+        font_name: Optional font name.
+        
+    Returns:
+        True if an entry was removed, False otherwise.
+    """
+    cache_file = get_cache_dir() / "font_metrics.json"
+    if not cache_file.exists():
+        return False
+
+    try:
+        with open(cache_file, "r", encoding="utf-8") as f:
+            cache_data = json.load(f)
+    except Exception:
+        return False
+
+    resolved_name = font_name or Path(font_path).stem
+    keys_to_remove = set()
+    try:
+        if os.path.exists(font_path):
+            cache_key = _get_font_cache_key(font_path, resolved_name)
+            keys_to_remove.add(cache_key)
+    except Exception:
+        pass
+
+    keys_to_remove.add(resolved_name)
+    name_prefix = re.sub(r'[^a-zA-Z0-9_-]', '_', resolved_name)
+
+    removed = False
+    for k in list(cache_data.keys()):
+        if k in keys_to_remove or k == name_prefix or k.startswith(f"{name_prefix}_"):
+            del cache_data[k]
+            removed = True
+
+    if removed:
+        try:
+            temp_file = cache_file.with_suffix(".tmp")
+            with open(temp_file, "w", encoding="utf-8") as f:
+                json.dump(cache_data, f, indent=2)
+            temp_file.replace(cache_file)
+        except Exception:
+            return False
+
+    return removed
+
+
+
 def get_fonts_cache_dir() -> Path:
     """Return the user fonts cache directory (~/.cache/pypixelcolor/fonts)."""
     fonts_dir = get_cache_dir() / "fonts"
@@ -330,37 +381,6 @@ def download_google_font(family: str, timeout: int = 15) -> Path:
         raise ValueError(f"Failed to download Google Font '{family}' from {ttf_url}: {e}")
 
     logger.info("Download completed.")
-
-    return target_path
-
-
-def download_font_url(url: str, timeout: int = 15) -> Path:
-    """Download a font from a direct HTTP/HTTPS URL into local cache.
-    
-    Args:
-        url: Direct URL to font file.
-        timeout: HTTP request timeout in seconds.
-        
-    Returns:
-        Path to cached font file.
-    """
-    url_hash = hashlib.sha256(url.encode("utf-8")).hexdigest()[:12]
-    ext = Path(urllib.parse.urlparse(url).path).suffix or ".ttf"
-    target_path = get_fonts_cache_dir() / f"font_{url_hash}{ext}"
-
-    if target_path.exists() and target_path.stat().st_size > 0:
-        return target_path
-
-    tmp_path = target_path.with_suffix(".tmp")
-    req = urllib.request.Request(url, headers={"User-Agent": "pypixelcolor/0.5.0"})
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp, open(tmp_path, "wb") as out:
-            out.write(resp.read())
-        tmp_path.replace(target_path)
-    except Exception as e:
-        if tmp_path.exists():
-            tmp_path.unlink()
-        raise ValueError(f"Failed to download font from '{url}': {e}")
 
     return target_path
 

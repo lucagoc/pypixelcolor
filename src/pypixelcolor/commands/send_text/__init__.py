@@ -42,7 +42,8 @@ def send_text(text: str,
         speed (int, optional): Animation speed (0-100). Defaults to 80.
         color (str, optional): Text color in hex. Defaults to "ffffff".
         bg_color (str, optional): Background color in hex (e.g., "ff0000" for red). Defaults to None (no background).
-        font (str | FontConfig, optional): Built-in font name ('UNIFONT'), file path, or FontConfig object. Defaults to "UNIFONT".
+        font (str | FontConfig, optional): Built-in font name ('UNIFONT'), Google Font name (e.g. 'Silkscreen'),
+                                           file path, or FontConfig object. Defaults to "UNIFONT".
         char_height (int, optional): Character height. Auto-detected from device_info if not specified.
         font_size (int, optional): Manual font size override. Defaults to auto-calibrated font metric.
         font_offset (tuple[int, int], optional): Manual font offset override (x, y). Defaults to auto-calibrated font metric.

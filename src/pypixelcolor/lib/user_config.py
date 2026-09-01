@@ -103,3 +103,54 @@ def save_user_font_metrics(font_path: str, font_name: str, metrics: dict[int, di
     with open(temp_file, "w", encoding="utf-8") as f:
         json.dump(config_data, f, indent=2)
     temp_file.replace(config_file)
+
+
+def delete_user_font_metrics(font_path: str, font_name: Optional[str] = None) -> bool:
+    """Delete user-configured metrics from ~/.config/pypixelcolor/fonts.json.
+    
+    Args:
+        font_path: Path to the font file.
+        font_name: Display name of the font.
+        
+    Returns:
+        True if an entry was removed, False otherwise.
+    """
+    config_file = get_user_fonts_config_path()
+    if not config_file.exists():
+        return False
+
+    config_data = load_user_fonts_config()
+    if not config_data:
+        return False
+
+    resolved_name = font_name or Path(font_path).stem
+    keys_to_remove = set()
+
+    try:
+        if os.path.exists(font_path):
+            cache_key = _get_font_cache_key(font_path, resolved_name)
+            keys_to_remove.add(cache_key)
+    except Exception:
+        pass
+
+    keys_to_remove.add(resolved_name)
+    import re
+    name_prefix = re.sub(r'[^a-zA-Z0-9_-]', '_', resolved_name)
+
+    removed = False
+    for k in list(config_data.keys()):
+        if k in keys_to_remove or k == name_prefix or k.startswith(f"{name_prefix}_"):
+            del config_data[k]
+            removed = True
+
+    if removed:
+        temp_file = config_file.with_suffix(".tmp")
+        try:
+            with open(temp_file, "w", encoding="utf-8") as f:
+                json.dump(config_data, f, indent=2)
+            temp_file.replace(config_file)
+        except Exception:
+            return False
+
+    return removed
+

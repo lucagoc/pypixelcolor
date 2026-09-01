@@ -9,6 +9,7 @@ from pypixelcolor.lib.user_config import (
     load_user_fonts_config,
     save_user_font_metrics,
     get_user_font_metrics,
+    delete_user_font_metrics,
 )
 from pypixelcolor.lib.font_calibrator import get_cached_metrics
 
@@ -63,3 +64,19 @@ def test_user_config_overrides_cache(tmp_path, monkeypatch):
     assert metrics[16]["pixel_threshold"] == 120
     # Height 24 should still be resolved via cache or auto-calc
     assert 24 in metrics
+
+
+def test_delete_user_font_metrics(tmp_path, monkeypatch):
+    """Verify delete_user_font_metrics removes configuration from fonts.json."""
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
+
+    custom_metrics = {
+        16: {"font_size": 20, "offset": (1, 1), "pixel_threshold": 50}
+    }
+    save_user_font_metrics(UNIFONT_PATH, "UNIFONT", custom_metrics)
+    assert get_user_font_metrics(UNIFONT_PATH, "UNIFONT") is not None
+
+    deleted = delete_user_font_metrics(UNIFONT_PATH, "UNIFONT")
+    assert deleted is True
+    assert get_user_font_metrics(UNIFONT_PATH, "UNIFONT") is None
+

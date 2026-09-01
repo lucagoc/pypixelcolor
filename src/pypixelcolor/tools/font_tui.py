@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 """Interactive TUI tool for previewing and calibrating font rendering on LED matrix screens.
 
-Allows downloading Google Fonts or URLs, previewing across 16px/24px/32px matrix heights,
+Allows downloading Google Fonts, previewing across 16px/24px/32px matrix heights,
 adjusting font_size, offsets, pixel_threshold, var_width mode, and saving permanently to ~/.config/pypixelcolor/fonts.json.
 """
 
 import os
+import re
 import unicodedata
+from logging import getLogger
 from pathlib import Path
 from typing import Optional
+
+logger = getLogger(__name__)
 
 from PIL import Image, ImageDraw, ImageFont
 from rich.text import Text
@@ -30,13 +34,17 @@ from textual.widgets import (
 
 from ..lib.font_calibrator import (
     calculate_font_metrics,
-    download_font_url,
+    delete_cached_metrics,
     download_google_font,
     get_cached_metrics,
     get_fonts_cache_dir,
 )
 from ..lib.font_config import UNIFONT_PATH
-from ..lib.user_config import get_user_fonts_config_path, save_user_font_metrics
+from ..lib.user_config import (
+    delete_user_font_metrics,
+    get_user_fonts_config_path,
+    save_user_font_metrics,
+)
 
 
 class AddFontModal(ModalScreen[Optional[str]]):
@@ -78,8 +86,8 @@ class AddFontModal(ModalScreen[Optional[str]]):
     def compose(self) -> ComposeResult:
         with Vertical(id="modal-dialog"):
             yield Label("Add / Download Font", id="modal-title")
-            yield Label("Enter a Google Font family name (e.g. Silkscreen, Roboto),\na direct font URL, or a local file path:")
-            yield Input(placeholder="e.g. Silkscreen, Roboto, https://...", id="modal-input")
+            yield Label("Enter a Google Font family name (e.g. Silkscreen, Roboto)\nor a local file path:")
+            yield Input(placeholder="e.g. Silkscreen, Roboto, /path/to/font.ttf", id="modal-input")
             with Horizontal(id="modal-buttons"):
                 yield Button("Cancel", id="btn-modal-cancel")
                 yield Button("Load", id="btn-modal-load", variant="primary")
@@ -90,6 +98,63 @@ class AddFontModal(ModalScreen[Optional[str]]):
         elif event.button.id == "btn-modal-load":
             val = self.query_one("#modal-input", Input).value.strip()
             self.dismiss(val if val else None)
+
+
+class ConfirmDeleteModal(ModalScreen[bool]):
+    """Modal dialog to confirm font deletion."""
+
+    CSS = """
+    ConfirmDeleteModal {
+        align: center middle;
+    }
+    
+    #confirm-dialog {
+        width: 52;
+        height: auto;
+        border: thick $error;
+        background: $panel;
+        padding: 1 2;
+    }
+    
+    #confirm-title {
+        text-style: bold;
+        color: $error;
+        margin-bottom: 1;
+    }
+
+    #confirm-message {
+        margin-bottom: 1;
+    }
+    
+    #confirm-buttons {
+        height: auto;
+        align: right middle;
+    }
+    
+    #confirm-buttons Button {
+        margin-left: 1;
+    }
+    """
+
+    def __init__(self, font_name: str) -> None:
+        super().__init__()
+        self.font_name = font_name
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="confirm-dialog"):
+            yield Label("Confirm Deletion", id="confirm-title")
+            display_name = self.font_name.replace("_", " ")
+            yield Label(f"Are you sure you want to delete font '{display_name}'?", id="confirm-message")
+            with Horizontal(id="confirm-buttons"):
+                yield Button("Cancel", id="btn-confirm-cancel")
+                yield Button("Delete", id="btn-confirm-delete", variant="error")
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "btn-confirm-delete":
+            self.dismiss(True)
+        else:
+            self.dismiss(False)
+
 
 
 class MatrixPreview(Static):
@@ -329,6 +394,7 @@ class FontTUIApp(App):
         ("r", "auto_calibrate", "Reset"),
         ("v", "toggle_var_width", "Toggle Var Width"),
         ("a", "open_add_font", "Add Font"),
+        ("d", "delete_font", "Delete Font"),
     ]
 
     current_font_name = reactive("UNIFONT")
@@ -397,6 +463,7 @@ class FontTUIApp(App):
                 with Horizontal(id="btn-row"):
                     yield Button("Reset", id="btn-auto", variant="warning")
                     yield Button("Save", id="btn-save", variant="success")
+                    yield Button("Delete", id="btn-delete", variant="error")
 
             with VerticalScroll(id="right-panel"):
                 yield MatrixPreview(id="matrix-preview")
@@ -424,7 +491,20 @@ class FontTUIApp(App):
         if cache_fonts_dir.exists():
             for f in sorted(cache_fonts_dir.glob("*.*")):
                 if f.suffix.lower() in (".ttf", ".otf"):
-                    fonts.append((f"{f.stem} (cached)", f.stem, str(f)))
+                    display_name = f.stem.replace('_', ' ')
+                    fonts.append((f"{display_name} (cached)", display_name, str(f)))
+
+        # Also include currently loaded font if not already present
+        known_paths = {str(Path(p).resolve()) for _, _, p in fonts}
+        if (
+            self.current_font_path
+            and os.path.exists(self.current_font_path)
+            and str(Path(self.current_font_path).resolve()) not in known_paths
+        ):
+            display_name = self.current_font_name.replace('_', ' ')
+            fonts.append((f"{display_name} (local)", self.current_font_name, self.current_font_path))
+        elif not any(name.replace('_', ' ').lower() == self.current_font_name.replace('_', ' ').lower() for _, name, _ in fonts):
+            fonts.append((f"{self.current_font_name} (loaded)", self.current_font_name, self.current_font_path))
 
         return fonts
 
@@ -434,8 +514,20 @@ class FontTUIApp(App):
         options = [(label, name) for label, name, _ in discovered]
         select_widget = self.query_one("#font-select", Select)
         select_widget.set_options(options)
-        if options:
-            select_widget.value = self.current_font_name
+        valid_values = [name for _, name in options]
+
+        matching_val = None
+        for val in valid_values:
+            if val == self.current_font_name or val.replace('_', ' ').lower() == self.current_font_name.replace('_', ' ').lower():
+                matching_val = val
+                break
+
+        if matching_val:
+            self.current_font_name = matching_val
+            select_widget.value = matching_val
+        elif valid_values:
+            self.current_font_name = valid_values[0]
+            select_widget.value = valid_values[0]
 
     def _load_current_font_metrics(self) -> None:
         """Load or calculate metrics for current font across all heights."""
@@ -483,9 +575,11 @@ class FontTUIApp(App):
 
     def on_select_changed(self, event: Select.Changed) -> None:
         """Handle font selection change."""
-        if not event.value:
+        if not event.value or event.value == Select.BLANK:
             return
         selected_name = str(event.value)
+        if selected_name == self.current_font_name:
+            return
         for _, name, path in self._discover_fonts():
             if name == selected_name:
                 self.current_font_name = name
@@ -565,6 +659,8 @@ class FontTUIApp(App):
             self.action_auto_calibrate()
         elif btn_id == "btn-save":
             self.action_save_metrics()
+        elif btn_id == "btn-delete":
+            self.action_delete_font()
 
     def action_open_add_font(self) -> None:
         """Open the Add Font modal dialog."""
@@ -598,7 +694,7 @@ class FontTUIApp(App):
         self._update_metrics_from_inputs()
 
     def _load_or_download_font(self, font_query: str) -> None:
-        """Download Google font, URL, or load local path."""
+        """Download Google font or load local path."""
         raw_val = font_query.strip()
         if not raw_val:
             return
@@ -606,10 +702,7 @@ class FontTUIApp(App):
         self._set_status(f"Loading '{raw_val}'...")
 
         try:
-            if raw_val.startswith("http://") or raw_val.startswith("https://"):
-                path = str(download_font_url(raw_val))
-                name = Path(path).stem
-            elif os.path.exists(raw_val):
+            if os.path.exists(raw_val):
                 path = str(Path(raw_val).resolve())
                 name = Path(path).stem
             else:
@@ -621,8 +714,8 @@ class FontTUIApp(App):
             self.current_font_path = path
             self._refresh_font_list()
             self._load_current_font_metrics()
-            self.query_one("#font-select", Select).value = name
-            self._set_status(f"Font '{name}' loaded successfully.")
+            display_name = name.replace("_", " ")
+            self._set_status(f"Font '{display_name}' loaded successfully.")
         except Exception as e:
             self._set_status(f"Failed to load font: {e}", error=True)
 
@@ -646,6 +739,61 @@ class FontTUIApp(App):
             self._set_status(f"Configuration saved to {config_file}.")
         except Exception as e:
             self._set_status(f"Failed to save: {e}", error=True)
+
+    def action_delete_font(self) -> None:
+        """Delete the font currently being configured (except built-in)."""
+        font_name = self.current_font_name
+        font_path = Path(self.current_font_path).resolve()
+        unifont_resolved = Path(UNIFONT_PATH).resolve()
+
+        if font_name.upper() == "UNIFONT" or font_path == unifont_resolved:
+            self._set_status("Cannot delete built-in font UNIFONT.", error=True)
+            return
+
+        def _on_modal_dismiss(confirmed: Optional[bool]) -> None:
+            if confirmed:
+                self._perform_delete_font(font_name, font_path)
+
+        self.push_screen(ConfirmDeleteModal(font_name), _on_modal_dismiss)
+
+    def _perform_delete_font(self, font_name: str, font_path: Path) -> None:
+        """Perform font deletion after user confirmation."""
+        unifont_resolved = Path(UNIFONT_PATH).resolve()
+        try:
+            # 1. Remove from user permanent configuration (~/.config/pypixelcolor/fonts.json)
+            delete_user_font_metrics(str(font_path), font_name)
+
+            # 2. Remove from cache font metrics (~/.cache/pypixelcolor/font_metrics.json)
+            delete_cached_metrics(str(font_path), font_name)
+
+            # 3. Delete font file from disk if it exists and is not UNIFONT
+            if font_path.exists() and font_path != unifont_resolved:
+                try:
+                    font_path.unlink()
+                except Exception as e:
+                    logger.warning("Could not delete font file %s: %s", font_path, e)
+
+            # Also check cache directory for any cached copies with matching safe name
+            fonts_dir = get_fonts_cache_dir()
+            safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', font_name)
+            for ext in (".ttf", ".otf"):
+                cached_candidate = fonts_dir / f"{safe_name}{ext}"
+                if cached_candidate.exists() and cached_candidate.resolve() != unifont_resolved:
+                    try:
+                        cached_candidate.unlink()
+                    except Exception:
+                        pass
+
+            # 4. Reset selection back to UNIFONT
+            self.current_font_name = "UNIFONT"
+            self.current_font_path = UNIFONT_PATH
+            self._refresh_font_list()
+            self._load_current_font_metrics()
+            display_name = font_name.replace("_", " ")
+            self._set_status(f"Font '{display_name}' deleted.")
+        except Exception as e:
+            self._set_status(f"Failed to delete font: {e}", error=True)
+
 
     def _set_status(self, msg: str, error: bool = False) -> None:
         """Display feedback in the bottom full-width status bar, blinking for 2 seconds."""
