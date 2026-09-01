@@ -24,3 +24,13 @@ class TextSegment:
     @property
     def is_text(self) -> bool:
         return self.type == SegmentType.TEXT
+
+
+@dataclass(frozen=True)
+class RenderContext:
+    """Parameters required to render glyphs and text chunks."""
+    char_height: int
+    font_path: str
+    font_size: int
+    font_offset: tuple[int, int]
+    pixel_threshold: int

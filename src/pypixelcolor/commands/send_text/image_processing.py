@@ -8,6 +8,7 @@ from io import BytesIO
 from logging import getLogger
 
 from ...lib.emoji_manager import get_emoji_image
+from .models import RenderContext
 
 logger = getLogger(__name__)
 
@@ -28,35 +29,29 @@ def apply_pixel_threshold(img: Image.Image, threshold: int) -> Image.Image:
     return img.point(_threshold_func, mode='L')
 
 
-def create_text_image(text: str, height: int, font_path: str, 
-                      offset: tuple[int, int], font_size: int, 
-                      pixel_threshold: int) -> tuple[Image.Image, dict]:
+def create_text_image(text: str, context: RenderContext) -> tuple[Image.Image, dict]:
     """Create a PIL image from text with threshold applied.
     
     Args:
         text (str): Text to render.
-        height (int): Image height in pixels.
-        font_path (str): Path to font file.
-        offset (tuple[int, int]): (x, y) offset for text rendering.
-        font_size (int): Font size in points.
-        pixel_threshold (int): Threshold for binary conversion (0-255).
+        context (RenderContext): Rendering parameters.
     
     Returns:
         tuple: (image, metadata) where metadata dict contains:
             - 'bbox': Bounding box tuple (x0, y0, x1, y1)
             - 'width': Text width in pixels
-            - 'draw': ImageDraw object (for further drawing if needed)
+            - 'draw': ImageDraw object
             - 'font': ImageFont object
     """
-    img = Image.new('L', (1000, height), 0)
+    img = Image.new('L', (1000, context.char_height), 0)
     draw = ImageDraw.Draw(img)
-    font_obj = ImageFont.truetype(font_path, font_size)
+    font_obj = ImageFont.truetype(context.font_path, context.font_size)
     
     # Draw text
-    draw.text(offset, text, fill=255, font=font_obj)
+    draw.text(context.font_offset, text, fill=255, font=font_obj)
     
     # Apply threshold
-    img = apply_pixel_threshold(img, pixel_threshold)
+    img = apply_pixel_threshold(img, context.pixel_threshold)
     
     # Get dimensions
     bbox = draw.textbbox((0, 0), text, font=font_obj)
@@ -65,26 +60,20 @@ def create_text_image(text: str, height: int, font_path: str,
     return img, {'bbox': bbox, 'width': text_width, 'draw': draw, 'font': font_obj}
 
 
-def render_text_segment_to_chunks(text: str, height: int, font_path: str, 
-                                  offset: tuple[int, int], font_size: int, 
-                                  pixel_threshold: int, chunk_width: int) -> list[Image.Image]:
+def render_text_segment_to_chunks(text: str, context: RenderContext, chunk_width: int) -> list[Image.Image]:
     """Render text segment and split into fixed-width chunks.
     
     Args:
         text (str): Text to render.
-        height (int): Image height in pixels.
-        font_path (str): Path to font file.
-        offset (tuple[int, int]): (x, y) offset for text rendering.
-        font_size (int): Font size in points.
-        pixel_threshold (int): Threshold for binary conversion.
+        context (RenderContext): Rendering parameters.
         chunk_width (int): Width of each chunk in pixels.
     
     Returns:
         list[Image.Image]: List of image chunks.
     """
-    img, meta = create_text_image(text, height, font_path, offset, font_size, pixel_threshold)
+    img, meta = create_text_image(text, context)
     # Crop to actual text width with padding
-    img = img.crop((0, 0, meta['width'] + 4, height))
+    img = img.crop((0, 0, meta['width'] + 4, context.char_height))
     return split_image_into_chunks(img, chunk_width)
 
 
@@ -182,16 +171,12 @@ def emoji_to_hex(emoji: str, emoji_height: int) -> Optional[bytes]:
         return None
 
 
-def char_to_hex(character: str, char_height: int, font_path: str, font_offset: tuple[int, int], font_size: int, pixel_threshold: int) -> tuple[Optional[bytes], int]:
+def char_to_hex(character: str, context: RenderContext) -> tuple[Optional[bytes], int]:
     """Convert a character to its bitmap bytes and measured width.
     
     Args:
         character (str): The character to convert.
-        char_height (int): The size of the text (height of the matrix).
-        font_path (str): The path to the font file.
-        font_offset (tuple[int, int]): The (x, y) offset for the font.
-        font_size (int): The font size to use for rendering.
-        pixel_threshold (int): Threshold for converting grayscale to binary.
+        context (RenderContext): Rendering parameters.
         
     Returns:
         tuple[Optional[bytes], int]: (bytes_data, char_width), or (None, 0) if conversion fails.
@@ -199,9 +184,9 @@ def char_to_hex(character: str, char_height: int, font_path: str, font_offset: t
     try:
         # Generate image with dynamic width
         # First, create a temporary large image to measure text in grayscale
-        temp_img = Image.new('L', (100, char_height), 0)
+        temp_img = Image.new('L', (100, context.char_height), 0)
         temp_draw = ImageDraw.Draw(temp_img)
-        font_obj = ImageFont.truetype(font_path, font_size)
+        font_obj = ImageFont.truetype(context.font_path, context.font_size)
         
         # Get text bounding box
         bbox = temp_draw.textbbox((0, 0), character, font=font_obj)
@@ -210,21 +195,21 @@ def char_to_hex(character: str, char_height: int, font_path: str, font_offset: t
         # Snap to half-width or full-width cell based on character and char_height
         # For height <= 20: half-width is 8, full-width is 16
         # For height >= 32: half-width is 16, full-width is 32
-        is_32 = char_height >= 32
+        is_32 = context.char_height >= 32
         half_width = 16 if is_32 else 8
         full_width = 32 if is_32 else 16
         is_wide = unicodedata.east_asian_width(character) in ('W', 'F') or text_width > int(half_width * 1.25)
         slot_width = full_width if is_wide else half_width
 
         # Create final image in grayscale mode for pixel-perfect rendering
-        img = Image.new('L', (slot_width, int(char_height)), 0)
+        img = Image.new('L', (slot_width, int(context.char_height)), 0)
         d = ImageDraw.Draw(img)
         
         # Draw text in white (255) for pixel-perfect rendering
-        d.text(font_offset, character, fill=255, font=font_obj)
+        d.text(context.font_offset, character, fill=255, font=font_obj)
 
         # Apply threshold for pixel-perfect conversion
-        img = apply_pixel_threshold(img, pixel_threshold)
+        img = apply_pixel_threshold(img, context.pixel_threshold)
 
         bytes_data = encode_char_img(img)
         return bytes_data, slot_width

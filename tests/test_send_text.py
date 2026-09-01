@@ -71,11 +71,11 @@ def test_send_text_manual_overrides(mock_device, monkeypatch):
     captured_params = {}
     orig_encode = send_text_mod.encode_text
 
-    def mock_encode(*args, **kwargs):
-        captured_params["offset"] = args[4]
-        captured_params["font_size"] = args[5]
-        captured_params["pixel_threshold"] = args[6]
-        return orig_encode(*args, **kwargs)
+    def mock_encode(text, color_bytes, context, *args, **kwargs):
+        captured_params["offset"] = context.font_offset
+        captured_params["font_size"] = context.font_size
+        captured_params["pixel_threshold"] = context.pixel_threshold
+        return orig_encode(text, color_bytes, context, *args, **kwargs)
 
     monkeypatch.setattr(send_text_mod, "encode_text", mock_encode)
 
