@@ -3,6 +3,8 @@
 ![pypixelcolor](https://raw.githubusercontent.com/lucagoc/pypixelcolor/refs/heads/main/.github/readme/banner.png)
 
 [![PyPI](https://img.shields.io/pypi/v/pypixelcolor.svg)](https://pypi.org/project/pypixelcolor)
+[![AUR version](https://img.shields.io/aur/version/python-pypixelcolor?color=1793d1&logo=arch-linux)](https://aur.archlinux.org/packages/python-pypixelcolor)
+[![AUR git version](https://img.shields.io/aur/version/python-pypixelcolor-git?color=1793d1&label=aur-git&logo=arch-linux)](https://aur.archlinux.org/packages/python-pypixelcolor-git)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 [![Build Status](https://github.com/lucagoc/pypixelcolor/actions/workflows/python-app.yml/badge.svg)](https://github.com/lucagoc/pypixelcolor/actions)
 [![Publish Status](https://github.com/lucagoc/pypixelcolor/actions/workflows/python-publish.yml/badge.svg)](https://github.com/lucagoc/pypixelcolor/actions)
@@ -21,8 +23,24 @@
 
 ## Installation
 
+### PyPI
+
 ```bash
 pip install pypixelcolor
+```
+
+### Arch Linux (AUR)
+
+Stable version:
+```bash
+paru -S python-pypixelcolor
+# or: yay -S python-pypixelcolor
+```
+
+Development version (Git):
+```bash
+paru -S python-pypixelcolor-git
+# or: yay -S python-pypixelcolor-git
 ```
 
 Check the [Wiki](https://lucagoc.github.io/pypixelcolor/main) for more detailed usage instructions.
