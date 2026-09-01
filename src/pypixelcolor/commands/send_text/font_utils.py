@@ -26,7 +26,7 @@ def resolve_font_config(font: Union[str, FontConfig]) -> FontConfig:
         
     Raises:
         ValueError: If font argument type is invalid
-        FileNotFoundError: If font cannot be found locally or on Google Fonts
+        FileNotFoundError: If font cannot be found locally or on online.
     """
     if isinstance(font, FontConfig):
         return font
@@ -60,7 +60,7 @@ def resolve_font_config(font: Union[str, FontConfig]) -> FontConfig:
         logger.debug(f"Font '{cleaned_font}' not found on Google Fonts: {e}")
 
     raise FileNotFoundError(
-        f"Font '{font}' not found locally or on Google Fonts. Available built-in: UNIFONT."
+        f"Font '{font}' not found. Available built-in: UNIFONT."
     )
 
 

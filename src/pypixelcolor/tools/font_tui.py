@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Interactive TUI tool for previewing and calibrating font rendering on LED matrix screens.
 
-Allows downloading Google Fonts, previewing across 16px/24px/32px matrix heights,
+Allows downloading, previewing across 16px/24px/32px matrix heights,
 adjusting font_size, offsets, pixel_threshold, var_width mode, and saving permanently to ~/.config/pypixelcolor/fonts.json.
 """
 
@@ -103,7 +103,7 @@ class AddFontModal(ModalScreen[Optional[str]]):
     def compose(self) -> ComposeResult:
         with Vertical(id="modal-dialog"):
             yield Label("Add / Download Font", id="modal-title")
-            yield Label("Enter a Google Font family name (e.g. Silkscreen, Press Start 2P)\nor a local file path:")
+            yield Label("Enter a font family name (e.g. Silkscreen, Press Start 2P)\nor a local file path:")
             yield Input(placeholder="e.g. Silkscreen, Press Start 2P, /path/to/font.ttf", id="modal-input")
             with Horizontal(id="modal-buttons"):
                 yield Button("Cancel", id="btn-modal-cancel")
@@ -931,7 +931,7 @@ class FontTUIApp(App):
         self._update_metrics_from_inputs()
 
     def _load_or_download_font(self, font_query: str) -> None:
-        """Download Google font or load local path."""
+        """Download font or load local path."""
         raw_val = font_query.strip()
         if not raw_val:
             return
@@ -943,7 +943,7 @@ class FontTUIApp(App):
                 path = str(Path(raw_val).resolve())
                 name = Path(path).stem
             else:
-                # Treat as Google Font family
+                # Treat as downloadable font family
                 path = str(download_google_font(raw_val))
                 name = raw_val
 

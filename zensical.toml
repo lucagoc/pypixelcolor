@@ -28,7 +28,6 @@ nav = [
     { "Bluetooth Connection" = "troubleshooting/bluetooth_connection.md" },
   ]},
   { "Guides" = [
-    { "Custom Fonts" = "guides/custom_fonts.md" },
     { "Android BLE Logs" = "guides/android_ble_logs.md" },
   ]},
 ]

@@ -34,13 +34,11 @@ pip install pypixelcolor
 Stable version:
 ```bash
 paru -S python-pypixelcolor
-# or: yay -S python-pypixelcolor
 ```
 
 Development version (Git):
 ```bash
 paru -S python-pypixelcolor-git
-# or: yay -S python-pypixelcolor-git
 ```
 
 Check the [Wiki](https://lucagoc.github.io/pypixelcolor/main) for more detailed usage instructions.

@@ -4,24 +4,46 @@
 
 Before installing `pypixelcolor`, ensure you have the following prerequisites:
 
-- Python 3.10 or higher
+- Python 3.9 or higher
 - pip (Python package installer)
 - Bluetooth adapter on your machine
 
-## Installation via pip
+## Installation
 
-You can install `pypixelcolor` using pip. Open your terminal and run the following command:
+### Via PyPI (pip)
+
+You can install `pypixelcolor` using pip:
 
 ```bash
 pip install pypixelcolor
 ```
 
-This command will download and install the latest version of `pypixelcolor` along with its dependencies.
+To enable additional image format support such as HEIF/HEIC (using `pillow-heif`), install with the `extra` option:
 
-To verify that the installation was successful, you can check the version of `pypixelcolor` installed by running:
+```bash
+pip install "pypixelcolor[extra]"
+```
+
+To verify that the installation was successful, you can check the installed version:
 
 ```bash
 pypixelcolor --version
+```
+
+### Via Arch Linux (AUR)
+
+If you are using Arch Linux or an Arch-based distribution, `pypixelcolor` is available on the [AUR](https://aur.archlinux.org/packages/python-pypixelcolor):
+
+**Stable release:**
+
+```bash
+paru -S python-pypixelcolor
+```
+
+**Development version (latest Git main):**
+
+```bash
+paru -S python-pypixelcolor-git
 ```
 
 ## Installation from source
