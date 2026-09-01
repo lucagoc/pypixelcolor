@@ -315,7 +315,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../guides/custom_fonts/" class="md-tabs__link">
+        <a href="../../guides/android_ble_logs/" class="md-tabs__link">
           
   
   Guides
@@ -833,6 +833,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#set_timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>set_timer</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#set_scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>set_scores</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1101,33 +1123,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/custom_fonts/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  Custom Fonts
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../guides/android_ble_logs/" class="md-nav__link">
         
   
@@ -1233,6 +1228,28 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         <code>set_rhythm_mode_2</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#set_timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>set_timer</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#set_scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>set_scores</code>
       </span>
     </span>
   </a>
@@ -2011,7 +2028,275 @@
             </details>
     </div>
 
-</div>
+</div><h2 id="set_timer"><code>set_timer</code></h2>
+<p>Controls the timer (stopwatch) mode on the device.</p>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+        <p>Set timer action (start, pause, stop).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>action</code>
+            </td>
+            <td>
+                  <code><span title="typing.Union">Union</span>[<span title="pypixelcolor.commands.set_timer.TimerAction">TimerAction</span>, <span title="str">str</span>, <span title="int">int</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TimerAction enum, string ('start', 'pause', 'stop'),
+or integer (0 = stop, 1 = start, 2 = pause).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>SendPlan</code></td>            <td>
+                  <code><span title="pypixelcolor.lib.transport.send_plan.SendPlan">SendPlan</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The single window send plan for this command.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/pypixelcolor/commands/set_timer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_timer</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TimerAction</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SendPlan</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Set timer action (start, pause, stop).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        action (Union[TimerAction, str, int]): TimerAction enum, string ('start', 'pause', 'stop'),</span>
+<span class="sd">            or integer (0 = stop, 1 = start, 2 = pause).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        SendPlan: The single window send plan for this command.</span>
+<span class="sd">    """</span>
+    <span class="n">timer_action</span> <span class="o">=</span> <span class="n">_parse_action</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+    <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
+        <span class="mi">5</span><span class="p">,</span>                  <span class="c1"># Command length</span>
+        <span class="mi">0</span><span class="p">,</span>                  <span class="c1"># Reserved</span>
+        <span class="mi">9</span><span class="p">,</span>                  <span class="c1"># Command ID</span>
+        <span class="mh">0x80</span><span class="p">,</span>               <span class="c1"># Command type ID</span>
+        <span class="n">timer_action</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># Value: 0 = stop, 1 = start, 2 = pause</span>
+    <span class="p">])</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_timer"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><p><strong>Examples:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start, pause or stop the timer</span>
+<span class="n">client</span><span class="o">.</span><span class="n">set_timer</span><span class="p">(</span><span class="s2">"start"</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">set_timer</span><span class="p">(</span><span class="s2">"pause"</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">set_timer</span><span class="p">(</span><span class="s2">"stop"</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>set_timer<span class="w"> </span>start
+</code></pre></div>
+<h2 id="set_scores"><code>set_scores</code></h2>
+<p>Sets the scoreboard scores for player 1 and player 2 on supported devices.</p>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+        <p>Set scoreboard scores for player 1 and player 2.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>score_p1</code>
+            </td>
+            <td>
+                  <code><span title="typing.Union">Union</span>[<span title="int">int</span>, <span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Score for player 1 (0-99). Defaults to 0.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>score_p2</code>
+            </td>
+            <td>
+                  <code><span title="typing.Union">Union</span>[<span title="int">int</span>, <span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Score for player 2 (0-99). Defaults to 0.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>SendPlan</code></td>            <td>
+                  <code><span title="pypixelcolor.lib.transport.send_plan.SendPlan">SendPlan</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The single window send plan for this command.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/pypixelcolor/commands/set_scores.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_scores</span><span class="p">(</span><span class="n">score_p1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">score_p2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SendPlan</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Set scoreboard scores for player 1 and player 2.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        score_p1 (Union[int, str]): Score for player 1 (0-99). Defaults to 0.</span>
+<span class="sd">        score_p2 (Union[int, str]): Score for player 2 (0-99). Defaults to 0.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        SendPlan: The single window send plan for this command.</span>
+<span class="sd">    """</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">_parse_score</span><span class="p">(</span><span class="n">score_p1</span><span class="p">,</span> <span class="s2">"score_p1"</span><span class="p">)</span>
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">_parse_score</span><span class="p">(</span><span class="n">score_p2</span><span class="p">,</span> <span class="s2">"score_p2"</span><span class="p">)</span>
+
+    <span class="n">payload</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span>
+        <span class="mi">8</span><span class="p">,</span>      <span class="c1"># Command length</span>
+        <span class="mi">0</span><span class="p">,</span>      <span class="c1"># Reserved</span>
+        <span class="mh">0x0A</span><span class="p">,</span>   <span class="c1"># Command ID</span>
+        <span class="mh">0x80</span><span class="p">,</span>   <span class="c1"># Command type ID</span>
+        <span class="n">p1</span><span class="p">,</span>     <span class="c1"># Player 1 score</span>
+        <span class="mi">0</span><span class="p">,</span>      <span class="c1"># Padding</span>
+        <span class="n">p2</span><span class="p">,</span>     <span class="c1"># Player 2 score</span>
+        <span class="mi">0</span>       <span class="c1"># Padding</span>
+    <span class="p">])</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_scores"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><p><strong>Examples:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Set Player 1 to 24 and Player 2 to 18</span>
+<span class="n">client</span><span class="o">.</span><span class="n">set_scores</span><span class="p">(</span><span class="n">score_p1</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">score_p2</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>set_scores<span class="w"> </span><span class="nv">score_p1</span><span class="o">=</span><span class="m">24</span><span class="w"> </span><span class="nv">score_p2</span><span class="o">=</span><span class="m">18</span>
+</code></pre></div>
 
 
 

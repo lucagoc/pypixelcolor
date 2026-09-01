@@ -315,7 +315,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../guides/custom_fonts/" class="md-tabs__link">
+        <a href="../../guides/android_ble_logs/" class="md-tabs__link">
           
   
   Guides
@@ -712,6 +712,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="send_text">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inline-color-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Inline Color Tags
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#font-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Font Selection
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1090,33 +1118,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/custom_fonts/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  Custom Fonts
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../guides/android_ble_logs/" class="md-nav__link">
         
   
@@ -1214,6 +1215,34 @@
       </span>
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="send_text">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inline-color-tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Inline Color Tags
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#font-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Font Selection
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2137,7 +2166,33 @@ If emojis are included in the text, they will be rendered using Twemoji.</p>
             </details>
     </div>
 
+</div><h3 id="inline-color-tags">Inline Color Tags</h3>
+<p><code>send_text</code> supports inline hex color tags to style individual words or characters:</p>
+<ul>
+<li>Opening tag: <code>[#RRGGBB]</code> or <code>[RRGGBB]</code></li>
+<li>Closing tag: <code>[/]</code>, <code>[/#]</code>, or <code>[/color]</code></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1"># Multi-colored text</span>
+<span class="n">client</span><span class="o">.</span><span class="n">send_text</span><span class="p">(</span><span class="s2">"[#ff0000]Red[/] [#00ff00]Green[/] [#0000ff]Blue[/]"</span><span class="p">)</span>
+
+<span class="c1"># Nested tags (closes back to the parent color)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">send_text</span><span class="p">(</span><span class="s2">"[#ffaa00]Orange [#ffffff]White[/] Orange[/]"</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>send_text<span class="w"> </span><span class="s2">"[#ff0000]Red[/] [#00ff00]Green[/] [#0000ff]Blue[/]"</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Inline color tags are supported with standard font rendering. When variable-width mode is enabled (<code>var_width=True</code>), color tags are ignored with a warning and the uniform <code>color</code> parameter is used instead.</p>
 </div>
+<h3 id="font-selection">Font Selection</h3>
+<p>The <code>font</code> argument supports multiple formats:</p>
+<ul>
+<li><strong>Built-in Font</strong>: <code>"UNIFONT"</code> (default GNU Unifont with comprehensive Unicode and CJK glyph support).</li>
+<li><strong>Google Fonts</strong>: Specify any <a href="https://fonts.google.com/">Google Font</a> name directly (e.g. <code>font="Silkscreen"</code>, <code>font="Press Start 2P"</code>). It will be downloaded automatically and calibrated on first run.</li>
+<li><strong>Local Font</strong>: Provide a relative or absolute path to a <code>.ttf</code> or <code>.otf</code> file (e.g. <code>font="./Minecraft.ttf"</code>).</li>
+<li><strong>FontConfig</strong>: Pass a pre-configured <code>FontConfig</code> object.</li>
+</ul>
+<p>You can also calibrate and adjust fonts interactively using <code>pypixelcolor --font-config</code>.</p>
 
 
 

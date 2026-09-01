@@ -315,7 +315,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../guides/custom_fonts/" class="md-tabs__link">
+        <a href="../../guides/android_ble_logs/" class="md-tabs__link">
           
   
   Guides
@@ -559,6 +559,28 @@
     <span class="md-ellipsis">
       <span class="md-typeset">
         Sending a command
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-font-configuration-tui" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Interactive Font Configuration TUI
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-and-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Logging and Troubleshooting
       </span>
     </span>
   </a>
@@ -1090,33 +1112,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/custom_fonts/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  Custom Fonts
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../guides/android_ble_logs/" class="md-nav__link">
         
   
@@ -1207,6 +1202,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#interactive-font-configuration-tui" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Interactive Font Configuration TUI
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-and-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Logging and Troubleshooting
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#advanced-usage" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1248,9 +1265,9 @@
 <p><img alt="Scan for devices" src="../../assets/gifs/scan.gif" /></p>
 <p>If your device is found, take note of its MAC address (e.g., <code>30:E1:AF:BD:5F:D0</code>).</p>
 <div class="highlight"><pre><span></span><code>% pypixelcolor --scan
-ℹ️ [2025-11-18 21:07:35] [pypixelcolor.cli] Scanning for Bluetooth devices...
-ℹ️ [2025-11-18 21:07:40] [pypixelcolor.cli] Found 1 device(s):
-ℹ️ [2025-11-18 21:07:40] [pypixelcolor.cli]   - LED_BLE_E1BD5C80 (30:E1:AF:BD:5F:D0)
+[INFO] Scanning for Bluetooth devices...
+[OK] Found 1 LED device(s):
+  - LED_BLE_E1BD5C80 (30:E1:AF:BD:5F:D0)
 </code></pre></div>
 <blockquote>
 <p>If your device is not found, ensure it is powered, in range and not connected to another device.</p>
@@ -1261,13 +1278,36 @@
 <p>For instance, to send a text message to your device, use the following command, replacing the MAC address with your device's MAC address:</p>
 <div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>send_text<span class="w"> </span><span class="s2">"Hello pypixelcolor"</span>
 </code></pre></div>
-<p>You can also add optional parameters to customize the display:</p>
-<div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>send_text<span class="w"> </span><span class="s2">"Hello pypixelcolor"</span><span class="w"> </span><span class="nv">animation</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">speed</span><span class="o">=</span><span class="m">100</span>
+<p>You can also use inline color tags and specify custom parameters or fonts:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Send multi-colored text</span>
+pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>send_text<span class="w"> </span><span class="s2">"[#ff0000]Hello[/] [#00ff00]pypixelcolor[/]"</span>
+
+<span class="c1"># Send text using a custom Font</span>
+pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>send_text<span class="w"> </span><span class="s2">"Hello"</span><span class="w"> </span><span class="nv">font</span><span class="o">=</span><span class="s2">"Press Start 2P"</span><span class="w"> </span><span class="nv">animation</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">speed</span><span class="o">=</span><span class="m">100</span>
+</code></pre></div>
+<p>You can also control timers or update scoreboard scores:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Start or pause the timer</span>
+pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>set_timer<span class="w"> </span>start
+pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>set_timer<span class="w"> </span>pause
+pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>set_timer<span class="w"> </span>stop
+
+<span class="c1"># Set scores for player 1 and player 2</span>
+pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>set_scores<span class="w"> </span><span class="nv">score_p1</span><span class="o">=</span><span class="m">10</span><span class="w"> </span><span class="nv">score_p2</span><span class="o">=</span><span class="m">7</span>
 </code></pre></div>
 <p>For more information on available commands, refer to the <a href="../../commands/content/">Commands</a> page.</p>
+<h2 id="interactive-font-configuration-tui">Interactive Font Configuration TUI</h2>
+<p><code>pypixelcolor</code> includes a built-in terminal user interface (TUI) to preview and calibrate fonts for the commmand <code>send_text</code>:</p>
+<div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>--font-config
+</code></pre></div>
+<p>This interface allows you to preview rendering across 16px, 24px, and 32px heights, adjust font sizes, offsets, pixel threshold, toggle variable-width mode, and save preferences.</p>
+<h2 id="logging-and-troubleshooting">Logging and Troubleshooting</h2>
+<p>By default in an interactive terminal, <code>pypixelcolor</code> shows a clean status spinner. If you want detailed logs or are troubleshooting an issue, you can specify <code>--loglevel</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Show debug logs and full traceback on error</span>
+pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>get_device_info<span class="w"> </span>--loglevel<span class="w"> </span>DEBUG
+</code></pre></div>
 <h2 id="advanced-usage">Advanced usage</h2>
-<p>You can execute multiple commands in a single call. For example, to clear the display, set the brightness to 0, and switch to clock mode, you can run:</p>
-<div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>clear<span class="w"> </span>-c<span class="w"> </span>set_brightness<span class="w"> </span><span class="m">0</span><span class="w"> </span>-c<span class="w"> </span>set_clock_mode
+<p>You can execute multiple commands in a single call. For example, to clear the display, set the brightness to 50, and switch to clock mode, you can run:</p>
+<div class="highlight"><pre><span></span><code>pypixelcolor<span class="w"> </span>-a<span class="w"> </span>&lt;MAC_ADDRESS&gt;<span class="w"> </span>-c<span class="w"> </span>clear<span class="w"> </span>-c<span class="w"> </span>set_brightness<span class="w"> </span><span class="m">50</span><span class="w"> </span>-c<span class="w"> </span>set_clock_mode
 </code></pre></div>
 
 
