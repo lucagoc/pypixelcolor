@@ -18,11 +18,26 @@ You can install `pypixelcolor` using pip:
 pip install pypixelcolor
 ```
 
-To enable additional image format support such as HEIF/HEIC (using `pillow-heif`), install with the `extra` option:
+#### Optional features
 
-```bash
-pip install "pypixelcolor[extra]"
-```
+You can install optional features depending on your needs:
+
+* **Font calibration TUI (`rich` & `textual`)**:
+  ```bash
+  pip install "pypixelcolor[tui]"
+  ```
+* **WebSocket server bridge (`websockets`)**:
+  ```bash
+  pip install "pypixelcolor[server]"
+  ```
+* **HEIF/HEIC image format support (`pillow-heif`)**:
+  ```bash
+  pip install "pypixelcolor[heif]"
+  ```
+* **Complete installation with all features**:
+  ```bash
+  pip install "pypixelcolor[all]"
+  ```
 
 To verify that the installation was successful, you can check the installed version:
 

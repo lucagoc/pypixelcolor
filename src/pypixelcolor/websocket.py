@@ -6,29 +6,27 @@ WebSocket server for BLE communication
 import json
 import logging
 import argparse
+import sys
 import asyncio
-import websockets
+
+try:
+    import websockets
+    _ConnectionClosed = websockets.ConnectionClosed
+except ImportError:
+    websockets = None  # type: ignore
+    _ConnectionClosed = Exception  # type: ignore
 
 from .lib.logging import setup_logging
 from .lib.device_session import DeviceSession
+from .lib.args import build_command_args
 from .commands import COMMANDS
+
+__all__ = ["build_command_args", "handle_websocket", "start_server"]
 
 logger = logging.getLogger(__name__)
 
 # Global device session shared across all WebSocket connections
 _device_session = None
-
-def build_command_args(params):
-    """Parse command parameters into positional and keyword arguments."""
-    positional_args = []
-    keyword_args = {}
-    for param in params:
-        if "=" in param:
-            key, value = param.split("=", 1)
-            keyword_args[key.replace('-', '_')] = value
-        else:
-            positional_args.append(param)
-    return positional_args, keyword_args
 
 
 async def handle_websocket(websocket):
@@ -120,7 +118,7 @@ async def handle_websocket(websocket):
 
             # Send the response to the client
             await websocket.send(json.dumps(response))
-    except websockets.ConnectionClosed:
+    except _ConnectionClosed:
         logger.info("WebSocket client disconnected")
     except Exception as e:
         logger.error(f"Error in WebSocket handler: {e}")
@@ -151,6 +149,13 @@ async def reconnect_device(address):
 async def start_server(ip, port, address):
     """Start the WebSocket server and maintain BLE connection."""
     global _device_session
+    
+    if websockets is None:
+        logger.error(
+            "The WebSocket server requires the 'websockets' library.\n"
+            "Install it with: pip install 'pypixelcolor[server]'"
+        )
+        return
     
     # Initialize and connect to the device once
     logger.info(f"Connecting to BLE device {address}...")

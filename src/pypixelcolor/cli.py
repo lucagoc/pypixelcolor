@@ -8,12 +8,18 @@ import argparse
 import logging
 import sys
 from contextlib import contextmanager
-from rich.console import Console
+
+try:
+    from rich.console import Console
+    RICH_AVAILABLE = True
+except ImportError:
+    Console = None  # type: ignore
+    RICH_AVAILABLE = False
 
 from .scanner import scan_devices as discover_devices
 from .lib.logging import setup_logging
 from .lib.device_session import DeviceSession
-from .websocket import build_command_args
+from .lib.args import build_command_args
 from .commands import COMMANDS
 from .__version__ import VERSION
 
@@ -23,7 +29,7 @@ logger = logging.getLogger(__name__)
 class InteractiveStatusHandler(logging.Handler):
     """Logging handler that routes logs to a Rich Console and status spinner."""
 
-    def __init__(self, console: Console, status):
+    def __init__(self, console, status):
         super().__init__()
         self.console = console
         self.status = status
@@ -137,12 +143,19 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.font_config:
-        from .tools.font_tui import run_font_tui
-        run_font_tui()
+        try:
+            from .tools.font_tui import run_font_tui
+            run_font_tui()
+        except ImportError as e:
+            logger.error(
+                f"Interactive font configuration requires textual and rich ({e}).\n"
+                "Install them with: pip install 'pypixelcolor[tui]'"
+            )
+            sys.exit(1)
         return
     
     loglevel_specified = args.loglevel is not None
-    is_interactive = not loglevel_specified and sys.stdout.isatty()
+    is_interactive = not loglevel_specified and sys.stdout.isatty() and RICH_AVAILABLE
 
     def run_app() -> None:
         try:

@@ -12,12 +12,9 @@ description = "A Python library to control iPixel Color devices."
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-  "websockets",
   "bleak",
   "Pillow",
   "crccheck",
-  "rich",
-  "textual>=0.40.0",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -31,7 +28,20 @@ Homepage = "https://github.com/lucagoc/pypixelcolor"
 Issues = "https://github.com/lucagoc/pypixelcolor/issues"
 
 [project.optional-dependencies]
-extra = [
+tui = [
+  "rich",
+  "textual>=0.40.0",
+]
+server = [
+  "websockets",
+]
+heif = [
+  "pillow-heif>=1.0.0",
+]
+all = [
+  "rich",
+  "textual>=0.40.0",
+  "websockets",
   "pillow-heif>=1.0.0",
 ]
 dev = [
@@ -39,6 +49,10 @@ dev = [
   "pytest-cov>=4.0.0",
   "zensical",
   "mkdocstrings[python]",
+  "rich",
+  "textual>=0.40.0",
+  "websockets",
+  "pillow-heif>=1.0.0",
 ]
 
 [project.scripts]
