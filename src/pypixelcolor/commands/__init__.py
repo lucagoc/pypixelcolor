@@ -13,7 +13,11 @@ from . import (
     send_text,
     send_image,
     show_slot,
-    set_schedule
+    set_schedule,
+    randhash,
+    loremicon,
+    gravatar,
+    send_ico
 )
 
 COMMANDS = {
@@ -35,4 +39,8 @@ COMMANDS = {
     "set_power": set_power.set_power,
     "show_slot": show_slot.show_slot,
     "set_schedule": set_schedule.set_schedule,
+    "randhash": randhash.randhash,
+    "loremicon": loremicon.loremicon,
+    "gravatar":gravatar.gravatar,
+    "send_ico": send_ico.send_ico,
 }
