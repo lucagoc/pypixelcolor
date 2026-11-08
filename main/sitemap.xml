@@ -4,42 +4,42 @@
         <loc>https://lucagoc.github.io/pypixelcolor/main/</loc>
       </url>
       <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/installation/</loc>
-      </url>
-      <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/cli/</loc>
-      </url>
-      <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/websocket/</loc>
-      </url>
-      <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/library/</loc>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/clock/</loc>
       </url>
       <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/commands/content/</loc>
       </url>
       <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/clock/</loc>
-      </url>
-      <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/commands/data/</loc>
-      </url>
-      <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/settings/</loc>
       </url>
       <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/commands/other/</loc>
       </url>
       <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/reference/sync_client/</loc>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/commands/settings/</loc>
+      </url>
+      <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/cli/</loc>
+      </url>
+      <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/installation/</loc>
+      </url>
+      <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/library/</loc>
+      </url>
+      <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/getting_started/websocket/</loc>
+      </url>
+      <url>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/guides/android_ble_logs/</loc>
       </url>
       <url>
         <loc>https://lucagoc.github.io/pypixelcolor/main/reference/async_client/</loc>
       </url>
       <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/troubleshooting/bluetooth_connection/</loc>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/reference/sync_client/</loc>
       </url>
       <url>
-        <loc>https://lucagoc.github.io/pypixelcolor/main/guides/android_ble_logs/</loc>
+        <loc>https://lucagoc.github.io/pypixelcolor/main/troubleshooting/bluetooth_connection/</loc>
       </url>
 </urlset>
