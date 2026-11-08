@@ -191,6 +191,16 @@ def test_send_text_animation_parameters(mock_device):
     plan_int = send_text("Hello", animation=1, device_info=mock_device)
     assert len(list(plan_int.windows)) > 0
 
+    # Laser (8) — hardware-verified on a 64x16 panel (2026-11-08):
+    # beam pixel sweeps right to left, column by column.
+    plan_laser = send_text("Hello", animation=TextAnimation.LASER, device_info=mock_device)
+    window = next(iter(plan_laser.windows))
+    # Text head: [2 len][3 type][4 option][4 size][4 crc][2 tail][count][0x00 0x01 0x01 anim]...
+    assert window.data[19] == 8
+
+    plan_laser_str = send_text("Hello", animation="laser", device_info=mock_device)
+    assert len(list(plan_laser_str.windows)) > 0
+
     # 4. Invalid animation raises ValueError
     with pytest.raises(ValueError, match="Invalid animation"):
         send_text("Hello", animation="nonexistent_animation", device_info=mock_device)
