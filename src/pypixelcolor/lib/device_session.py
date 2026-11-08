@@ -161,7 +161,12 @@ class DeviceSession:
         
         This is called automatically during connect().
         """
-        from .internal_commands import build_get_device_info_command, _handle_device_info_response
+        from .internal_commands import (
+            build_get_device_info_command,
+            build_get_hw_info_command,
+            _handle_device_info_response,
+            _handle_hw_info_response,
+        )
         from .transport.send_plan import single_window_plan
         
         if not self._client or not self._ack_mgr:
@@ -180,6 +185,20 @@ class DeviceSession:
         
         if result.data is None:
             raise RuntimeError("Failed to retrieve device info")
+
+        # Firmware versions come from a separate 0x8005 read; best effort.
+        hw_plan = single_window_plan(
+            "get_hw_info_internal",
+            build_get_hw_info_command(),
+            requires_ack=False,
+            response_handler=_handle_hw_info_response
+        )
+        try:
+            hw_result = await send_plan(self._client, hw_plan, self._ack_mgr)
+            if hw_result.data:
+                result.data.mcu_version, result.data.wifi_version = hw_result.data
+        except Exception as e:
+            logger.warning(f"Failed to read firmware versions: {e}")
         
         self._device_info = result.data
     
