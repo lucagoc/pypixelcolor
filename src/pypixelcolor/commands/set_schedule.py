@@ -35,7 +35,10 @@ def _parse_days(days: Union[ScheduleDay, int, str, list[str], None]) -> int:
         return 0xFF
 
     if isinstance(days, (ScheduleDay, int)):
-        return int(days) | 1
+        mask = int(days)
+        if not (0 <= mask <= 255):
+            raise ValueError(f"Days mask must be between 0 and 255 (got {mask})")
+        return mask | 1
 
     if isinstance(days, str):
         days = days.split(",")
