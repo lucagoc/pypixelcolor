@@ -42,10 +42,12 @@ def set_pixel(x: int, y: int, color: str, device_info: Optional[DeviceInfo] = No
             raise ValueError(f"Invalid coordinates range. Range are x[0:{device_info.width-1}] y[0:{device_info.height-1}]")
         
     # Validate color format
-    if (not (isinstance(color, str)) 
-        and len(color) == 6 
-        and all(c in '0123456789abcdefABCDEF' for c in color)):
-            raise ValueError("Color must be a 6-character hexadecimal string.")
+    if not (
+        isinstance(color, str)
+        and len(color) == 6
+        and all(c in '0123456789abcdefABCDEF' for c in color)
+    ):
+        raise ValueError("Color must be a 6-character hexadecimal string.")
     
     # Build payload using bytes
     payload = bytes([
