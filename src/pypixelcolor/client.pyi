@@ -13,7 +13,7 @@ class AsyncClient:
     
     def __init__(self, address: str, *, write_with_response: bool = True) -> None: ...
     
-    async def connect(self) -> None:
+    async def connect(self) -> DeviceInfo:
         """Connect to the BLE device and retrieve device info."""
         ...
     
@@ -96,7 +96,7 @@ class Client:
     
     def __init__(self, address: str, *, write_with_response: bool = True) -> None: ...
     
-    def connect(self) -> None:
+    def connect(self) -> DeviceInfo:
         """Connect to the BLE device and retrieve device info."""
         ...
     
