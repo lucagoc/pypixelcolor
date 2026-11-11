@@ -11,7 +11,7 @@ from .lib.device_info import DeviceInfo
 class AsyncClient:
     """Asynchronous client for controlling the LED matrix via BLE."""
     
-    def __init__(self, address: str) -> None: ...
+    def __init__(self, address: str, *, write_with_response: bool = True) -> None: ...
     
     async def connect(self) -> None:
         """Connect to the BLE device and retrieve device info."""
@@ -94,7 +94,7 @@ class AsyncClient:
 class Client:
     """Synchronous client for controlling the LED matrix via BLE."""
     
-    def __init__(self, address: str) -> None: ...
+    def __init__(self, address: str, *, write_with_response: bool = True) -> None: ...
     
     def connect(self) -> None:
         """Connect to the BLE device and retrieve device info."""

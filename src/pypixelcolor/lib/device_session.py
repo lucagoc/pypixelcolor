@@ -37,14 +37,16 @@ class DeviceSession:
             result = await session.execute_command("set_brightness", 50)
     """
     
-    def __init__(self, address: str):
+    def __init__(self, address: str, *, write_with_response: bool = True):
         """
         Initialize a device session.
         
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
+            write_with_response: Write BLE chunks with response (default) or without, see send_plan().
         """
         self._address = address
+        self._write_with_response = write_with_response
         self._client: Optional[BleakClient] = None
         self._ack_mgr: Optional[AckManager] = None
         self._device_info: Optional[DeviceInfo] = None
@@ -235,7 +237,8 @@ class DeviceSession:
         plan = command_func(*args, **kwargs)
         
         # Execute the plan
-        return await send_plan(self._client, plan, self._ack_mgr)
+        return await send_plan(self._client, plan, self._ack_mgr,
+                               write_with_response=self._write_with_response)
     
     async def __aenter__(self):
         """Async context manager entry."""

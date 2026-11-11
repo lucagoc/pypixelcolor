@@ -57,13 +57,14 @@ class AsyncClient:
         """Scan for compatible LED devices asynchronously."""
         return await scan_devices(timeout=timeout)
     
-    def __init__(self, address: str):
+    def __init__(self, address: str, *, write_with_response: bool = True):
         """Initialize the AsyncClient.
         
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
+            write_with_response: Write BLE chunks with response (default) or without, see send_plan().
         """
-        self._session = DeviceSession(address)
+        self._session = DeviceSession(address, write_with_response=write_with_response)
         self._connected = False
     
     async def connect(self) -> None:
@@ -134,13 +135,14 @@ class Client:
         """Scan for compatible LED devices synchronously."""
         return scan_devices_sync(timeout=timeout)
     
-    def __init__(self, address: str):
+    def __init__(self, address: str, *, write_with_response: bool = True):
         """Initialize the Client.
         
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
+            write_with_response: Write BLE chunks with response (default) or without, see send_plan().
         """
-        self._async_client = AsyncClient(address)
+        self._async_client = AsyncClient(address, write_with_response=write_with_response)
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._loop_thread = None
         self._setup_loop()
