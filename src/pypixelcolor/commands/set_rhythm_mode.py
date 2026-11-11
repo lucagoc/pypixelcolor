@@ -40,7 +40,9 @@ def set_rhythm_mode(style=0, l1 : int = 0, l2 : int = 0, l3 : int = 0, l4 : int 
     ])
     payload += bytes(levels)
     
-    return single_window_plan("set_rhythm_mode", payload, requires_ack=True)
+    # Fire-and-forget: the panel never ACKs rhythm-mode writes (same as the
+    # fun-mode writes). Requiring an ACK here makes every call time out.
+    return single_window_plan("set_rhythm_mode", payload, requires_ack=False)
 
 
 def set_rhythm_mode_2(style: int = 0, t: int = 0):
@@ -74,4 +76,5 @@ def set_rhythm_mode_2(style: int = 0, t: int = 0):
         int(style)      # Style
     ])
     
-    return single_window_plan("set_rhythm_mode_2", payload)
+    # Fire-and-forget, see set_rhythm_mode.
+    return single_window_plan("set_rhythm_mode_2", payload, requires_ack=False)
