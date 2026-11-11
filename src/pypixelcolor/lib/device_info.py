@@ -123,7 +123,7 @@ def parse_device_info(response: bytes) -> DeviceInfo:
     dimensions = LED_SIZE_MAP.get(led_type, (64, 64))
     width, height = dimensions
     
-    # Parse version information (not implemented in this snippet)
+    # Versions live in a separate 0x8005 reply.
     mcu_version = "unknown"
     wifi_version = "unknown"
     
@@ -143,3 +143,37 @@ def parse_device_info(response: bytes) -> DeviceInfo:
         password_flag=password_flag,
         led_type=led_type,
     )
+
+
+def parse_hw_info(response: bytes) -> tuple:
+    """Parse a `0x8005` firmware-version reply.
+
+    Reply layout::
+
+        0..1   length (LE)  == 8
+        2      5
+        3      0x80
+        4      MCU major
+        5      MCU minor
+        6      secondary major
+        7      secondary minor
+
+    The secondary pair is the WiFi firmware on WiFi-capable panels and the
+    Bluetooth firmware on BLE-only panels.
+
+    Args:
+        response: Raw bytes received from the device.
+
+    Returns:
+        ``(mcu_version, wifi_version)`` formatted as ``"Major.Minor"``.
+
+    Raises:
+        ValueError: If the response is not a version reply.
+    """
+    if len(response) < 8:
+        raise ValueError(f"Version reply too short: got {len(response)} bytes, need 8")
+    if response[2] != 5 or response[3] != 0x80:
+        raise ValueError(f"Not a version reply (expected opcode 0x8005): {response.hex(' ')}")
+    mcu_version = f"{response[4]}.{response[5]:02d}"
+    wifi_version = f"{response[6]}.{response[7]:02d}"
+    return mcu_version, wifi_version
