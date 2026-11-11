@@ -11,7 +11,7 @@ from .lib.device_info import DeviceInfo
 class AsyncClient:
     """Asynchronous client for controlling the LED matrix via BLE."""
     
-    def __init__(self, address: str, *, write_with_response: bool = True) -> None: ...
+    def __init__(self, address: str) -> None: ...
     
     async def connect(self) -> None:
         """Connect to the BLE device and retrieve device info."""
@@ -63,6 +63,9 @@ class AsyncClient:
     async def set_pixel(self, x: int, y: int, color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
         """Defines the color of a specific pixel."""
         ...
+    async def set_pixels(self, points: list[tuple[int, int]], color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
+        """Paint one or more pixels in a single frame."""
+        ...
     async def set_power(self, on: bool = True) -> None:
         """Set the power state of the device."""
         ...
@@ -94,7 +97,7 @@ class AsyncClient:
 class Client:
     """Synchronous client for controlling the LED matrix via BLE."""
     
-    def __init__(self, address: str, *, write_with_response: bool = True) -> None: ...
+    def __init__(self, address: str) -> None: ...
     
     def connect(self) -> None:
         """Connect to the BLE device and retrieve device info."""
@@ -145,6 +148,9 @@ class Client:
         ...
     def set_pixel(self, x: int, y: int, color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
         """Defines the color of a specific pixel."""
+        ...
+    def set_pixels(self, points: list[tuple[int, int]], color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
+        """Paint one or more pixels in a single frame."""
         ...
     def set_power(self, on: bool = True) -> None:
         """Set the power state of the device."""
