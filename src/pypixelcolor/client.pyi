@@ -60,8 +60,11 @@ class AsyncClient:
     async def set_orientation(self, orientation: int = 0) -> None:
         """Set the orientation of the device."""
         ...
-    async def set_pixel(self, x: int, y: int, color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
+    async def set_pixel(self, x: int, y: int, color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None, mirror: pypixelcolor.commands.set_fun_mode.MirrorMode | str | int | None = None) -> None:
         """Defines the color of a specific pixel."""
+        ...
+    async def set_pixels(self, points: list[tuple[int, int]], color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None, mirror: pypixelcolor.commands.set_fun_mode.MirrorMode | str | int | None = None) -> None:
+        """Paint one or more pixels in a single frame."""
         ...
     async def set_power(self, on: bool = True) -> None:
         """Set the power state of the device."""
@@ -143,8 +146,11 @@ class Client:
     def set_orientation(self, orientation: int = 0) -> None:
         """Set the orientation of the device."""
         ...
-    def set_pixel(self, x: int, y: int, color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None) -> None:
+    def set_pixel(self, x: int, y: int, color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None, mirror: pypixelcolor.commands.set_fun_mode.MirrorMode | str | int | None = None) -> None:
         """Defines the color of a specific pixel."""
+        ...
+    def set_pixels(self, points: list[tuple[int, int]], color: str, device_info: pypixelcolor.lib.device_info.DeviceInfo | None = None, mirror: pypixelcolor.commands.set_fun_mode.MirrorMode | str | int | None = None) -> None:
+        """Paint one or more pixels in a single frame."""
         ...
     def set_power(self, on: bool = True) -> None:
         """Set the power state of the device."""
