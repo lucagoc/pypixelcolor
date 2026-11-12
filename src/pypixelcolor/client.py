@@ -67,14 +67,22 @@ class AsyncClient:
         self._session = DeviceSession(address, write_with_response=write_with_response)
         self._connected = False
     
-    async def connect(self) -> None:
-        """Connect to the BLE device and retrieve device info."""
+    async def connect(self) -> DeviceInfo:
+        """Connect to the BLE device.
+
+        Device info is retrieved and cached during the connection; it is
+        also available afterwards via ``get_device_info()``.
+
+        Returns:
+            DeviceInfo object with device specifications.
+        """
         if self._connected:
             logger.warning("Already connected")
-            return
-        
-        await self._session.connect()
+            return self._session.get_device_info()
+
+        info = await self._session.connect()
         self._connected = True
+        return info
     
     async def disconnect(self) -> None:
         """Disconnect from the BLE device."""
