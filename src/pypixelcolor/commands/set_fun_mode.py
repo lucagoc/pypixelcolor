@@ -78,21 +78,25 @@ def set_pixels(points: list[tuple[int, int]], color: str, device_info: Optional[
             MirrorMode value). The panel then paints every point plus its
             mirror image on the opposite side, in the same color.
     """
-
+    
     mirror_mode = _parse_mirror(mirror)
-
+    
     # Validate coordinates range if device info is provided
     for x, y in points:
         if device_info and not (0 <= int(x) <= device_info.width - 1 and 0 <= int(y) <= device_info.height - 1):
-                raise ValueError(f"Invalid coordinates range. Range are x[0:{device_info.width-1}] y[0:{device_info.height-1}]")
+            raise ValueError(f"Invalid coordinates range. Range are x[0:{device_info.width-1}] y[0:{device_info.height-1}]")
     if not points:
-            raise ValueError("At least one point is required.")
+        raise ValueError("At least one point is required.")
     if len(points) > 123:
-            raise ValueError(f"Too many points: {len(points)}. Maximum is 123 (the frame length is a single byte).")
+        raise ValueError(f"Too many points: {len(points)}. Maximum is 123 (the frame length is a single byte).")
         
     # Validate color format
-    if not (isinstance(color, str) and len(color) == 6 and all(c in '0123456789abcdefABCDEF' for c in color)):
-            raise ValueError("Color must be a 6-character hexadecimal string.")
+    if not (
+        isinstance(color, str)
+        and len(color) == 6
+        and all(c in '0123456789abcdefABCDEF' for c in color)
+    ):
+        raise ValueError("Color must be a 6-character hexadecimal string.")
     
     # Build payload using bytes
     payload = [
