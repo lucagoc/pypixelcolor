@@ -1839,7 +1839,9 @@
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_rhythm_mode</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l1</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l2</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l3</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l4</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l5</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l6</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l7</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l8</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l9</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l10</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l11</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_rhythm_mode</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l1</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l2</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l3</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l4</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l5</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l6</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l7</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l8</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l9</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l10</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l11</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Set the rhythm mode of the device.</span>
 
 <span class="sd">    Args:</span>
@@ -1879,7 +1881,9 @@
     <span class="p">])</span>
     <span class="n">payload</span> <span class="o">+=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">levels</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_rhythm_mode"</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">requires_ack</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># Fire-and-forget: the panel never ACKs rhythm-mode writes (same as the</span>
+    <span class="c1"># fun-mode writes). Requiring an ACK here makes every call time out.</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_rhythm_mode"</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">requires_ack</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2001,9 +2005,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pypixelcolor/commands/set_rhythm_mode.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
@@ -2032,7 +2034,10 @@
 <span class="normal">74</span>
 <span class="normal">75</span>
 <span class="normal">76</span>
-<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_rhythm_mode_2</span><span class="p">(</span><span class="n">style</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_rhythm_mode_2</span><span class="p">(</span><span class="n">style</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Set the rhythm mode of the device (alternative version).</span>
 
 <span class="sd">    Args:</span>
@@ -2063,7 +2068,8 @@
         <span class="nb">int</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>      <span class="c1"># Style</span>
     <span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_rhythm_mode_2"</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+    <span class="c1"># Fire-and-forget, see set_rhythm_mode.</span>
+    <span class="k">return</span> <span class="n">single_window_plan</span><span class="p">(</span><span class="s2">"set_rhythm_mode_2"</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">requires_ack</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
