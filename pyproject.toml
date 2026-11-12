@@ -15,6 +15,10 @@ dependencies = [
   "bleak",
   "Pillow",
   "crccheck",
+  "blurhash-python",
+  "requests",
+  "libgravatar",
+  "icoextract"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

@@ -1,3 +1,13 @@
+# NOTE: SuperIlus extensions
+- added support for fetching random images from https://loremicon.com/
+    `pypixelcolor -a <DEVICE_MAC_ADDRESS> -c loremicon`
+- added support for randomly generated https://blurha.sh/ images
+    `pypixelcolor -a <DEVICE_MAC_ADDRESS> -c randhash`
+- added support for gravatar https://gravatar.com/
+    `pypixelcolor -a <DEVICE_MAC_ADDRESS> -c gravatar <email address>`
+- added support for PE executable icons
+    `pypixelcolor -a <DEVICE_MAC_ADDRESS> -c send_ico <PE EXE> <icon index>`
+
 # pypixelcolor
 
 ![pypixelcolor](https://raw.githubusercontent.com/lucagoc/pypixelcolor/refs/heads/main/.github/readme/banner.png)
