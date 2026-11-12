@@ -10,7 +10,7 @@ the panel does not ACK paint writes, verified on panel.
 import pytest
 
 from pypixelcolor.lib.device_info import DeviceInfo
-from pypixelcolor.commands.set_fun_mode import set_pixel, set_pixels
+from pypixelcolor.commands.set_fun_mode import MirrorMode, set_pixel, set_pixels
 from pypixelcolor.commands import COMMANDS
 
 
@@ -113,3 +113,34 @@ def test_set_pixels_registered():
     """Both commands are registered for dynamic client methods."""
     assert "set_pixel" in COMMANDS
     assert "set_pixels" in COMMANDS
+
+
+def test_set_pixels_mirror_option_byte():
+    """Mirror mode goes into the option byte (HW-verified: panel paints each
+    point plus its mirror image on the opposite side)."""
+    assert _frame(set_pixels([(4, 2)], "00ff00"))[4] == 0
+    assert _frame(set_pixels([(4, 2)], "00ff00", mirror="horizontal"))[4] == 1
+    assert _frame(set_pixels([(4, 2)], "00ff00", mirror="vertical"))[4] == 2
+    assert _frame(set_pixels([(4, 2)], "00ff00", mirror=MirrorMode.HORIZONTAL))[4] == 1
+    assert _frame(set_pixels([(4, 2)], "00ff00", mirror=1))[4] == 1
+
+
+def test_set_pixels_mirror_keeps_frame_layout():
+    """Mirroring is done by the panel; the frame only carries N points."""
+    pts = [(6, 3), (8, 5), (10, 7)]
+    data = _frame(set_pixels(pts, "00ff00", mirror="horizontal"))
+    assert len(data) == 8 + 2 * len(pts)
+    assert data[0] == len(data)
+    assert data[4] == 1
+    assert data[8:] == bytes([6, 3, 8, 5, 10, 7])
+
+
+def test_set_pixels_mirror_invalid_raises():
+    for bad in ("both", "diagonal", 3, 4, True):
+        with pytest.raises(ValueError, match="mirror mode"):
+            set_pixels([(0, 0)], "ff0000", mirror=bad)
+
+
+def test_set_pixel_mirror_passthrough():
+    assert _frame(set_pixel(4, 2, "00ff00", mirror="vertical")) == \
+        _frame(set_pixels([(4, 2)], "00ff00", mirror="vertical"))
