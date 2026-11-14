@@ -8,7 +8,8 @@ DeviceInfo is automatically retrieved on connection and cached for the session l
 import inspect
 import logging
 from typing import Optional
-from bleak import BleakClient
+
+from bleak import BleakClient, BleakScanner
 
 from .constants import NOTIFY_UUID
 from .device_info import DeviceInfo
@@ -17,6 +18,22 @@ from .transport.ack_manager import AckManager
 from .command_result import CommandResult
 
 logger = logging.getLogger(__name__)
+
+
+# Scan window used before a connect attempt. The panel only accepts a
+# connection while it advertises, so a bounded scan is needed; the
+# window is a maximum — the scan returns as soon as the panel is seen.
+DEFAULT_CONNECT_SCAN_TIMEOUT = 15.0
+
+
+class PanelNotAdvertisingError(RuntimeError):
+    """Raised when the panel is not advertising before connect.
+
+    A panel that is not advertising cannot accept a BLE connection:
+    usually a phone already holds the connection through the iPixel
+    app (the panel stops advertising while connected), or the panel
+    is powered off / out of range.
+    """
 
 
 class DeviceSession:
@@ -37,16 +54,30 @@ class DeviceSession:
             result = await session.execute_command("set_brightness", 50)
     """
     
-    def __init__(self, address: str, *, write_with_response: bool = True):
+    def __init__(
+        self,
+        address: str,
+        *,
+        write_with_response: bool = True,
+        connect_scan_timeout: float = DEFAULT_CONNECT_SCAN_TIMEOUT,
+    ):
         """
         Initialize a device session.
-        
+
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
             write_with_response: Write BLE chunks with response (default) or without, see send_plan().
+            connect_scan_timeout: Seconds to scan for the panel's
+                advertisement before connecting. The panel only
+                accepts a connection while advertising (a phone
+                connected to the panel stops it advertising), so
+                scanning first turns a blind GATT connect into a
+                fast, actionable error. Set to 0 to skip the scan and
+                connect directly by address.
         """
         self._address = address
         self._write_with_response = write_with_response
+        self._connect_scan_timeout = connect_scan_timeout
         self._client: Optional[BleakClient] = None
         self._ack_mgr: Optional[AckManager] = None
         self._device_info: Optional[DeviceInfo] = None
@@ -88,26 +119,70 @@ class DeviceSession:
             raise RuntimeError("Device info not available.")
         return self._device_info
     
+    async def _pre_scan(self) -> None:
+        """Verify the panel is advertising before attempting a connect.
+
+        A panel only accepts a BLE connection while it advertises; a
+        phone already connected to the panel (the panel stops
+        advertising while connected) or an off panel cannot be
+        reached. Scanning first turns a blind GATT connect into a
+        fast, actionable error.
+
+        Raises:
+            PanelNotAdvertisingError: If the address was not seen
+                within ``connect_scan_timeout``.
+        """
+        if self._connect_scan_timeout <= 0:
+            return
+        logger.info(
+            f"Scanning for {self._address} for "
+            f"{self._connect_scan_timeout:.0f}s ..."
+        )
+        device = await BleakScanner.find_device_by_address(
+            self._address, timeout=self._connect_scan_timeout
+        )
+        if device is None:
+            raise PanelNotAdvertisingError(
+                f"Panel {self._address} not seen advertising for "
+                f"{self._connect_scan_timeout:.0f}s. A panel only accepts "
+                "a connection while it advertises. Check: (1) a phone is "
+                "not connected to the panel through the iPixel app — "
+                "close the app or switch the phone's Bluetooth off; "
+                "(2) the panel is powered (5 V / 2 A); (3) the panel "
+                "is in range."
+            )
+        name = getattr(device, "name", None) or ""
+        rssi = getattr(device, "rssi", None)
+        logger.info(
+            f"Found {self._address}"
+            + (f" '{name}'" if name else "")
+            + (f" (RSSI {rssi} dBm)" if rssi is not None else "")
+        )
+
     async def connect(self) -> DeviceInfo:
         """
         Connect to the BLE device and retrieve device information.
         
         This method:
-        1. Establishes BLE connection
-        2. Enables notifications
-        3. Automatically retrieves device info
-        4. Caches device info for the session
+        1. Scans for the panel's advertisement
+        2. Establishes BLE connection
+        3. Enables notifications
+        4. Automatically retrieves device info
+        5. Caches device info for the session
         
         Returns:
             DeviceInfo object with device specifications.
             
         Raises:
             RuntimeError: If already connected.
+            PanelNotAdvertisingError: If the panel is not advertising.
             Exception: If connection or device info retrieval fails.
         """
         if self._connected:
             raise RuntimeError("Already connected")
         
+        await self._pre_scan()
+
         logger.info(f"Connecting to {self._address}...")
         self._client = BleakClient(self._address, disconnected_callback=self._on_disconnect)
         await self._client.connect()
