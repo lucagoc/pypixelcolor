@@ -34,6 +34,7 @@ def test_import_from_models_module():
     assert TextAnimation.BLINK == 5
     assert TextAnimation.FADE == 6
     assert TextAnimation.SNOWFLAKE == 7
+    assert TextAnimation.LASER == 8
     assert TimerAction.STOP == 0
     assert ScheduleDay.MON == 0x02
     assert ResizeMethod.FIT.value == "fit"

@@ -18,6 +18,7 @@ class TextAnimation(IntEnum):
         BLINK (5): Fast blinking text effect.
         FADE (6): Smooth blinking / breathing effect with continuous attenuation.
         SNOWFLAKE (7): Snowflake falling effect.
+        LASER (8): Laser beam sweep, column by column (right to left).
     """
 
     STATIC = 0
@@ -28,6 +29,7 @@ class TextAnimation(IntEnum):
     BLINK = 5
     FADE = 6
     SNOWFLAKE = 7
+    LASER = 8
 
 
 def parse_animation(animation: Union[TextAnimation, str, int]) -> TextAnimation:
@@ -35,7 +37,7 @@ def parse_animation(animation: Union[TextAnimation, str, int]) -> TextAnimation:
 
     Args:
         animation: TextAnimation enum instance, string name (e.g. 'scroll_left', 'blink'),
-                   or integer opcode (0-7).
+                   or integer opcode (0-8).
 
     Returns:
         TextAnimation instance.
@@ -61,7 +63,7 @@ def parse_animation(animation: Union[TextAnimation, str, int]) -> TextAnimation:
 
     valid_names = ", ".join(m.lower() for m in TextAnimation.__members__)
     raise ValueError(
-        f"Invalid animation: {animation!r}. Expected integer (0-7) or name ({valid_names})."
+        f"Invalid animation: {animation!r}. Expected integer (0-8) or name ({valid_names})."
     )
 
 

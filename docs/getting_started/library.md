@@ -68,3 +68,17 @@ if __name__ == "__main__":
 ```
 
 
+
+## Faster uploads
+
+By default every BLE chunk is written "with response", which costs one round trip per
+244 bytes. Pass `write_with_response=False` to write chunks without response; the
+device still acknowledges each 12 KB window, so transfers stay flow-controlled. On a
+64x16 device this made image and GIF uploads about three times faster.
+
+```python
+with Client(MAC_ADDRESS, write_with_response=False) as device:
+    device.send_image("./animation.gif")
+```
+
+The CLI equivalent is `--fast`.

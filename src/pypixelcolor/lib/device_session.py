@@ -58,6 +58,7 @@ class DeviceSession:
         self,
         address: str,
         *,
+        write_with_response: bool = True,
         connect_scan_timeout: float = DEFAULT_CONNECT_SCAN_TIMEOUT,
     ):
         """
@@ -65,6 +66,7 @@ class DeviceSession:
 
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
+            write_with_response: Write BLE chunks with response (default) or without, see send_plan().
             connect_scan_timeout: Seconds to scan for the panel's
                 advertisement before connecting. The panel only
                 accepts a connection while advertising (a phone
@@ -74,6 +76,7 @@ class DeviceSession:
                 connect directly by address.
         """
         self._address = address
+        self._write_with_response = write_with_response
         self._connect_scan_timeout = connect_scan_timeout
         self._client: Optional[BleakClient] = None
         self._ack_mgr: Optional[AckManager] = None
@@ -235,7 +238,12 @@ class DeviceSession:
         
         This is called automatically during connect().
         """
-        from .internal_commands import build_get_device_info_command, _handle_device_info_response
+        from .internal_commands import (
+            build_get_device_info_command,
+            build_get_hw_info_command,
+            _handle_device_info_response,
+            _handle_hw_info_response,
+        )
         from .transport.send_plan import single_window_plan
         
         if not self._client or not self._ack_mgr:
@@ -254,6 +262,20 @@ class DeviceSession:
         
         if result.data is None:
             raise RuntimeError("Failed to retrieve device info")
+
+        # Firmware versions come from a separate 0x8005 read; best effort.
+        hw_plan = single_window_plan(
+            "get_hw_info_internal",
+            build_get_hw_info_command(),
+            requires_ack=False,
+            response_handler=_handle_hw_info_response
+        )
+        try:
+            hw_result = await send_plan(self._client, hw_plan, self._ack_mgr)
+            if hw_result.data:
+                result.data.mcu_version, result.data.wifi_version = hw_result.data
+        except Exception as e:
+            logger.warning(f"Failed to read firmware versions: {e}")
         
         self._device_info = result.data
     
@@ -290,7 +312,8 @@ class DeviceSession:
         plan = command_func(*args, **kwargs)
         
         # Execute the plan
-        return await send_plan(self._client, plan, self._ack_mgr)
+        return await send_plan(self._client, plan, self._ack_mgr,
+                               write_with_response=self._write_with_response)
     
     async def __aenter__(self):
         """Async context manager entry."""

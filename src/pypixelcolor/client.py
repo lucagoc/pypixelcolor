@@ -57,23 +57,32 @@ class AsyncClient:
         """Scan for compatible LED devices asynchronously."""
         return await scan_devices(timeout=timeout)
     
-    def __init__(self, address: str):
+    def __init__(self, address: str, *, write_with_response: bool = True):
         """Initialize the AsyncClient.
         
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
+            write_with_response: Write BLE chunks with response (default) or without, see send_plan().
         """
-        self._session = DeviceSession(address)
+        self._session = DeviceSession(address, write_with_response=write_with_response)
         self._connected = False
     
-    async def connect(self) -> None:
-        """Connect to the BLE device and retrieve device info."""
+    async def connect(self) -> DeviceInfo:
+        """Connect to the BLE device.
+
+        Device info is retrieved and cached during the connection; it is
+        also available afterwards via ``get_device_info()``.
+
+        Returns:
+            DeviceInfo object with device specifications.
+        """
         if self._connected:
             logger.warning("Already connected")
-            return
-        
-        await self._session.connect()
+            return self._session.get_device_info()
+
+        info = await self._session.connect()
         self._connected = True
+        return info
     
     async def disconnect(self) -> None:
         """Disconnect from the BLE device."""
@@ -134,13 +143,14 @@ class Client:
         """Scan for compatible LED devices synchronously."""
         return scan_devices_sync(timeout=timeout)
     
-    def __init__(self, address: str):
+    def __init__(self, address: str, *, write_with_response: bool = True):
         """Initialize the Client.
         
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
+            write_with_response: Write BLE chunks with response (default) or without, see send_plan().
         """
-        self._async_client = AsyncClient(address)
+        self._async_client = AsyncClient(address, write_with_response=write_with_response)
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._loop_thread = None
         self._setup_loop()

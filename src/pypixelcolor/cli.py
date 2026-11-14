@@ -73,16 +73,17 @@ def interactive_status(initial_status: str = "Working..."):
             root_logger.setLevel(old_level)
 
 
-async def run_commands(commands: list[tuple[str, ...]], address: str) -> None:
+async def run_commands(commands: list[tuple[str, ...]], address: str, fast: bool = False) -> None:
     """
     Execute multiple BLE commands sequentially.
     
     Args:
         commands: List of command tuples (command_name, *params).
         address: Bluetooth device address.
+        fast: Write BLE chunks without response.
     """
     logger.info(f"Connecting to {address}...")
-    async with DeviceSession(address) as session:
+    async with DeviceSession(address, write_with_response=not fast) as session:
         device_info = session.get_device_info()
         
         for cmd in commands:
@@ -134,6 +135,10 @@ def main() -> None:
     )
     parser.add_argument("-a", "--address", help="specify the Bluetooth device address")
     parser.add_argument(
+        "--fast", action="store_true",
+        help="write BLE chunks without response; faster image and GIF uploads"
+    )
+    parser.add_argument(
         "-l",
         "--loglevel",
         default=None,
@@ -153,7 +158,7 @@ def main() -> None:
                 if not args.address:
                     logger.error("--address is required when using --command")
                     sys.exit(1)
-                asyncio.run(run_commands(args.command, args.address))
+                asyncio.run(run_commands(args.command, args.address, fast=args.fast))
             else:
                 logger.error("No mode specified. Use --scan or -c with -a to specify an address.")
                 logger.info("For WebSocket server mode, use: python -m pypixelcolor.websocket -a <address>")

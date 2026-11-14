@@ -49,7 +49,7 @@ def _chunk_bytes(buf: bytes, size: int):
         yield buf[pos:end]
         pos = end
 
-async def send_plan(client: BleakClient, plan: SendPlan, ack_mgr: AckManager, *, write_uuid: str = WRITE_UUID, ack_timeout: float = 8.0) -> CommandResult:
+async def send_plan(client: BleakClient, plan: SendPlan, ack_mgr: AckManager, *, write_uuid: str = WRITE_UUID, ack_timeout: float = 8.0, write_with_response: bool = True) -> CommandResult:
     """
     Send a SendPlan generically.
 
@@ -58,6 +58,11 @@ async def send_plan(client: BleakClient, plan: SendPlan, ack_mgr: AckManager, *,
     - Wait for ACK per window if required
     - Wait for final ACK if policy requires
     - If response_handler is set, capture and return the response
+
+    Args:
+        write_with_response: Write chunks with response (default) or without. Without
+            response there is no round trip per chunk, only the per-window ACK, so
+            large uploads are several times faster.
     
     Returns:
         CommandResult with optional data from response_handler
@@ -97,7 +102,7 @@ async def send_plan(client: BleakClient, plan: SendPlan, ack_mgr: AckManager, *,
             ack_mgr.reset()
             # Send this window in chunks
             for chunk in _chunk_bytes(win.data, plan.chunk_size):
-                await client.write_gatt_char(write_uuid, chunk, response=True)
+                await client.write_gatt_char(write_uuid, chunk, response=write_with_response)
             if plan.ack_policy.ack_per_window and win.requires_ack:
                 try:
                     await asyncio.wait_for(ack_mgr.window_event.wait(), timeout=ack_timeout)

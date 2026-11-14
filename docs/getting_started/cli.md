@@ -56,3 +56,12 @@ pypixelcolor -a <MAC_ADDRESS> -c clear -c set_brightness 50 -c set_clock_mode
 ```
 
 
+
+## Faster uploads
+
+`--fast` writes BLE chunks without response and relies on the device's per-window
+acknowledgements. Image and GIF uploads get several times faster:
+
+```bash
+pypixelcolor -a <MAC_ADDRESS> --fast -c send_image animation.gif
+```
