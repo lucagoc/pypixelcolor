@@ -57,14 +57,17 @@ class AsyncClient:
         """Scan for compatible LED devices asynchronously."""
         return await scan_devices(timeout=timeout)
     
-    def __init__(self, address: str, *, write_with_response: bool = True):
+    def __init__(self, address: str, *, write_with_response: bool = True, chunk_size: Optional[int] = None):
         """Initialize the AsyncClient.
         
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
             write_with_response: Write BLE chunks with response (default) or without, see send_plan().
+            chunk_size: Optional chunk-size override in 1..512 bytes. None preserves
+                each command's default (normally 244). Without-response writes
+                are also limited by the characteristic's advertised maximum.
         """
-        self._session = DeviceSession(address, write_with_response=write_with_response)
+        self._session = DeviceSession(address, write_with_response=write_with_response, chunk_size=chunk_size)
         self._connected = False
     
     async def connect(self) -> DeviceInfo:
@@ -143,16 +146,21 @@ class Client:
         """Scan for compatible LED devices synchronously."""
         return scan_devices_sync(timeout=timeout)
     
-    def __init__(self, address: str, *, write_with_response: bool = True):
+    def __init__(self, address: str, *, write_with_response: bool = True, chunk_size: Optional[int] = None):
         """Initialize the Client.
         
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
             write_with_response: Write BLE chunks with response (default) or without, see send_plan().
+            chunk_size: Optional chunk-size override in 1..512 bytes. None preserves
+                each command's default (normally 244). Without-response writes
+                are also limited by the characteristic's advertised maximum.
         """
-        self._async_client = AsyncClient(address, write_with_response=write_with_response)
+        # Cleanup must be safe if constructor-option validation raises.
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._loop_thread = None
+        self._async_client = None
+        self._async_client = AsyncClient(address, write_with_response=write_with_response, chunk_size=chunk_size)
         self._setup_loop()
     
     def _setup_loop(self):

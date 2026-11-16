@@ -9,8 +9,9 @@ import inspect
 import logging
 from typing import Optional
 from bleak import BleakClient
+from bleak.exc import BleakCharacteristicNotFoundError
 
-from .constants import NOTIFY_UUID
+from .constants import NOTIFY_UUID, WRITE_UUID
 from .device_info import DeviceInfo
 from .transport.send_plan import send_plan
 from .transport.ack_manager import AckManager
@@ -37,16 +38,24 @@ class DeviceSession:
             result = await session.execute_command("set_brightness", 50)
     """
     
-    def __init__(self, address: str, *, write_with_response: bool = True):
+    def __init__(self, address: str, *, write_with_response: bool = True, chunk_size: Optional[int] = None):
         """
         Initialize a device session.
         
         Args:
             address: Bluetooth device address (e.g., "1D:6B:5E:B5:A5:54")
             write_with_response: Write BLE chunks with response (default) or without, see send_plan().
+            chunk_size: Optional command chunk-size override in 1..512 bytes.
+                None keeps each command's existing default. Without-response
+                writes are capped at the characteristic's advertised maximum.
         """
+        if chunk_size is not None and (
+            isinstance(chunk_size, bool) or not isinstance(chunk_size, int) or not 1 <= chunk_size <= 512
+        ):
+            raise ValueError("chunk_size must be None or an integer in 1..512")
         self._address = address
         self._write_with_response = write_with_response
+        self._chunk_size = chunk_size
         self._client: Optional[BleakClient] = None
         self._ack_mgr: Optional[AckManager] = None
         self._device_info: Optional[DeviceInfo] = None
@@ -235,6 +244,19 @@ class DeviceSession:
         
         # Build the SendPlan
         plan = command_func(*args, **kwargs)
+
+        if self._chunk_size is not None:
+            # Bleak's API limit is 512 bytes for writes with response.
+            # Without-response writes have a per-characteristic limit.
+            limit = 512
+            if not self._write_with_response:
+                characteristic = self._client.services.get_characteristic(WRITE_UUID)
+                if characteristic is None:
+                    raise BleakCharacteristicNotFoundError(WRITE_UUID)
+                limit = characteristic.max_write_without_response_size
+                if limit < 1:
+                    raise ValueError("Invalid maximum write-without-response size")
+            plan.chunk_size = min(self._chunk_size, limit)
         
         # Execute the plan
         return await send_plan(self._client, plan, self._ack_mgr,

@@ -82,3 +82,25 @@ with Client(MAC_ADDRESS, write_with_response=False) as device:
 ```
 
 The CLI equivalent is `--fast`.
+
+### Configuring upload chunks
+
+Both clients accept `chunk_size=None` (the default) or an integer from 1 to 512.
+Leaving it unset preserves each command's chunk size, normally 244 bytes.
+For a device/backend verified to support larger acknowledged writes:
+
+```python
+async with AsyncClient(MAC_ADDRESS, chunk_size=500) as device:
+    await device.send_image("./image.png")
+```
+
+The synchronous equivalent is `Client(MAC_ADDRESS, chunk_size=500)`. This keeps
+write-with-response enabled; it does not enable fast/unacknowledged transport.
+Larger chunks can reduce acknowledged-write round trips for small images.
+Use the existing default for devices whose larger-write behavior is unverified.
+
+Bleak's API limits writes with response to 512 bytes; the device/backend must
+support the selected size.
+For `write_with_response=False`, an explicit chunk-size override is additionally
+capped at the connected characteristic's `max_write_without_response_size`.
+The setting changes command upload chunks, not connection or ACK timeouts.
