@@ -225,7 +225,7 @@ from .lib.device_info import DeviceInfo
 class AsyncClient:
     """Asynchronous client for controlling the LED matrix via BLE."""
     
-    def __init__(self, address: str, *, write_with_response: bool = True) -> None: ...
+    def __init__(self, address: str, *, write_with_response: bool = True, chunk_size: Optional[int] = None) -> None: ...
     
     async def connect(self) -> DeviceInfo:
         """Connect to the BLE device and retrieve device info."""
@@ -266,7 +266,7 @@ class AsyncClient:
     client_header = '''class Client:
     """Synchronous client for controlling the LED matrix via BLE."""
     
-    def __init__(self, address: str, *, write_with_response: bool = True) -> None: ...
+    def __init__(self, address: str, *, write_with_response: bool = True, chunk_size: Optional[int] = None) -> None: ...
     
     def connect(self) -> DeviceInfo:
         """Connect to the BLE device and retrieve device info."""
