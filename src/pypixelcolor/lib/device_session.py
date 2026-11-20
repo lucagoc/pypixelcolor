@@ -108,29 +108,55 @@ class DeviceSession:
         if self._connected:
             raise RuntimeError("Already connected")
         
+        if self._client is not None:
+            await self._close_connection()
+        
         logger.info(f"Connecting to {self._address}...")
         self._client = BleakClient(self._address, disconnected_callback=self._on_disconnect)
-        await self._client.connect()
-        self._connected = True
-        logger.info(f"Connected to {self._address}")
-        
-        # Enable notify-based ACKs
-        self._ack_mgr = AckManager()
         try:
-            await self._client.start_notify(NOTIFY_UUID, self._ack_mgr.make_notify_handler())
-        except Exception as e:
-            logger.warning(f"Failed to enable notifications on {NOTIFY_UUID}: {e}")
-        
-        # Retrieve device info automatically
-        logger.debug("Retrieving device information...")
-        await self._fetch_device_info()
+            await self._client.connect()
+            self._connected = True
+            logger.info(f"Connected to {self._address}")
+            
+            # Enable notify-based ACKs
+            self._ack_mgr = AckManager()
+            try:
+                await self._client.start_notify(NOTIFY_UUID, self._ack_mgr.make_notify_handler())
+            except Exception as e:
+                logger.warning(f"Failed to enable notifications on {NOTIFY_UUID}: {e}")
+            
+            # Retrieve device info automatically
+            logger.debug("Retrieving device information...")
+            await self._fetch_device_info()
+        except Exception:
+            await self._close_connection()
+            raise
         
         if self._device_info:
             logger.info(f"Device info cached: {self._device_info.width}x{self._device_info.height} "
                        f"(Type {self._device_info.led_type})")
             return self._device_info
-        else:
-            raise RuntimeError("Failed to retrieve device info")
+        
+        await self._close_connection()
+        raise RuntimeError("Failed to retrieve device info")
+    
+    async def _close_connection(self) -> None:
+        """Close the BLE client and reset cached state (even if partial)."""
+        client, self._client = self._client, None
+        self._ack_mgr = None
+        self._device_info = None
+        self._connected = False
+        if client is None:
+            return
+        try:
+            if client.is_connected:
+                try:
+                    await client.stop_notify(NOTIFY_UUID)
+                except Exception as e:
+                    logger.debug(f"Error stopping notifications: {e}")
+            await client.disconnect()
+        except Exception as e:
+            logger.debug(f"Error closing BLE connection: {e}")
     
     async def disconnect(self) -> None:
         """
@@ -138,23 +164,11 @@ class DeviceSession:
         
         Cleans up notifications and closes the BLE connection.
         """
-        if not self._connected:
+        if not self._connected and self._client is None:
             logger.warning("Not connected")
             return
         
-        try:
-            if self._client:
-                await self._client.stop_notify(NOTIFY_UUID)
-        except Exception as e:
-            logger.debug(f"Error stopping notifications: {e}")
-        
-        if self._client:
-            await self._client.disconnect()
-        
-        self._connected = False
-        self._client = None
-        self._ack_mgr = None
-        self._device_info = None
+        await self._close_connection()
         logger.info("Disconnected")
     
     async def _fetch_device_info(self) -> None:
