@@ -25,6 +25,7 @@ COMMANDS = {
     "set_time": set_time.set_time,
     "set_fun_mode": set_fun_mode.set_fun_mode,
     "set_pixel": set_fun_mode.set_pixel,
+    "set_pixels": set_fun_mode.set_pixels,
     "set_timer": set_timer.set_timer,
     "set_scores": set_scores.set_scores,
     "delete": delete.delete,
