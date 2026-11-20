@@ -32,7 +32,9 @@ def set_clock_mode(style: int = 1, date="", show_date: bool = True, format_24: b
     else:
         try:
             day, month, year = map(int, date.split("/"))
-            day_of_week = datetime(year, month, day).weekday() + 1
+            full_year = year + 2000 if year < 100 else year
+            day_of_week = datetime(full_year, month, day).weekday() + 1
+            year = full_year % 100
         except (ValueError, IndexError) as e:
             raise ValueError(f"Invalid date format: {e}")
 
