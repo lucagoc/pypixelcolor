@@ -1,6 +1,7 @@
 from . import (
     clear,
     delete,
+    exit,
     set_brightness,
     set_clock_mode,
     set_rhythm_mode,
@@ -34,6 +35,7 @@ COMMANDS = {
     "send_image": send_image.send_image,
     "send_image_hex": send_image.send_image_hex,
     "set_power": set_power.set_power,
+    "exit": exit.exit_cmd,
     "show_slot": show_slot.show_slot,
     "set_schedule": set_schedule.set_schedule,
 }
