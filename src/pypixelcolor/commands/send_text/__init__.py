@@ -23,9 +23,15 @@ def build_text_properties(
     rainbow_mode: int,
     color_bytes: bytes,
     bg_color_bytes: Optional[bytes] = None,
+    num_items: int = 0,
 ) -> bytes:
-    """Construct the 13-byte properties header for text display."""
-    properties = bytearray([0x00, 0x01, 0x01])
+    """Construct the 13-byte properties header for text display.
+
+    Byte 0 is the high byte of the 16-bit item count (``num_items >> 8``);
+    the low byte is prepended by the caller. Together they form the text
+    head's ``num_items`` field (bytes 0..1 of the 14-byte head, little-endian).
+    """
+    properties = bytearray([(num_items >> 8) & 0xFF, 0x01, 0x01])
     properties.extend([
         int(animation) & 0xFF,
         int(speed) & 0xFF,
@@ -176,8 +182,13 @@ def send_text(text: str,
         num_chars = len(clean_text)
 
     # 8. Assemble data payload and generate transport send plan
-    properties = build_text_properties(anim.value, speed, rainbow_mode, color_bytes, bg_color_bytes)
-    data_payload = bytes([num_chars]) + properties + characters_bytes
+    properties = build_text_properties(
+        anim.value, speed, rainbow_mode, color_bytes, bg_color_bytes,
+        num_items=num_chars,
+    )
+    # num_items is 16-bit little-endian: low byte first, high byte in the
+    # properties head (byte 0). The API validates 1..500 chars.
+    data_payload = bytes([num_chars & 0xFF]) + properties + characters_bytes
 
     return build_text_send_plan(data_payload, save_slot=int(save_slot))
 

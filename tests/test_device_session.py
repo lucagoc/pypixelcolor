@@ -37,7 +37,8 @@ class FakeBleakClient:
 
 
 def _session():
-    return DeviceSession(MAC)
+    # Skip the BLE pre-scan: these tests only exercise connect cleanup.
+    return DeviceSession(MAC, connect_scan_timeout=0)
 
 
 def _patch_client(fake):

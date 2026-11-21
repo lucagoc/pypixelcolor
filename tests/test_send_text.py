@@ -209,3 +209,52 @@ def test_send_text_animation_parameters(mock_device):
         send_text("Hello", animation=99, device_info=mock_device)
 
 
+@pytest.fixture
+def mock_device_64x16():
+    """Create a mock 64x16 DeviceInfo (B.K. Light, device byte 131)."""
+    return DeviceInfo(
+        device_type=131,
+        mcu_version="unknown",
+        wifi_version="unknown",
+        width=64,
+        height=16,
+        has_wifi=False,
+        password_flag=0,
+        led_type=3,
+    )
+
+
+def test_build_text_properties_high_byte():
+    """Byte 0 of the properties head is the high byte of the 16-bit item count."""
+    from pypixelcolor.commands.send_text import build_text_properties
+
+    white = bytes([0xFF, 0xFF, 0xFF])
+    assert build_text_properties(1, 80, 0, white, num_items=1)[0] == 0x00
+    assert build_text_properties(1, 80, 0, white, num_items=256)[0] == 0x01
+    # 500 = 0x01F4 -> high 0x01
+    assert build_text_properties(1, 80, 0, white, num_items=500)[0] == 0x01
+
+
+def test_send_text_more_than_255_items(mock_device_64x16):
+    """num_items is 16-bit little-endian; 256 items no longer raise.
+
+    Pre-fix, `bytes([num_chars])` raised `ValueError: bytes must be in
+    range(0, 256)` for 256+ items. Post-fix the count is split into the
+    low byte (first head byte) and the high byte (properties byte 0).
+    """
+    plan = send_text("a" * 256, device_info=mock_device_64x16)
+    window = next(iter(plan.windows))
+    # Window layout: [len:2][type:2][option][size:4][crc:4][0x00,slot]
+    # then the text head: [count_lo, count_hi, 0x01, 0x01, anim, ...]
+    assert window.data[15] == 0  # count low byte
+    assert window.data[16] == 1  # count high byte (256 = 0x0100)
+
+
+def test_send_text_item_count_wire_unchanged_under_256(mock_device_64x16):
+    """Below 256 items the head bytes are identical to the old layout."""
+    plan = send_text("Hello", device_info=mock_device_64x16)
+    window = next(iter(plan.windows))
+    assert window.data[15] == 5   # count low byte
+    assert window.data[16] == 0   # count high byte (was the fixed 0x00)
+
+

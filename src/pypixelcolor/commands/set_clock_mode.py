@@ -27,14 +27,17 @@ def set_clock_mode(style: int = 1, date="", show_date: bool = True, format_24: b
     # Process date
     if not date:
         now = datetime.now()
-        day, month, year = now.day, now.month, now.year % 100
+        day, month, year = now.day, now.month, now.year
         day_of_week = now.weekday() + 1
     else:
         try:
-            day, month, year = map(int, date.split("/"))
-            full_year = year + 2000 if year < 100 else year
-            day_of_week = datetime(full_year, month, day).weekday() + 1
-            year = full_year % 100
+            parts = date.split("/")
+            if len(parts) != 3:
+                raise ValueError("expected DD/MM/YYYY or DD/MM/YY")
+            day, month, year = map(int, parts)
+            if 0 <= year <= 99:
+                year += 2000
+            day_of_week = datetime(year, month, day).weekday() + 1
         except (ValueError, IndexError) as e:
             raise ValueError(f"Invalid date format: {e}")
 
@@ -43,8 +46,8 @@ def set_clock_mode(style: int = 1, date="", show_date: bool = True, format_24: b
         raise ValueError("Clock style must be between 0 and 8")
     if int(day_of_week) not in range(1, 8):
         raise ValueError("Day of week must be between 1 and 7")
-    if int(year) not in range(0, 100):
-        raise ValueError("Year must be between 0 and 99")
+    if int(year) not in range(2000, 2100):
+        raise ValueError("Year must be between 2000 and 2099")
     if int(month) not in range(1, 13):
         raise ValueError("Month must be between 1 and 12")
     if int(day) not in range(1, 32):
@@ -65,7 +68,7 @@ def set_clock_mode(style: int = 1, date="", show_date: bool = True, format_24: b
     ])
 
     date_bytes = bytes([
-        year & 0xFF,                   # Year
+        year % 100,                    # Year (2-digit wire format)
         month & 0xFF,                  # Month
         day & 0xFF,                    # Day
         day_of_week & 0xFF,            # Day of week
